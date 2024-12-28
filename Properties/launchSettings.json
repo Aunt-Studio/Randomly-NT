@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Randomly-NT (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Randomly-NT (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
