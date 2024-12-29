@@ -10,13 +10,13 @@
     NavigationCacheMode="Enabled">
 
     <Grid>
-        
+        <StackPanel x:Name="infoBarStack" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
         <StackPanel Margin="36, 48" >
             <TextBlock Text="Random Number" Style="{StaticResource TitleTextBlockStyle}"/>
             <TextBlock Text="| 随机抽取若干整数." Style="{StaticResource BodyStrongTextBlockStyle}"/>
         </StackPanel>
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="Auto">
-            <StackPanel Spacing="16" Margin="24,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center">
+            <StackPanel Spacing="16" Margin="24,0" MaxWidth="200" HorizontalAlignment="Left" VerticalAlignment="Center">
                 <NumberBox
                 x:Name="MinNumber"
                 Header="最小取值:"
@@ -41,15 +41,20 @@
                 SmallChange="1"
                 LargeChange="10"
                 HorizontalAlignment="Center"/>
+                <ToggleButton x:Name="DisableRepeatSwitch"
+                              Content="避免重复"
+                              Click="DisableRepeatSwitch_Click"/>
                 <Button x:Name="StartDrawButton"
                     Style="{StaticResource AccentButtonStyle}"
                     Content="开始抽取"
                     HorizontalAlignment="Center"
                     Height="48"
-                    Click="Button_Click"/>
+                    Click="StartDrawButton_Click"/>
+
                 <Button 
-                Content="复位"
-                HorizontalAlignment="Center"/>
+                    Content="复位"
+                    HorizontalAlignment="Center"
+                    Click="ResetResultsButton_Click"/>
             </StackPanel>
             <StackPanel Margin="24,0" HorizontalAlignment="Right" VerticalAlignment="Center">
                 <!--<TextBlock Text="抽取结果" HorizontalAlignment="Left"/>-->
@@ -60,7 +65,8 @@
                     Width="350"
                     MaxHeight="700"
                     HorizontalAlignment="Left"
-                    Visibility="Collapsed">
+                    Visibility="Collapsed"
+                    ItemsSource="{x:Bind numberResult}">
                 </ListView>
                 
             </StackPanel>

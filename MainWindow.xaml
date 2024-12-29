@@ -11,10 +11,15 @@
     <Window.SystemBackdrop>
         <DesktopAcrylicBackdrop />
     </Window.SystemBackdrop>
-    <NavigationView x:Name="mainNv" SelectionChanged="NavView_SelectionChanged">
+    <NavigationView x:Name="mainNv" SelectionChanged="NavView_SelectionChanged" IsSettingsVisible="False">
         <NavigationView.MenuItems>
             <NavigationViewItem Icon="Bullets" Content="抽取号码" Tag="Randomly_NT.RandomNumberPage" />
         </NavigationView.MenuItems>
+        <NavigationView.FooterMenuItems>
+            <NavigationViewItem Icon="Setting"  Content = "设置" Tag="Randomly_NT.SettingsPage">
+            </NavigationViewItem>
+
+        </NavigationView.FooterMenuItems>
         <Frame x:Name="ContentFrame"/>
     </NavigationView>
 </Window>

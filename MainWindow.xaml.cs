@@ -43,11 +43,7 @@ namespace Randomly_NT
         private void NavView_SelectionChanged(NavigationView sender,
                                       NavigationViewSelectionChangedEventArgs args)
         {
-            if (args.IsSettingsSelected == true)
-            {
-                NavView_Navigate(typeof(SettingsPage), args.RecommendedNavigationTransitionInfo);
-            }
-            else if (args.SelectedItemContainer != null)
+            if (args.SelectedItemContainer != null)
             {
                 Type navPageType = Type.GetType(args.SelectedItemContainer.Tag.ToString() ?? "RandomlyNT.RandomNumberPage")!;
                 NavView_Navigate(navPageType, args.RecommendedNavigationTransitionInfo);
