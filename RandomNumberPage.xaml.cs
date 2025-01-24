@@ -35,9 +35,15 @@ namespace Randomly_NT
 
         private async void StartDrawButton_Click(object sender, RoutedEventArgs e)
         {
+            bool isSuccess = false;
             // 禁止按钮再次触发
             StartDrawButton.IsEnabled = false;
+            // 显示结果 ListView
             DrawResultListView.Visibility = Visibility.Visible;
+            // 初始化进度条
+            IndeterminateProgressBar.Visibility = Visibility.Visible;
+            IndeterminateProgressBar.ShowPaused = false;
+            IndeterminateProgressBar.ShowError = false;
             // 清空之前的结果
             numberResult.Clear();
             // 检查数值合法性并转换为 int
@@ -66,6 +72,7 @@ namespace Randomly_NT
                             {
                                 // 生成唯一随机数
                                 await RandomDrawer.DrawUniqueRandomIntAsync(min, max, count, numberResult);
+                                isSuccess = true;
                             }
 
                         }
@@ -73,11 +80,13 @@ namespace Randomly_NT
                         {
                             // 生成随机数
                             await RandomDrawer.DrawRandomIntAsync(min, max, count, numberResult);
+                            isSuccess = true;
                         }
 
                     } catch (Exception ex)
                     {
-                        Debug.WriteLine(ex.Message);
+                        isSuccess = false;
+                        Debug.WriteLine(ex.ToString());
                         ShowErrorBar("发生未知的异常:\n" + ex.ToString());
                     }
 
@@ -91,9 +100,18 @@ namespace Randomly_NT
             else
             {
                 // 数值不合法，显示错误信息
-                ShowErrorBar("无法将输入的数值转换为整数，请检查输入后重试。");
+                ShowErrorBar("无法将输入的数值转换为整数 (可能某个值超出 int 数据范围?)，请检查输入后重试。");
             }
             StartDrawButton.IsEnabled = true;
+            if (!isSuccess)
+            {
+                IndeterminateProgressBar.ShowError = true;
+            }
+            else
+            {
+                IndeterminateProgressBar.Visibility = Visibility.Collapsed;
+            }
+            
         }
 
         private void ShowWarningBar(string message)

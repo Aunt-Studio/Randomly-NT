@@ -11,6 +11,7 @@
 
     <Grid>
         <StackPanel x:Name="infoBarStack" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+        <ProgressBar x:Name="IndeterminateProgressBar" Margin="0,4" IsIndeterminate="True" VerticalAlignment="Top" HorizontalAlignment="Stretch" Visibility="Collapsed"/>
         <StackPanel Margin="36, 48" >
             <TextBlock Text="Random Number" Style="{StaticResource TitleTextBlockStyle}"/>
             <TextBlock Text="| 随机抽取若干整数." Style="{StaticResource BodyStrongTextBlockStyle}"/>
@@ -43,7 +44,8 @@
                 HorizontalAlignment="Center"/>
                 <ToggleButton x:Name="DisableRepeatSwitch"
                               Content="避免重复"
-                              Click="DisableRepeatSwitch_Click"/>
+                              Click="DisableRepeatSwitch_Click"
+                              HorizontalAlignment="Center"/>
                 <Button x:Name="StartDrawButton"
                     Style="{StaticResource AccentButtonStyle}"
                     Content="开始抽取"
