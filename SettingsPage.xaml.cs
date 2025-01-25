@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -23,9 +24,13 @@ namespace Randomly_NT
     /// </summary>
     public sealed partial class SettingsPage : Page
     {
+        public string AssemblyVersion { get; }
         public SettingsPage()
         {
             this.InitializeComponent();
+            AssemblyVersion = "Assembly Version ";
+            AssemblyVersion += Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? "未知程序集版本";
+            this.DataContext = this;
         }
     }
 }

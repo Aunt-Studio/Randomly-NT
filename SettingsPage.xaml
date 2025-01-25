@@ -8,7 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:winui="using:CommunityToolkit.WinUI"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    NavigationCacheMode="Enabled">
 
     <Grid>
         <StackPanel Margin="36, 48" Spacing="36">
@@ -20,6 +21,7 @@
                 <controls:SettingsExpander
                 Header="Randomly NT"
                 Description="© 2025 Aunt Studio. All rights reserved.">
+                    <TextBlock Text="{Binding AssemblyVersion}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                     <controls:SettingsExpander.Items>
                         <controls:SettingsCard>
                             <controls:SettingsCard.Header>
