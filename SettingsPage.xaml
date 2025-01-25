@@ -9,8 +9,9 @@
     mc:Ignorable="d">
 
     <Grid>
-        <StackPanel>
-            <TextBlock Text="设置" Style="{StaticResource TitleTextBlockStyle}"/>
+        <StackPanel Margin="36, 48" >
+            <TextBlock Text="Settings" Style="{StaticResource TitleTextBlockStyle}"/>
+            <TextBlock Text="| 设置参数、和关于 Randomly." Style="{StaticResource BodyStrongTextBlockStyle}"/>
         </StackPanel>
     </Grid>
 </Page>

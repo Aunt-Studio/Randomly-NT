@@ -13,12 +13,22 @@
     </Window.SystemBackdrop>
     <NavigationView x:Name="mainNv" SelectionChanged="NavView_SelectionChanged" IsSettingsVisible="False">
         <NavigationView.MenuItems>
-            <NavigationViewItem Icon="Bullets" Content="抽取号码" Tag="Randomly_NT.RandomNumberPage" />
-        </NavigationView.MenuItems>
-        <NavigationView.FooterMenuItems>
-            <NavigationViewItem Icon="Setting"  Content = "设置" Tag="Randomly_NT.SettingsPage">
+            <NavigationViewItem Content="抽取号码" Tag="Randomly_NT.RandomNumberPage">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE75F;" />
+                </NavigationViewItem.Icon>
             </NavigationViewItem>
-
+            
+            <NavigationViewItem Content="抽取名称" Tag="Randomly_NT.RandomNamePage">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE97C;" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+            
+        </NavigationView.MenuItems>
+        
+        <NavigationView.FooterMenuItems>
+            <NavigationViewItem Icon="Setting"  Content="设置" Tag="Randomly_NT.SettingsPage"/>
         </NavigationView.FooterMenuItems>
         <Frame x:Name="ContentFrame"/>
     </NavigationView>
