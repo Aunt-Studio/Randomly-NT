@@ -19,15 +19,15 @@
             </StackPanel>
             <StackPanel Margin="-16, 0" Spacing="16">
                 <!--随机化因子调整-->
-                <TextBlock Text="随机化因子" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                <TextBlock Text="随机数熵源" Style="{StaticResource BodyStrongTextBlockStyle}"/>
                 <controls:SettingsExpander
                     Header="随机化指数"
-                    Description="调整随机化指数以控制随机数种子取值因子。"
+                    Description="调整随机化指数以控制随机数熵。"
                     IsExpanded="True">
                     <controls:SettingsExpander.Items>
                         <controls:SettingsCard
                             Header="调整随机化指数"
-                            Description="随机化指数越大, 随机数种子取值因子越复杂, 随机数结果越难推演。">
+                            Description="随机化指数越大, 随机数的熵越高，随机数种子取值因子越复杂, 随机数结果越难观测。">
                             <Slider
                                 Minimum="1"
                                 Maximum="4"
@@ -41,8 +41,8 @@
                     </controls:SettingsExpander.Items>
                 </controls:SettingsExpander>
                 <controls:SettingsExpander
-                    Header="已应用的随机化因子"
-                    Description="当前随机化指数下将参与随机数种子计算的因素。"
+                    Header="已应用的熵源"
+                    Description="当前随机化指数下将参与随机数种子计算的熵。"
                     ItemsSource="{x:Bind RandomizationFactorItems}">
 
                     <controls:SettingsExpander.ItemTemplate>
