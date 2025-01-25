@@ -58,7 +58,8 @@ namespace Randomly_NT
                         if (count > 1000)
                         {
                             // 数值过大，显示警告信息
-                            ShowWarningBar("生成的随机数过多，将启用分批处理，但仍可能导致UI线程卡顿。");
+                            if (count > 50000) ShowWarningBar("生成的随机数过多，将启用分批处理，但仍可能导致UI线程卡顿。\n可能的结果框溢出系 WinUI 组件已知问题。");
+                            else ShowWarningBar("生成的随机数过多，将启用分批处理，但仍可能导致UI线程卡顿。");
                         }
                         if (disableRepeat)
                         {
