@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -25,12 +26,18 @@ namespace Randomly_NT
     public sealed partial class SettingsPage : Page
     {
         public string AssemblyVersion { get; }
+        public int RandomizeIndex { get; set; } = 0;
         public SettingsPage()
         {
             this.InitializeComponent();
             AssemblyVersion = "Assembly Version ";
             AssemblyVersion += Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? "未知程序集版本";
             this.DataContext = this;
+        }
+
+        private void RandomizeIndexSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            Debug.WriteLine(RandomizeIndex);
         }
     }
 }

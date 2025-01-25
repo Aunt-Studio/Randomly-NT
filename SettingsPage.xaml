@@ -17,7 +17,36 @@
                 <TextBlock Text="Settings" Style="{StaticResource TitleTextBlockStyle}"/>
                 <TextBlock Text="| 设置参数、和关于 Randomly." Style="{StaticResource BodyStrongTextBlockStyle}"/>
             </StackPanel>
-            <StackPanel Margin="-16, 0">
+            <StackPanel Margin="-16, 0" Spacing="16">
+                <!--随机化因子调整-->
+                <TextBlock Text="随机化因子" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                <controls:SettingsExpander
+                    Header="随机化指数"
+                    Description="调整随机化指数以控制随机数种子取值因子。"
+                    IsExpanded="True">
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard
+                            Header="调整随机化指数"
+                            Description="随机化指数越大, 随机数种子取值因子越复杂, 随机数结果越难推演。">
+                            <Slider
+                                Minimum="1"
+                                Maximum="4"
+                                Value="{Binding RandomizeIndex, Mode=TwoWay}"
+                                TickFrequency="1"
+                                TickPlacement="Outside"
+                                StepFrequency="1"
+                                SnapsTo="Ticks"
+                                ValueChanged="RandomizeIndexSlider_ValueChanged"/>
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
+                <controls:SettingsExpander
+                    Header="已应用的随机化因子"
+                    Description="当前随机化指数下将参与随机数种子计算的因素。">
+                </controls:SettingsExpander>
+                
+                <!--关于-->
+                <TextBlock Text="关于" Style="{StaticResource BodyStrongTextBlockStyle}"/>
                 <controls:SettingsExpander
                 Header="Randomly NT"
                 Description="© 2025 Aunt Studio. All rights reserved.">
@@ -46,6 +75,7 @@
                     </controls:SettingsExpander.Items>
 
                 </controls:SettingsExpander>
+
             </StackPanel>
         </StackPanel>
 
