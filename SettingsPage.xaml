@@ -6,12 +6,46 @@
     xmlns:local="using:Randomly_NT"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:winui="using:CommunityToolkit.WinUI"
     mc:Ignorable="d">
 
     <Grid>
-        <StackPanel Margin="36, 48" >
-            <TextBlock Text="Settings" Style="{StaticResource TitleTextBlockStyle}"/>
-            <TextBlock Text="| 设置参数、和关于 Randomly." Style="{StaticResource BodyStrongTextBlockStyle}"/>
+        <StackPanel Margin="36, 48" Spacing="36">
+            <StackPanel>
+                <TextBlock Text="Settings" Style="{StaticResource TitleTextBlockStyle}"/>
+                <TextBlock Text="| 设置参数、和关于 Randomly." Style="{StaticResource BodyStrongTextBlockStyle}"/>
+            </StackPanel>
+            <StackPanel Margin="-16, 0">
+                <controls:SettingsExpander
+                Header="Randomly NT"
+                Description="© 2025 Aunt Studio. All rights reserved.">
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard>
+                            <controls:SettingsCard.Header>
+                                <StackPanel Margin="-12,0,0,0">
+                                    <TextBlock Text="Developed by Aunt_nuozhen with ❤"/>
+                                    <TextBlock Text="Licensed under MIT License."/>
+                                </StackPanel>
+                            </controls:SettingsCard.Header>
+                            <StackPanel Margin="-12,0,0,0" >
+                                <TextBlock Text="E9C0B2800DC11294" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                <TextBlock Text="© 2025 Aunt Studio" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            </StackPanel>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard ContentAlignment="Left">
+                            <StackPanel Margin="-24,0">
+                                <HyperlinkButton Content="在 GitHub 上查看源代码" NavigateUri="https://github.com/Aunt-Studio/Randomly-NT"/>
+                                <HyperlinkButton Content="查看用户手册文档" NavigateUri=""/>
+                                <HyperlinkButton Content="Aunt Studio 官网" NavigateUri="https://auntstudio.com"/>
+                                <HyperlinkButton Content="MIT License" NavigateUri="https://opensource.org/license/MIT"/>
+                            </StackPanel>
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+
+                </controls:SettingsExpander>
+            </StackPanel>
         </StackPanel>
+
     </Grid>
 </Page>
