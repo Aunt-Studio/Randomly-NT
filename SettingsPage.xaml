@@ -42,7 +42,18 @@
                 </controls:SettingsExpander>
                 <controls:SettingsExpander
                     Header="已应用的随机化因子"
-                    Description="当前随机化指数下将参与随机数种子计算的因素。">
+                    Description="当前随机化指数下将参与随机数种子计算的因素。"
+                    ItemsSource="{x:Bind RandomizationFactorItems}">
+
+                    <controls:SettingsExpander.ItemTemplate>
+                        <DataTemplate x:DataType="local:RandomizationFactorItem">
+                            <controls:SettingsCard Header="{x:Bind Name}"
+                                Description="{x:Bind Description}">
+                                <HyperlinkButton Content="查看文档"
+                                         NavigateUri="{x:Bind DocumentUrl}" />
+                            </controls:SettingsCard>
+                        </DataTemplate>
+                    </controls:SettingsExpander.ItemTemplate>
                 </controls:SettingsExpander>
                 
                 <!--关于-->
