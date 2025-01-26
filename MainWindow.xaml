@@ -11,7 +11,7 @@
     <Window.SystemBackdrop>
         <DesktopAcrylicBackdrop />
     </Window.SystemBackdrop>
-    <NavigationView x:Name="mainNv" SelectionChanged="NavView_SelectionChanged" IsSettingsVisible="False">
+    <NavigationView x:Name="mainNv" SelectionChanged="NavView_SelectionChanged" IsSettingsVisible="False" Loaded="mainNv_Loaded">
         <NavigationView.MenuItems>
             <NavigationViewItem Content="抽取号码" Tag="Randomly_NT.RandomNumberPage">
                 <NavigationViewItem.Icon>

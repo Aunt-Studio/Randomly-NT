@@ -65,5 +65,14 @@ namespace Randomly_NT
             }
         }
 
+        private void mainNv_Loaded(object sender, RoutedEventArgs e)
+        {
+            // NavView doesn't load any page by default, so load home page.
+            mainNv.SelectedItem = mainNv.MenuItems[0];
+            // If navigation occurs on SelectionChanged, this isn't needed.
+            // Because we use ItemInvoked to navigate, we need to call Navigate
+            // here to load the home page.
+            NavView_Navigate(typeof(RandomNumberPage), new EntranceNavigationTransitionInfo());
+        }
     }
 }
