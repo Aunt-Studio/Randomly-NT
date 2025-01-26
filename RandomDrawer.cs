@@ -5,25 +5,106 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Randomly_NT
 {
     static class RandomDrawer
     {
+        #region CursorPositionGetRegion
+        // 使用 P/Invoke 调用 Windows API 获取鼠标位置
+        [DllImport("user32.dll")]
+        private static extern bool GetCursorPos(out POINT lpPoint);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT
+        {
+            public int X;
+            public int Y;
+        }
+        #endregion
+
+        #region 一般随机数实现
+
         /// <summary>
         /// 生成若干个随机整数，范围为[<paramref name="min"/>, <paramref name="max"/>]，取值将包含 <paramref name="min"/> 和 <paramref name="max"/>。
+        /// <para>
+        /// 将应用传入的熵源。仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。
+        /// </para>
         /// </summary>
         /// <param name="min">最小取值</param>
         /// <param name="max">最大取值</param>
         /// <param name="count">取值数</param>
+        /// <param name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
         /// <returns>随机整数列表</returns>
-        public static List<int> DrawRandomInt(int min, int max, int count)
+        public static List<int> DrawRandomInt(int min, int max, int count, params RandomEntropySource[] randomEntropySources)
         {
+
             List<int> result = new List<int>();
-            Random random = new Random();
+            Random random;
+            if (randomEntropySources.Length <= 1 && randomEntropySources[0] == RandomEntropySource.SystemClock)
+            {
+                // 基本情况: 使用系统时钟作为随机数种子
+                random = new Random();
+            }
+            else
+            {
+                long seed = 0;
+                foreach (var source in randomEntropySources)
+                {
+                    switch (source)
+                    {
+                        case RandomEntropySource.SystemClock:
+                            // 使用系统时钟作为随机数种子
+                            seed += Environment.TickCount64;
+                            break;
+                        case RandomEntropySource.RuntimeNoise:
+                            // 使用运行时噪声作为随机数种子
+                            seed += GC.GetTotalMemory(false).GetHashCode();
+                            seed += Process.GetCurrentProcess().WorkingSet64.GetHashCode();
+                            seed += Environment.CurrentManagedThreadId.GetHashCode();
+                            break;
+                        case RandomEntropySource.MousePoint:
+                            // 使用鼠标位置作为随机数种子
+                            if (GetCursorPos(out POINT point))
+                            {
+                                seed += point.X.GetHashCode();
+                                seed += point.Y.GetHashCode();
+                            }
+                            else
+                            {
+                                seed += Environment.TickCount64.GetHashCode();
+                            }
+                            break;
+                        case RandomEntropySource.RandomOrg:
+                            // 使用 Random.org 作为随机数种子
+                            try
+                            {
+                                var task = Task.Run(async () => await GetTrueRandomNumberFromRandomOrg(1, 10000));
+                                task.Wait();
+                                seed += task.Result.GetHashCode();
+                            }
+                            catch
+                            {
+                                throw;
+                            }
+                            break;
+                        default:
+                            seed += Environment.TickCount64;
+                            break;
+                    }
+                }
+                Debug.WriteLine(seed);
+                random = new Random((int)seed);
+            }
+
             for (int i = 0; i < count; i++)
             {
                 result.Add(random.Next(min, max + 1));
@@ -33,21 +114,20 @@ namespace Randomly_NT
 
         /// <summary>
         /// 生成若干个随机整数，范围为[<paramref name="min"/>, <paramref name="max"/>]，即可能取值将包含 <paramref name="min"/> 和 <paramref name="max"/>。
+        /// <para>
+        /// 将应用传入的熵源。仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。
+        /// </para>
         /// </summary>
         /// <param name="min">最小取值</param>
         /// <param name="max">最大取值</param>
         /// <param name="count">取值数</param>
+        /// <param name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
         /// <returns>随机整数列表</returns>
-        public static async Task<List<int>> DrawRandomIntAsync(int min, int max, int count)
+        public static async Task<List<int>> DrawRandomIntAsync(int min, int max, int count, params RandomEntropySource[] randomEntropySources)
         {
             return await Task.Run(() =>
             {
-                List<int> result = new List<int>();
-                Random random = new Random();
-                for (int i = 0; i < count; i++)
-                {
-                    result.Add(random.Next(min, max + 1));
-                }
+                List<int> result = DrawRandomInt(min, max, count, randomEntropySources);
                 return result;
             });
         }
@@ -57,27 +137,28 @@ namespace Randomly_NT
         /// <para>
         /// 使用此重载方法应注意线程安全问题。避免同时多次执行传入同一个<paramref name="resultList"/>的该函数。
         /// </para>
+        /// <para>
+        /// 将应用传入的熵源。仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。
+        /// </para>
         /// 另外<paramref name="resultList"/>列表将此重载方法执行时被清空。
         /// </summary>
         /// <param name="min">最小取值</param>
         /// <param name="max">最大取值</param>
         /// <param name="count">取值数</param>
         /// <param name="resultList">用于存储结果的可监视集合, 注意每次函数执行时都会自动清空集合里的内容。</param>
+        /// <param name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
         /// <returns>任务</returns>
-        public static async Task DrawRandomIntAsync(int min, int max, int count, ObservableCollection<int> resultList)
+        public static async Task DrawRandomIntAsync(int min, int max, int count, ObservableCollection<int> resultList, params RandomEntropySource[] randomEntropySources)
         {
             var dispatcherQueue = DispatcherQueue.GetForCurrentThread();
-            Random random = new Random();
             if (count > 1000)
             {
                 // 待生成的随机数数量过多，启用分批处理，以避免在拷贝到 ObservableCollection 时导致 UI 线程卡顿
                 await Task.Run(async () =>
                 {
                     List<int> tempList = new List<int>();
-                    for (int i = 0; i < count; i++)
-                    {
-                        tempList.Add(random.Next(min, max + 1));
-                    }
+
+                    tempList = await DrawRandomIntAsync(min, max, count, randomEntropySources);
                     int batchSize = 100; // 每次处理的批次大小
                     int totalBatches = (int)Math.Ceiling((double)tempList.Count / batchSize);
 
@@ -101,13 +182,10 @@ namespace Randomly_NT
             }
             else
             {
-                await Task.Run(() =>
+                await Task.Run(async () =>
                 {
                     List<int> tempList = new List<int>();
-                    for (int i = 0; i < count; i++)
-                    {
-                        tempList.Add(random.Next(min, max + 1));
-                    }
+                    tempList = await DrawRandomIntAsync(min, max, count, randomEntropySources);
                     dispatcherQueue.TryEnqueue(() =>
                     {
                         resultList.Clear();
@@ -120,6 +198,111 @@ namespace Randomly_NT
             }
         }
 
+        #endregion
+
+
+        #region 唯一随机数实现
+        /// <summary>
+        /// 生成若干个不重复的随机整数，范围为[<paramref name="min"/>, <paramref name="max"/>]，即可能取值将包含 <paramref name="min"/> 和 <paramref name="max"/>。
+        /// <para>
+        /// 将应用传入的熵源。仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。
+        /// </para>
+        /// 当<paramref name="max"/> - <paramref name="min"/> + 1 小于 <paramref name="count"/>时，将抛出<seealso cref="ArgumentException"/>异常。
+        /// </summary>
+        /// <param name="min">最小取值</param>
+        /// <param name="max">最大取值</param>
+        /// <param name="count">取值数</param>
+        /// <param name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
+        /// <returns>随机整数列表</returns>
+        public static HashSet<int> DrawUniqueRandomInt(int min, int max, int count, params RandomEntropySource[] randomEntropySources)
+        {
+
+            HashSet<int> result = new HashSet<int>();
+            Random random;
+            if (randomEntropySources.Length <= 1 && randomEntropySources[0] == RandomEntropySource.SystemClock)
+            {
+                // 基本情况: 使用系统时钟作为随机数种子
+                random = new Random();
+            }
+            else
+            {
+                long seed = 0;
+                foreach (var source in randomEntropySources)
+                {
+                    switch (source)
+                    {
+                        case RandomEntropySource.SystemClock:
+                            // 使用系统时钟作为随机数种子
+                            seed += Environment.TickCount64;
+                            break;
+                        case RandomEntropySource.RuntimeNoise:
+                            // 使用运行时噪声作为随机数种子
+                            seed += GC.GetTotalMemory(false).GetHashCode();
+                            seed += Process.GetCurrentProcess().WorkingSet64.GetHashCode();
+                            seed += Environment.CurrentManagedThreadId.GetHashCode();
+                            break;
+                        case RandomEntropySource.MousePoint:
+                            // 使用鼠标位置作为随机数种子
+                            if (GetCursorPos(out POINT point))
+                            {
+                                seed += point.X.GetHashCode();
+                                seed += point.Y.GetHashCode();
+                            }
+                            else
+                            {
+                                seed += Environment.TickCount64.GetHashCode();
+                            }
+                            break;
+                        case RandomEntropySource.RandomOrg:
+                            // 使用 Random.org 作为随机数种子
+                            try
+                            {
+                                var task = Task.Run(async () => await GetTrueRandomNumberFromRandomOrg(1, 10000));
+                                task.Wait();
+                                seed += task.Result.GetHashCode();
+                            }
+                            catch
+                            {
+                                throw;
+                            }
+
+                            break;
+                        default:
+                            seed += Environment.TickCount64;
+                            break;
+                    }
+                }
+                Debug.WriteLine(seed);
+                random = new Random((int)seed);
+            }
+
+            while (result.Count < count)
+            {
+                result.Add(random.Next(min, max + 1));
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 生成若干个不重复的随机整数，范围为[<paramref name="min"/>, <paramref name="max"/>]，即可能取值将包含 <paramref name="min"/> 和 <paramref name="max"/>。
+        /// <para>
+        /// 将应用传入的熵源。仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。
+        /// </para>
+        /// 当<paramref name="max"/> - <paramref name="min"/> + 1 小于 <paramref name="count"/>时，将抛出<seealso cref="ArgumentException"/>异常。
+        /// </summary>
+        /// <param name="min">最小取值</param>
+        /// <param name="max">最大取值</param>
+        /// <param name="count">取值数</param>
+        /// <param name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
+        /// <returns>随机整数列表</returns>
+        public static async Task<HashSet<int>> DrawUniqueRandomIntAsync(int min, int max, int count, params RandomEntropySource[] randomEntropySources)
+        {
+            return await Task.Run(() =>
+            {
+                HashSet<int> result = DrawUniqueRandomInt(min, max, count, randomEntropySources);
+                return result;
+            });
+        }
 
         /// <summary>
         /// 生成若干个不重复的随机整数，范围为[<paramref name="min"/>, <paramref name="max"/>]，即可能取值将包含 <paramref name="min"/> 和 <paramref name="max"/>。
@@ -128,14 +311,18 @@ namespace Randomly_NT
         /// </para>
         /// 当<paramref name="max"/> - <paramref name="min"/> + 1 小于 <paramref name="count"/>时，将抛出<seealso cref="ArgumentException"/>异常。
         /// 另外<paramref name="resultList"/>列表将此重载方法执行时被清空。
+        /// <para>
+        /// 将应用传入的熵源。仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。
+        /// </para>
         /// </summary>
         /// <param name="min">最小取值</param>
         /// <param name="max">最大取值</param>
         /// <param name="count">取值数</param>
         /// <param name="resultList">用于存储结果的可监视集合, 注意每次函数执行时都会自动清空集合里的内容。</param>
+        /// <param name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
         /// <returns>任务</returns>
         /// <exception cref="ArgumentException">当<paramref name="max"/> - <paramref name="min"/> + 1 小于 <paramref name="count"/>时</exception>"
-        public static async Task DrawUniqueRandomIntAsync(int min, int max, int count, ObservableCollection<int> resultList)
+        public static async Task DrawUniqueRandomIntAsync(int min, int max, int count, ObservableCollection<int> resultList, params RandomEntropySource[] randomEntropySources)
         {
             if (max - min + 1 < count)
             {
@@ -143,18 +330,14 @@ namespace Randomly_NT
             }
 
             var dispatcherQueue = DispatcherQueue.GetForCurrentThread();
-            Random random = new Random();
-            HashSet<int> uniqueNumbers = new HashSet<int>();
+            HashSet<int> uniqueNumbers;
 
             if (count > 1000)
             {
                 // 待生成的随机数数量过多，启用分批处理，以避免在拷贝到 ObservableCollection 时导致 UI 线程卡顿
                 await Task.Run(async () =>
                 {
-                    while (uniqueNumbers.Count < count)
-                    {
-                        uniqueNumbers.Add(random.Next(min, max + 1));
-                    }
+                    uniqueNumbers = await DrawUniqueRandomIntAsync(min, max, count, randomEntropySources);
 
                     int batchSize = 100; // 每次处理的批次大小
                     int totalBatches = (int)Math.Ceiling((double)uniqueNumbers.Count / batchSize);
@@ -180,12 +363,9 @@ namespace Randomly_NT
             }
             else
             {
-                await Task.Run(() =>
+                await Task.Run(async () =>
                 {
-                    while (uniqueNumbers.Count < count)
-                    {
-                        uniqueNumbers.Add(random.Next(min, max + 1));
-                    }
+                    uniqueNumbers = await DrawUniqueRandomIntAsync(min, max, count, randomEntropySources);
 
                     dispatcherQueue.TryEnqueue(() =>
                     {
@@ -199,5 +379,68 @@ namespace Randomly_NT
             }
         }
 
+        #endregion
+
+        /// <summary>
+        /// 从 Random.org 获取真随机数。
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        /// <exception cref="FormatException"></exception>
+        /// <exception cref="HttpRequestException"></exception>
+        private static async Task<int> GetTrueRandomNumberFromRandomOrg(int min, int max)
+        {
+            // 从 Random.org 获取真随机数
+            // 由于 Random.org 有每天请求次数限制，因此不建议频繁调用此函数
+            // 请注意 Random.org 的使用条款
+            // https://www.random.org/terms/
+
+            string url = $"https://www.random.org/integers/?num=1&min={min}&max={max}&col=1&base=10&format=plain&rnd=new&cl=w";
+
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    // 发送HTTP GET请求
+                    HttpResponseMessage response = await client.GetAsync(url);
+                    response.EnsureSuccessStatusCode();
+
+                    // 读取响应内容
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine(responseBody);
+
+                    // 使用正则表达式提取数字
+                    string pattern = @"<span style='font-size:100%;font-weight:bold;'>(\d+)";
+                    Match match = Regex.Match(responseBody, pattern);
+
+                    if (match.Success && int.TryParse(match.Groups[1].Value, out int number))
+                    {
+                        return number;
+                    }
+                    else
+                    {
+                        throw new FormatException("无法解析 Random.org 的响应内容。");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Exception while getting random number at random.org: " + ex.ToString());
+                    throw;
+                }
+            }
+        }
+
+    }
+
+    /// <summary>
+    /// 随机数熵源
+    /// </summary>
+    public enum RandomEntropySource
+    {
+        SystemClock,
+        RuntimeNoise,
+        MousePoint,
+        RandomOrg
     }
 }

@@ -14,6 +14,9 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using Windows.Storage;
+using System.Threading.Tasks;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -27,6 +30,7 @@ namespace Randomly_NT
     {
         private ObservableCollection<int> numberResult = new();
         private bool disableRepeat = false;
+        private ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
         public RandomNumberPage()
         {
             this.InitializeComponent();
@@ -71,8 +75,7 @@ namespace Randomly_NT
                             }
                             else
                             {
-                                // 生成唯一随机数
-                                await RandomDrawer.DrawUniqueRandomIntAsync(min, max, count, numberResult);
+                                await StartDrawUniqueRandom(min, max, count, numberResult);
                                 isSuccess = true;
                             }
 
@@ -80,14 +83,14 @@ namespace Randomly_NT
                         else
                         {
                             // 生成随机数
-                            await RandomDrawer.DrawRandomIntAsync(min, max, count, numberResult);
+                            await StartDrawRandom(min, max, count, numberResult);
                             isSuccess = true;
                         }
 
                     } catch (Exception ex)
                     {
                         isSuccess = false;
-                        Debug.WriteLine(ex.ToString());
+                        Debug.WriteLine("Ex:" + ex.ToString());
                         ShowErrorBar("发生未知的异常:\n" + ex.ToString());
                     }
 
@@ -115,6 +118,59 @@ namespace Randomly_NT
             
         }
 
+        private async Task StartDrawRandom(int min, int max, int count, ObservableCollection<int> numberResult)
+        {
+            int randomizeIndex = localSettings.Values.ContainsKey("RandomizeIndex") ? (int)localSettings.Values["RandomizeIndex"] : 1;
+            switch (randomizeIndex)
+            {
+                case 1:
+                    await RandomDrawer.DrawRandomIntAsync(min, max, count, numberResult, RandomEntropySource.SystemClock);
+                    break;
+                case 2:
+                    await RandomDrawer.DrawRandomIntAsync(min, max, count, numberResult, RandomEntropySource.SystemClock, RandomEntropySource.RuntimeNoise);
+                    break;
+                case 3:
+                    await RandomDrawer.DrawRandomIntAsync(min, max, count, numberResult, RandomEntropySource.SystemClock, RandomEntropySource.RuntimeNoise, RandomEntropySource.MousePoint);
+                    break;
+                case 4:
+                    await RandomDrawer.DrawRandomIntAsync(min, max, count, numberResult, RandomEntropySource.SystemClock, RandomEntropySource.RuntimeNoise, RandomEntropySource.MousePoint, RandomEntropySource.RandomOrg);
+                    break;
+                default:
+                    await RandomDrawer.DrawRandomIntAsync(min, max, count, numberResult);
+                    break;
+            }
+        }
+        private async Task StartDrawUniqueRandom(int min, int max, int count, ObservableCollection<int> numberResult)
+        {
+            try
+            {
+                int randomizeIndex = localSettings.Values.ContainsKey("RandomizeIndex") ? (int)localSettings.Values["RandomizeIndex"] : 1;
+                switch (randomizeIndex)
+                {
+                    case 1:
+                        await RandomDrawer.DrawUniqueRandomIntAsync(min, max, count, numberResult, RandomEntropySource.SystemClock);
+                        break;
+                    case 2:
+                        await RandomDrawer.DrawUniqueRandomIntAsync(min, max, count, numberResult, RandomEntropySource.SystemClock, RandomEntropySource.RuntimeNoise);
+                        break;
+                    case 3:
+                        await RandomDrawer.DrawUniqueRandomIntAsync(min, max, count, numberResult, RandomEntropySource.SystemClock, RandomEntropySource.RuntimeNoise, RandomEntropySource.MousePoint);
+                        break;
+                    case 4:
+                        await RandomDrawer.DrawUniqueRandomIntAsync(min, max, count, numberResult, RandomEntropySource.SystemClock, RandomEntropySource.RuntimeNoise, RandomEntropySource.MousePoint, RandomEntropySource.RandomOrg);
+                        break;
+                    default:
+                        await RandomDrawer.DrawUniqueRandomIntAsync(min, max, count, numberResult);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Ex:" + ex.ToString());
+                ShowErrorBar("发生未知的异常:\n" + ex.ToString());
+            }
+
+        }
         private void ShowWarningBar(string message)
         {
             if (infoBarStack.Children.Count > 1)
@@ -158,4 +214,5 @@ namespace Randomly_NT
             disableRepeat = DisableRepeatSwitch.IsChecked ?? false;
         }
     }
+
 }
