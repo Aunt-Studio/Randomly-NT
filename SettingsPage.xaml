@@ -35,15 +35,14 @@
                                 TickFrequency="1"
                                 TickPlacement="Outside"
                                 StepFrequency="1"
-                                SnapsTo="Ticks"
-                                ValueChanged="RandomizeIndexSlider_ValueChanged"/>
+                                SnapsTo="Ticks"/>
                         </controls:SettingsCard>
                     </controls:SettingsExpander.Items>
                 </controls:SettingsExpander>
                 <controls:SettingsExpander
                     Header="已应用的熵源"
                     Description="当前随机化指数下将参与随机数种子计算的熵。"
-                    ItemsSource="{x:Bind RandomizationFactorItems}">
+                    ItemsSource="{x:Bind RandomizationFactorItems, Mode=OneWay}">
 
                     <controls:SettingsExpander.ItemTemplate>
                         <DataTemplate x:DataType="local:RandomizationFactorItem">
