@@ -12,23 +12,35 @@
     NavigationCacheMode="Enabled">
 
     <Grid>
-        <StackPanel Margin="36, 48" Spacing="36">
+        <ScrollViewer
+                x:Name="contentSV"
+                Grid.Row="1"
+                IsTabStop="False"
+                UseSystemFocusVisuals="False"
+                VerticalScrollBarVisibility="Auto"
+                VerticalScrollMode="Enabled">
+            <StackPanel Margin="36, 48" Spacing="36">
             <StackPanel>
                 <TextBlock Text="Settings" Style="{StaticResource TitleTextBlockStyle}"/>
                 <TextBlock Text="| 设置参数、和关于 Randomly." Style="{StaticResource BodyStrongTextBlockStyle}"/>
             </StackPanel>
-            <StackPanel Margin="-16, 0" Spacing="16">
-                <!--随机化因子调整-->
-                <TextBlock Text="随机数熵源" Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                <controls:SettingsExpander
+
+                <StackPanel Spacing="16">
+                    <StackPanel.ChildrenTransitions>
+                        <EntranceThemeTransition FromVerticalOffset="50" />
+                        <RepositionThemeTransition IsStaggeringEnabled="False" />
+                    </StackPanel.ChildrenTransitions>
+                    <!--随机化因子调整-->
+                    <TextBlock Text="随机数熵源" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                    <controls:SettingsExpander
                     Header="随机化指数"
                     Description="调整随机化指数以控制随机数熵。"
                     IsExpanded="True">
-                    <controls:SettingsExpander.Items>
-                        <controls:SettingsCard
+                        <controls:SettingsExpander.Items>
+                            <controls:SettingsCard
                             Header="调整随机化指数"
                             Description="随机化指数越大, 随机数的熵越高，随机数种子取值因子越复杂, 随机数结果越难观测。">
-                            <Slider
+                                <Slider
                                 Minimum="1"
                                 Maximum="4"
                                 Value="{Binding RandomizeIndex, Mode=TwoWay}"
@@ -36,58 +48,59 @@
                                 TickPlacement="Outside"
                                 StepFrequency="1"
                                 SnapsTo="Ticks"/>
-                        </controls:SettingsCard>
-                    </controls:SettingsExpander.Items>
-                </controls:SettingsExpander>
-                <controls:SettingsExpander
+                            </controls:SettingsCard>
+                        </controls:SettingsExpander.Items>
+                    </controls:SettingsExpander>
+                    <controls:SettingsExpander
                     Header="已应用的熵源"
                     Description="当前随机化指数下将参与随机数种子计算的熵。"
                     ItemsSource="{x:Bind RandomizationFactorItems, Mode=OneWay}">
 
-                    <controls:SettingsExpander.ItemTemplate>
-                        <DataTemplate x:DataType="local:RandomizationFactorItem">
-                            <controls:SettingsCard Header="{x:Bind Name}"
+                        <controls:SettingsExpander.ItemTemplate>
+                            <DataTemplate x:DataType="local:RandomizationFactorItem">
+                                <controls:SettingsCard Header="{x:Bind Name}"
                                 Description="{x:Bind Description}">
-                                <HyperlinkButton Content="查看文档"
+                                    <HyperlinkButton Content="查看文档"
                                          NavigateUri="{x:Bind DocumentUrl}" />
-                            </controls:SettingsCard>
-                        </DataTemplate>
-                    </controls:SettingsExpander.ItemTemplate>
-                </controls:SettingsExpander>
-                
-                <!--关于-->
-                <TextBlock Text="关于" Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                <controls:SettingsExpander
+                                </controls:SettingsCard>
+                            </DataTemplate>
+                        </controls:SettingsExpander.ItemTemplate>
+                    </controls:SettingsExpander>
+
+                    <!--关于-->
+                    <TextBlock Text="关于" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                    <controls:SettingsExpander
                 Header="Randomly NT"
                 Description="© 2025 Aunt Studio. All rights reserved.">
-                    <TextBlock Text="{Binding AssemblyVersion}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                    <controls:SettingsExpander.Items>
-                        <controls:SettingsCard>
-                            <controls:SettingsCard.Header>
-                                <StackPanel Margin="-12,0,0,0">
-                                    <TextBlock Text="Developed by Aunt_nuozhen with ❤"/>
-                                    <TextBlock Text="Licensed under MIT License."/>
+                        <TextBlock Text="{Binding AssemblyVersion}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <controls:SettingsExpander.Items>
+                            <controls:SettingsCard>
+                                <controls:SettingsCard.Header>
+                                    <StackPanel Margin="-12,0,0,0">
+                                        <TextBlock Text="Developed by Aunt_nuozhen with ❤"/>
+                                        <TextBlock Text="Licensed under MIT License."/>
+                                    </StackPanel>
+                                </controls:SettingsCard.Header>
+                                <StackPanel Margin="-12,0,0,0" >
+                                    <TextBlock Text="E9C0B2800DC11294" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock Text="© 2025 Aunt Studio" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                 </StackPanel>
-                            </controls:SettingsCard.Header>
-                            <StackPanel Margin="-12,0,0,0" >
-                                <TextBlock Text="E9C0B2800DC11294" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                <TextBlock Text="© 2025 Aunt Studio" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                            </StackPanel>
-                        </controls:SettingsCard>
-                        <controls:SettingsCard ContentAlignment="Left">
-                            <StackPanel Margin="-24,0">
-                                <HyperlinkButton Content="在 GitHub 上查看源代码" NavigateUri="https://github.com/Aunt-Studio/Randomly-NT"/>
-                                <HyperlinkButton Content="查看用户手册文档" NavigateUri=""/>
-                                <HyperlinkButton Content="Aunt Studio 官网" NavigateUri="https://auntstudio.com"/>
-                                <HyperlinkButton Content="MIT License" NavigateUri="https://opensource.org/license/MIT"/>
-                            </StackPanel>
-                        </controls:SettingsCard>
-                    </controls:SettingsExpander.Items>
+                            </controls:SettingsCard>
+                            <controls:SettingsCard ContentAlignment="Left">
+                                <StackPanel Margin="-24,0">
+                                    <HyperlinkButton Content="在 GitHub 上查看源代码" NavigateUri="https://github.com/Aunt-Studio/Randomly-NT"/>
+                                    <HyperlinkButton Content="查看用户手册文档" NavigateUri=""/>
+                                    <HyperlinkButton Content="Aunt Studio 官网" NavigateUri="https://auntstudio.com"/>
+                                    <HyperlinkButton Content="MIT License" NavigateUri="https://opensource.org/license/MIT"/>
+                                </StackPanel>
+                            </controls:SettingsCard>
+                        </controls:SettingsExpander.Items>
 
-                </controls:SettingsExpander>
+                    </controls:SettingsExpander>
 
-            </StackPanel>
+                </StackPanel>
+            
         </StackPanel>
-
+        </ScrollViewer>
     </Grid>
 </Page>

@@ -192,7 +192,7 @@ namespace Randomly_NT
                         new RandomizationFactorItem
                         {
                             Name = "真随机数接口 (需要访问网络)",
-                            Description = "从 Random.org 获取的利用大气噪声生成的真随机数。获取该熵可能会产生一定的时间开销。",
+                            Description = "从 Random.org 获取的利用大气噪声生成的真随机数。获取该熵可能会产生一定的时间开销。\n应用该熵后，随机数结果可认为是真随机。频繁抽取可能会导致 Random.org 限制。",
                             DocumentUrl = "https://docs.microsoft.com/zh-cn/dotnet/api/system.random"
                         }
                     };
