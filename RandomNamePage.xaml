@@ -6,7 +6,8 @@
     xmlns:local="using:Randomly_NT"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    NavigationCacheMode="Enabled">
 
     <Grid>
 
@@ -33,14 +34,21 @@
                     MinHeight="200"
                     MaxHeight="600"
                     ItemsSource="{x:Bind OriginalNames}"/>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16">
                     <Button x:Name="ImportButton" Click="ImportButton_Click">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <TextBlock Text="导入"/>
                                 <FontIcon Glyph="&#xE8B6;" />
                             </StackPanel>
-
+                        </Button.Content>
+                    </Button>
+                    <Button x:Name="EditButton" Click="EditButton_Click">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="编辑"/>
+                                <FontIcon Glyph="&#xE932;" />
+                            </StackPanel>
                         </Button.Content>
                     </Button>
                 </StackPanel>
