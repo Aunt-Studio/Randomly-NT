@@ -17,6 +17,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Windows.Storage;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Hosting;
+using System.Numerics;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -36,7 +38,6 @@ namespace Randomly_NT
             this.InitializeComponent();
             
         }
-
         private async void StartDrawButton_Click(object sender, RoutedEventArgs e)
         {
             bool isSuccess = false;
@@ -212,6 +213,29 @@ namespace Randomly_NT
         private void DisableRepeatSwitch_Click(object sender, RoutedEventArgs e)
         {
             disableRepeat = DisableRepeatSwitch.IsChecked ?? false;
+        }
+
+
+        private void StartTitleAnimation()
+        {
+            var visual = ElementCompositionPreview.GetElementVisual(TitleSP);
+            var compositor = visual.Compositor;
+
+            ElementCompositionPreview.SetIsTranslationEnabled(TitleSP, true);
+            visual.Properties.InsertVector3("Translation", new Vector3(36, -100, 0)); // 初始位置
+
+            var easingFunc = compositor.CreateCubicBezierEasingFunction(
+                new Vector2(0.1f, 0.8f), new Vector2(0.2f, 1.0f));  // 缓动函数
+            var animation = compositor.CreateVector3KeyFrameAnimation();
+            animation.InsertKeyFrame(1.0f, new Vector3(36, 48, 0), easingFunc); // 目标位置
+            animation.Duration = TimeSpan.FromMilliseconds(600); // 动画时长
+
+            visual.StartAnimation("Translation", animation);
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            StartTitleAnimation();
         }
     }
 

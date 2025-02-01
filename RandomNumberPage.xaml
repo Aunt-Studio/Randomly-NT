@@ -7,12 +7,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    NavigationCacheMode="Enabled">
+    NavigationCacheMode="Enabled"
+    Loaded="Page_Loaded">
 
     <Grid>
         <StackPanel x:Name="infoBarStack" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
         <ProgressBar x:Name="IndeterminateProgressBar" Margin="0,4" IsIndeterminate="True" VerticalAlignment="Top" HorizontalAlignment="Stretch" Visibility="Collapsed"/>
-        <StackPanel Margin="36, 48" >
+        <StackPanel x:Name="TitleSP">
             <TextBlock Text="Random Number" Style="{StaticResource TitleTextBlockStyle}"/>
             <TextBlock Text="| 随机抽取若干整数." Style="{StaticResource BodyStrongTextBlockStyle}"/>
         </StackPanel>
