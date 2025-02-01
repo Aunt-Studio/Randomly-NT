@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Microsoft.UI.Windowing;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -15,6 +17,7 @@ using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.ApplicationSettings;
+using WinRT.Interop;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -30,7 +33,7 @@ namespace Randomly_NT
         {
             this.InitializeComponent();
             ResizeWindow();
-            NavView_Navigate(typeof(RandomNumberPage), new EntranceNavigationTransitionInfo());
+            CenterWindow();
         }
 
 
@@ -73,6 +76,18 @@ namespace Randomly_NT
             // Because we use ItemInvoked to navigate, we need to call Navigate
             // here to load the home page.
             NavView_Navigate(typeof(RandomNumberPage), new EntranceNavigationTransitionInfo());
+        }
+        private void CenterWindow()
+        {
+            IntPtr hWnd = WindowNative.GetWindowHandle(this);
+            WindowId windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
+            DisplayArea displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);
+
+            var size = this.AppWindow.Size;
+            int x = (displayArea.WorkArea.Width - size.Width) / 2 + displayArea.WorkArea.X;
+            int y = (displayArea.WorkArea.Height - size.Height) / 2 + displayArea.WorkArea.Y;
+
+            this.AppWindow.Move(new Windows.Graphics.PointInt32(x, y));
         }
     }
 }
