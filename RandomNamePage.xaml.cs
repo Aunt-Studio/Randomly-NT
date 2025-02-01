@@ -82,7 +82,8 @@ namespace Randomly_NT
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-
+            StudentsDataEditor studentsDataEditor = new StudentsDataEditor();
+            studentsDataEditor.Activate();
         }
     }
 }

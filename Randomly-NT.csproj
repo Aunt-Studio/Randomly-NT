@@ -17,6 +17,7 @@
     <None Remove="RandomNamePage.xaml" />
     <None Remove="RandomNumberPage.xaml" />
     <None Remove="SettingsPage.xaml" />
+    <None Remove="StudentsDataEditor.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,6 +47,11 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.250108002" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="StudentsDataEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="RandomNamePage.xaml">
