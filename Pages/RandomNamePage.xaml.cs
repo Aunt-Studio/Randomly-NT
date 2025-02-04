@@ -37,6 +37,8 @@ namespace Randomly_NT
         public ObservableCollection<string> DrawingResultNames { get; set; } = new();
         public ObservableCollection<string> OriginalNames { get; set; } = new();
 
+        private HashSet<int> numberResult = new();
+
         private string STDFilePath { get; set; } = string.Empty;
         public RandomNamePage()
         {
@@ -135,7 +137,7 @@ namespace Randomly_NT
             bool isSuccess = false;
             // 禁止按钮再次触发
             DrawButton.IsEnabled = false;
-            AddedDrawButton.IsEnabled = false;
+            DrawInSelectionButton.IsEnabled = false;
             // 显示结果 ListView
             DrawResultSP.Visibility = Visibility.Visible;
             // 获取随机数范围
@@ -147,6 +149,7 @@ namespace Randomly_NT
             IndeterminateProgressBar.ShowError = false;
             // 清空之前的结果
             DrawingResultNames.Clear();
+            numberResult.Clear();
             // 检查数值合法性并转换为 int
             if (int.TryParse(DrawNumber.Text, out int count))
             {
@@ -195,7 +198,7 @@ namespace Randomly_NT
             }
             // 恢复按钮状态
             DrawButton.IsEnabled = true;
-            AddedDrawButton.IsEnabled = true;
+            DrawInSelectionButton.IsEnabled = true;
 
             // 进度条显示状态
             if (!isSuccess)
@@ -209,7 +212,7 @@ namespace Randomly_NT
         }
         private async Task StartDrawUniqueRandomName(int min, int max, int count)
         {
-            HashSet<int> numberResult = new();
+            
             try
             {
                 int randomizeIndex = localSettings.Values.ContainsKey("RandomizeIndex") ? (int)localSettings.Values["RandomizeIndex"] : 1;
@@ -237,17 +240,50 @@ namespace Randomly_NT
                     DrawingResultNames.Add(OriginalNames[number - 1]);
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                Debug.WriteLine("Ex:" + ex.ToString());
-                ShowErrorBar("发生未知的异常:\n" + ex.ToString());
+                throw;
             }
 
         }
-        private void AddedDrawButton_Click(object sender, RoutedEventArgs e)
+
+        private async Task StartDrawUniqueRandomNameInRange(int min, int max, int count, IList<string> nameList)
         {
 
+            try
+            {
+                int randomizeIndex = localSettings.Values.ContainsKey("RandomizeIndex") ? (int)localSettings.Values["RandomizeIndex"] : 1;
+                switch (randomizeIndex)
+                {
+                    case 1:
+                        numberResult = await RandomDrawer.DrawUniqueRandomIntAsync(min, max, count, RandomEntropySource.SystemClock);
+                        break;
+                    case 2:
+                        numberResult = await RandomDrawer.DrawUniqueRandomIntAsync(min, max, count, RandomEntropySource.SystemClock, RandomEntropySource.RuntimeNoise);
+                        break;
+                    case 3:
+                        numberResult = await RandomDrawer.DrawUniqueRandomIntAsync(min, max, count, RandomEntropySource.SystemClock, RandomEntropySource.RuntimeNoise, RandomEntropySource.MousePoint);
+                        break;
+                    case 4:
+                        numberResult = await RandomDrawer.DrawUniqueRandomIntAsync(min, max, count, RandomEntropySource.SystemClock, RandomEntropySource.RuntimeNoise, RandomEntropySource.MousePoint, RandomEntropySource.RandomOrg);
+                        break;
+                    default:
+                        numberResult = await RandomDrawer.DrawUniqueRandomIntAsync(min, max, count);
+                        break;
+                }
+
+                foreach (var number in numberResult)
+                {
+                    DrawingResultNames.Add(nameList[number - 1]);
+                }
+            }
+            catch
+            {
+                throw;
+            }
+
         }
+
 
 
         private void ShowWarningBar(string message)
@@ -277,6 +313,100 @@ namespace Randomly_NT
                 IsOpen = true
             };
             infoBarStack.Children.Add(infoBar);
+        }
+
+        private async void DrawInSelectionButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            bool isSuccess = false;
+            // 禁止按钮再次触发
+            DrawButton.IsEnabled = false;
+            DrawInSelectionButton.IsEnabled = false;
+            // 显示结果 ListView
+            DrawResultSP.Visibility = Visibility.Visible;
+            // 设定抽取范围
+            List<string> names = OriginalNamesListView.SelectedItems.Cast<string>().ToList();
+            // 获取随机数范围
+            int min = 1;
+            int max = names.Count;
+            // 初始化进度条
+            IndeterminateProgressBar.Visibility = Visibility.Visible;
+            IndeterminateProgressBar.ShowPaused = false;
+            IndeterminateProgressBar.ShowError = false;
+            // 清空之前的结果
+            DrawingResultNames.Clear();
+            numberResult.Clear();
+            // 检查数值合法性并转换为 int
+            if (int.TryParse(DrawNumber.Text, out int count))
+            {
+                try
+                {
+                    if (max - min + 1 < count)
+                    {
+                        // 数值范围不足，显示错误信息
+                        ShowErrorBar($"当前已选择姓名总数({max})不足以抽取目标抽取数({count})。\n请减少抽取数或增加选择数。");
+                        DrawResultSP.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        await StartDrawUniqueRandomNameInRange(min, max, count, names);
+                        isSuccess = true;
+                    }
+
+                }
+                catch (AggregateException ae)
+                {
+                    isSuccess = false;
+                    var flattenedExceptions = ae.Flatten().InnerExceptions;
+                    foreach (var ex in flattenedExceptions)
+                    {
+                        if (ex is HttpRequestException hrEx)
+                        {
+                            ShowErrorBar($"在尝试发送请求包时出现异常:\n{hrEx.Message}\n请检查网络连接并稍后再试。\n无网状态下请在设置中将随机化指数降至3及以下以使程序不从 random.org 获得熵源。");
+                        }
+                        else
+                        {
+                            ShowErrorBar("发生未知的异常:\n" + ex.ToString());
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    isSuccess = false;
+                    Debug.WriteLine("Ex:" + ex.ToString());
+                    ShowErrorBar("发生未知的异常:\n" + ex.ToString());
+                }
+            }
+            else
+            {
+                // 数值不合法，显示错误信息
+                ShowErrorBar("无法将抽取数数值转换为整数 (可能值超出 int 数据范围?)，请检查输入后重试。");
+            }
+            // 恢复按钮状态
+            DrawButton.IsEnabled = true;
+            DrawInSelectionButton.IsEnabled = true;
+
+            // 进度条显示状态
+            if (!isSuccess)
+            {
+                IndeterminateProgressBar.ShowError = true;
+            }
+            else
+            {
+                IndeterminateProgressBar.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void OriginalNamesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (OriginalNamesListView.SelectedItems.Count > 1)
+            {
+                DrawInSelectionButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                DrawInSelectionButton.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }
