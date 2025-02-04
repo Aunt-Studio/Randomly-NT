@@ -21,6 +21,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Diagnostics;
 using System.Numerics;
 using Windows.Storage;
+using System.Net.Http;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -48,26 +49,17 @@ namespace Randomly_NT
             {
                 ImportButton.IsEnabled = false;
 
-                // Create a file picker
                 var openPicker = new Windows.Storage.Pickers.FileOpenPicker();
-
-                // See the sample code below for how to make the window accessible from the App class.
                 var window = App.MainWindow;
-
-                // Retrieve the window handle (HWND) of the current WinUI 3 window.
                 var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
-
-                // Initialize the file picker with the window handle (HWND).
                 WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hWnd);
 
-                // Set options for your file picker
                 openPicker.ViewMode = PickerViewMode.Thumbnail;
                 openPicker.FileTypeFilter.Clear();
                 openPicker.FileTypeFilter.Add(".rsd");
                 openPicker.CommitButtonText = "选择 Randomly students data (*.rsd) 文件";
                 openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
 
-                // Open the picker for the user to pick a file
                 var file = await openPicker.PickSingleFileAsync();
                 if (file != null)
                 {
@@ -81,7 +73,6 @@ namespace Randomly_NT
             }
             finally
             {
-                //re-enable the button
                 ImportButton.IsEnabled = true;
             }
 
@@ -173,6 +164,22 @@ namespace Randomly_NT
                         isSuccess = true;
                     }
 
+                }
+                catch (AggregateException ae)
+                {
+                    isSuccess = false;
+                    var flattenedExceptions = ae.Flatten().InnerExceptions;
+                    foreach (var ex in flattenedExceptions)
+                    {
+                        if (ex is HttpRequestException hrEx)
+                        {
+                            ShowErrorBar($"在尝试发送请求包时出现异常:\n{hrEx.Message}\n请检查网络连接并稍后再试。\n无网状态下请在设置中将随机化指数降至3及以下以使程序不从 random.org 获得熵源。");
+                        }
+                        else
+                        {
+                            ShowErrorBar("发生未知的异常:\n" + ex.ToString());
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
