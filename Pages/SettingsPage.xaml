@@ -26,10 +26,12 @@
             </StackPanel>
 
                 <StackPanel Spacing="16">
+                    <!--动画设置-->
                     <StackPanel.ChildrenTransitions>
                         <EntranceThemeTransition FromVerticalOffset="50" />
                         <RepositionThemeTransition IsStaggeringEnabled="False" />
                     </StackPanel.ChildrenTransitions>
+                    
                     <!--随机化因子调整-->
                     <TextBlock Text="随机数熵源" Style="{StaticResource BodyStrongTextBlockStyle}"/>
                     <controls:SettingsExpander
@@ -54,10 +56,10 @@
                     <controls:SettingsExpander
                     Header="已应用的熵源"
                     Description="当前随机化指数下将参与随机数种子计算的熵。"
-                    ItemsSource="{x:Bind RandomizationFactorItems, Mode=OneWay}">
+                    ItemsSource="{x:Bind EntropyItems, Mode=OneWay}">
 
                         <controls:SettingsExpander.ItemTemplate>
-                            <DataTemplate x:DataType="local:RandomizationFactorItem">
+                            <DataTemplate x:DataType="local:RandomEntropyItem">
                                 <controls:SettingsCard Header="{x:Bind Name}"
                                 Description="{x:Bind Description}">
                                     <HyperlinkButton Content="查看文档"

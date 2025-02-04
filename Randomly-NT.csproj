@@ -18,6 +18,7 @@
     <None Remove="RandomNumberPage.xaml" />
     <None Remove="SettingsPage.xaml" />
     <None Remove="StudentsDataEditor.xaml" />
+    <None Remove="StudentsDataEditorPage.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,6 +50,11 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
+    <Page Update="StudentsDataEditorPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="StudentsDataEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -72,6 +78,9 @@
     <Page Update="RandomNumberPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Pages\" />
   </ItemGroup>
 
   <!--

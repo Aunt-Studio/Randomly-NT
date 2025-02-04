@@ -34,15 +34,15 @@ namespace Randomly_NT
         #region 一般随机数实现
 
         /// <summary>
-        /// 生成若干个随机整数，范围为[<paramref name="min"/>, <paramref name="max"/>]，取值将包含 <paramref name="min"/> 和 <paramref name="max"/>。
+        /// 生成若干个随机整数，范围为[<paramref Name="min"/>, <paramref Name="max"/>]，取值将包含 <paramref Name="min"/> 和 <paramref Name="max"/>。
         /// <para>
         /// 将应用传入的熵源。仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。
         /// </para>
         /// </summary>
-        /// <param name="min">最小取值</param>
-        /// <param name="max">最大取值</param>
-        /// <param name="count">取值数</param>
-        /// <param name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
+        /// <param Name="min">最小取值</param>
+        /// <param Name="max">最大取值</param>
+        /// <param Name="count">取值数</param>
+        /// <param Name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
         /// <returns>随机整数列表</returns>
         public static List<int> DrawRandomInt(int min, int max, int count, params RandomEntropySource[] randomEntropySources)
         {
@@ -113,15 +113,15 @@ namespace Randomly_NT
         }
 
         /// <summary>
-        /// 生成若干个随机整数，范围为[<paramref name="min"/>, <paramref name="max"/>]，即可能取值将包含 <paramref name="min"/> 和 <paramref name="max"/>。
+        /// 生成若干个随机整数，范围为[<paramref Name="min"/>, <paramref Name="max"/>]，即可能取值将包含 <paramref Name="min"/> 和 <paramref Name="max"/>。
         /// <para>
         /// 将应用传入的熵源。仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。
         /// </para>
         /// </summary>
-        /// <param name="min">最小取值</param>
-        /// <param name="max">最大取值</param>
-        /// <param name="count">取值数</param>
-        /// <param name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
+        /// <param Name="min">最小取值</param>
+        /// <param Name="max">最大取值</param>
+        /// <param Name="count">取值数</param>
+        /// <param Name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
         /// <returns>随机整数列表</returns>
         public static async Task<List<int>> DrawRandomIntAsync(int min, int max, int count, params RandomEntropySource[] randomEntropySources)
         {
@@ -133,22 +133,22 @@ namespace Randomly_NT
         }
 
         /// <summary>
-        /// 生成若干个随机整数，范围为[<paramref name="min"/>, <paramref name="max"/>]，即可能取值将包含 <paramref name="min"/> 和 <paramref name="max"/>。
+        /// 生成若干个随机整数，范围为[<paramref Name="min"/>, <paramref Name="max"/>]，即可能取值将包含 <paramref Name="min"/> 和 <paramref Name="max"/>。
         /// <para>
-        /// 使用此重载方法应注意线程安全问题。避免同时多次执行传入同一个<paramref name="resultList"/>的该函数。
+        /// 使用此重载方法应注意线程安全问题。避免同时多次执行传入同一个<paramref Name="resultList"/>的该函数。
         /// </para>
         /// <para>
         /// 将应用传入的熵源。仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。
         /// </para>
-        /// 另外<paramref name="resultList"/>列表将此重载方法执行时被清空。
+        /// 另外<paramref Name="resultList"/>列表将此重载方法执行时被清空。
         /// </summary>
-        /// <param name="min">最小取值</param>
-        /// <param name="max">最大取值</param>
-        /// <param name="count">取值数</param>
-        /// <param name="resultList">用于存储结果的可监视集合, 注意每次函数执行时都会自动清空集合里的内容。</param>
-        /// <param name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
+        /// <param Name="min">最小取值</param>
+        /// <param Name="max">最大取值</param>
+        /// <param Name="count">取值数</param>
+        /// <param Name="resultList">用于存储结果的可监视集合, 注意每次函数执行时都会自动清空集合里的内容。</param>
+        /// <param Name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
         /// <returns>任务</returns>
-        public static async Task DrawRandomIntAsync(int min, int max, int count, ObservableCollection<int> resultList, params RandomEntropySource[] randomEntropySources)
+        public static async Task DrawRandomIntAsync(int min, int max, int count, ICollection<int> resultList, params RandomEntropySource[] randomEntropySources)
         {
             var dispatcherQueue = DispatcherQueue.GetForCurrentThread();
             if (count > 1000)
@@ -203,16 +203,16 @@ namespace Randomly_NT
 
         #region 唯一随机数实现
         /// <summary>
-        /// 生成若干个不重复的随机整数，范围为[<paramref name="min"/>, <paramref name="max"/>]，即可能取值将包含 <paramref name="min"/> 和 <paramref name="max"/>。
+        /// 生成若干个不重复的随机整数，范围为[<paramref Name="min"/>, <paramref Name="max"/>]，即可能取值将包含 <paramref Name="min"/> 和 <paramref Name="max"/>。
         /// <para>
         /// 将应用传入的熵源。仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。
         /// </para>
-        /// 当<paramref name="max"/> - <paramref name="min"/> + 1 小于 <paramref name="count"/>时，将抛出<seealso cref="ArgumentException"/>异常。
+        /// 当<paramref Name="max"/> - <paramref Name="min"/> + 1 小于 <paramref Name="count"/>时，将抛出<seealso cref="ArgumentException"/>异常。
         /// </summary>
-        /// <param name="min">最小取值</param>
-        /// <param name="max">最大取值</param>
-        /// <param name="count">取值数</param>
-        /// <param name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
+        /// <param Name="min">最小取值</param>
+        /// <param Name="max">最大取值</param>
+        /// <param Name="count">取值数</param>
+        /// <param Name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
         /// <returns>随机整数列表</returns>
         public static HashSet<int> DrawUniqueRandomInt(int min, int max, int count, params RandomEntropySource[] randomEntropySources)
         {
@@ -284,16 +284,16 @@ namespace Randomly_NT
         }
 
         /// <summary>
-        /// 生成若干个不重复的随机整数，范围为[<paramref name="min"/>, <paramref name="max"/>]，即可能取值将包含 <paramref name="min"/> 和 <paramref name="max"/>。
+        /// 生成若干个不重复的随机整数，范围为[<paramref Name="min"/>, <paramref Name="max"/>]，即可能取值将包含 <paramref Name="min"/> 和 <paramref Name="max"/>。
         /// <para>
         /// 将应用传入的熵源。仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。
         /// </para>
-        /// 当<paramref name="max"/> - <paramref name="min"/> + 1 小于 <paramref name="count"/>时，将抛出<seealso cref="ArgumentException"/>异常。
+        /// 当<paramref Name="max"/> - <paramref Name="min"/> + 1 小于 <paramref Name="count"/>时，将抛出<seealso cref="ArgumentException"/>异常。
         /// </summary>
-        /// <param name="min">最小取值</param>
-        /// <param name="max">最大取值</param>
-        /// <param name="count">取值数</param>
-        /// <param name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
+        /// <param Name="min">最小取值</param>
+        /// <param Name="max">最大取值</param>
+        /// <param Name="count">取值数</param>
+        /// <param Name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
         /// <returns>随机整数列表</returns>
         public static async Task<HashSet<int>> DrawUniqueRandomIntAsync(int min, int max, int count, params RandomEntropySource[] randomEntropySources)
         {
@@ -305,24 +305,24 @@ namespace Randomly_NT
         }
 
         /// <summary>
-        /// 生成若干个不重复的随机整数，范围为[<paramref name="min"/>, <paramref name="max"/>]，即可能取值将包含 <paramref name="min"/> 和 <paramref name="max"/>。
+        /// 生成若干个不重复的随机整数，范围为[<paramref Name="min"/>, <paramref Name="max"/>]，即可能取值将包含 <paramref Name="min"/> 和 <paramref Name="max"/>。
         /// <para>
-        /// 使用此重载方法应注意线程安全问题。避免同时多次执行传入同一个<paramref name="resultList"/>的该函数。
+        /// 使用此重载方法应注意线程安全问题。避免同时多次执行传入同一个<paramref Name="resultList"/>的该函数。
         /// </para>
-        /// 当<paramref name="max"/> - <paramref name="min"/> + 1 小于 <paramref name="count"/>时，将抛出<seealso cref="ArgumentException"/>异常。
-        /// 另外<paramref name="resultList"/>列表将此重载方法执行时被清空。
+        /// 当<paramref Name="max"/> - <paramref Name="min"/> + 1 小于 <paramref Name="count"/>时，将抛出<seealso cref="ArgumentException"/>异常。
+        /// 另外<paramref Name="resultList"/>列表将此重载方法执行时被清空。
         /// <para>
         /// 将应用传入的熵源。仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。
         /// </para>
         /// </summary>
-        /// <param name="min">最小取值</param>
-        /// <param name="max">最大取值</param>
-        /// <param name="count">取值数</param>
-        /// <param name="resultList">用于存储结果的可监视集合, 注意每次函数执行时都会自动清空集合里的内容。</param>
-        /// <param name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
+        /// <param Name="min">最小取值</param>
+        /// <param Name="max">最大取值</param>
+        /// <param Name="count">取值数</param>
+        /// <param Name="resultList">用于存储结果的可监视集合, 注意每次函数执行时都会自动清空集合里的内容。</param>
+        /// <param Name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
         /// <returns>任务</returns>
-        /// <exception cref="ArgumentException">当<paramref name="max"/> - <paramref name="min"/> + 1 小于 <paramref name="count"/>时</exception>"
-        public static async Task DrawUniqueRandomIntAsync(int min, int max, int count, ObservableCollection<int> resultList, params RandomEntropySource[] randomEntropySources)
+        /// <exception cref="ArgumentException">当<paramref Name="max"/> - <paramref Name="min"/> + 1 小于 <paramref Name="count"/>时</exception>"
+        public static async Task DrawUniqueRandomIntAsync(int min, int max, int count, ICollection<int> resultList, params RandomEntropySource[] randomEntropySources)
         {
             if (max - min + 1 < count)
             {
@@ -384,8 +384,8 @@ namespace Randomly_NT
         /// <summary>
         /// 从 Random.org 获取真随机数。
         /// </summary>
-        /// <param name="min"></param>
-        /// <param name="max"></param>
+        /// <param Name="min"></param>
+        /// <param Name="max"></param>
         /// <returns></returns>
         /// <exception cref="FormatException"></exception>
         /// <exception cref="HttpRequestException"></exception>

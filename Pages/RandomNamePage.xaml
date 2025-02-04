@@ -26,14 +26,21 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Margin="20" Spacing="16" VerticalAlignment="Center">
-
+                <!--动画设置-->
+                <StackPanel.ChildrenTransitions>
+                    <EntranceThemeTransition FromVerticalOffset="50" />
+                    <RepositionThemeTransition IsStaggeringEnabled="False" />
+                </StackPanel.ChildrenTransitions>
+                
                 <TextBlock Text="学生名单"/>
                 <ListView
                     BorderThickness="1"
                     BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
                     MinHeight="200"
                     MaxHeight="600"
-                    ItemsSource="{x:Bind OriginalNames}"/>
+                    ItemsSource="{x:Bind OriginalNames, Mode=TwoWay}"
+                    SelectionMode="Extended"
+                    />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16">
                     <Button x:Name="ImportButton" Click="ImportButton_Click">
                         <Button.Content>
@@ -64,8 +71,8 @@
                 SmallChange="1"
                 LargeChange="10"
                 HorizontalAlignment="Center"/>
-                <Button Content="重新抽取 >" Style="{StaticResource AccentButtonStyle}"/>
-                <Button Content="追加抽取 >"/>
+                <Button x:Name="DrawButton" Content="重新抽取 >" Style="{StaticResource AccentButtonStyle}" Click="DrawButton_Click"/>
+                <Button x:Name="AddedDrawButton" Content="追加抽取 >" Click="AddedDrawButton_Click"/>
             </StackPanel>
 
             <StackPanel x:Name="DrawResultSP" Grid.Column="2" Margin="20" VerticalAlignment="Center" Visibility="Collapsed">

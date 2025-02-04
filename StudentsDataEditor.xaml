@@ -9,8 +9,7 @@
     mc:Ignorable="d"
     Title="Randomly | Student Data Editor"
     >
-
     <Grid>
-
+        <Frame x:Name="ContentFrame" Loaded="ContentFrame_Loaded"/>
     </Grid>
 </Window>
