@@ -74,7 +74,7 @@
                     <controls:SettingsExpander
                 Header="Randomly NT"
                 Description="© 2025 Aunt Studio. All rights reserved.">
-                        <TextBlock Text="{Binding AssemblyVersion}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <TextBlock Text="{x:Bind Version}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                         <controls:SettingsExpander.Items>
                             <controls:SettingsCard>
                                 <controls:SettingsCard.Header>

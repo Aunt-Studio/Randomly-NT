@@ -17,6 +17,7 @@ using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.ApplicationModel;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -41,7 +42,7 @@ namespace Randomly_NT
         /// <summary>
         /// 用以 UI 展示的程序集版本
         /// </summary>
-        public string AssemblyVersion { get; }
+        public string Version { get; }
 
         /// <summary>
         /// 随机性指数 字段
@@ -120,8 +121,28 @@ namespace Randomly_NT
             _randomizeIndex = LocalSettings.Values.ContainsKey("RandomizeIndex") ? (int)LocalSettings.Values["RandomizeIndex"] : 1;
 
             // 获取程序集版本
-            AssemblyVersion = "Assembly Version ";
-            AssemblyVersion += Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? "未知程序集版本";
+            if (Package.Current is not null)
+            {
+                var version = Package.Current.Id.Version;
+                Version = $"Package Version {version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
+
+
+            }
+            else
+            {
+                var assembly = Assembly.GetExecutingAssembly();
+                var infoVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+
+                if (!string.IsNullOrEmpty(infoVersion))
+                {
+                    Version = $"Assembly Info Version {infoVersion} (Unpackaged)";
+                }
+                else
+                {
+                    var assemblyVer = Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? "未知程序集版本";
+                    Version = $"Assembly Version {assemblyVer} (Unpackaged)";
+                }
+            }
 
             // 设置数据上下文
             this.DataContext = this;

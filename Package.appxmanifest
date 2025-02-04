@@ -5,18 +5,19 @@
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap rescap">
+  xmlns:uap18="http://schemas.microsoft.com/appx/manifest/uap/windows10/18"
+  IgnorableNamespaces="uap rescap uap18">
 
   <Identity
-    Name="e866ad9d-b139-425e-a2c4-bbe9627b3555"
-    Publisher="CN=Administrator"
+    Name="com.auntstudio.RandomlyNT"
+    Publisher="CN=Aunt Studio"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="e866ad9d-b139-425e-a2c4-bbe9627b3555" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>Randomly-NT</DisplayName>
-    <PublisherDisplayName>Administrator</PublisherDisplayName>
+    <DisplayName>Randomly NT</DisplayName>
+    <PublisherDisplayName>Aunt Studio</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -34,12 +35,12 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="Randomly-NT"
-        Description="Randomly-NT"
+        DisplayName="Randomly NT"
+        Description="Randomly NT, 下一代随机抽号软件。"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"  Square71x71Logo="Assets\SmallTile.png" Square310x310Logo="Assets\LargeTile.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
     </Application>
@@ -47,5 +48,6 @@
 
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />
+    <Capability Name="internetClient"/>
   </Capabilities>
 </Package>
