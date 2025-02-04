@@ -184,27 +184,17 @@ namespace Randomly_NT
             try
             {
                 LoadFileButton.IsEnabled = false;
-
-                // Create a file picker
                 var openPicker = new Windows.Storage.Pickers.FileOpenPicker();
-
-                // See the sample code below for how to make the window accessible from the App class.
-                var window = App.MainWindow;
-
-                // Retrieve the window handle (HWND) of the current WinUI 3 window.
+                var window = dataEditor;
                 var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
-
-                // Initialize the file picker with the window handle (HWND).
                 WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hWnd);
 
-                // Set options for your file picker
                 openPicker.ViewMode = PickerViewMode.Thumbnail;
                 openPicker.FileTypeFilter.Clear();
                 openPicker.FileTypeFilter.Add(".rsd");
                 openPicker.CommitButtonText = "Ñ¡Ôñ Randomly students data (*.rsd) ÎÄ¼þ";
                 openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
 
-                // Open the picker for the user to pick a file
                 var file = await openPicker.PickSingleFileAsync();
                 if (file != null)
                 {
@@ -217,7 +207,6 @@ namespace Randomly_NT
             }
             finally
             {
-                //re-enable the button
                 LoadFileButton.IsEnabled = true;
             }
         }
