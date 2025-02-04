@@ -34,6 +34,8 @@
                 
                 <TextBlock Text="学生名单"/>
                 <ListView
+                    x:Name="OriginalNamesListView"
+                    SelectionChanged="OriginalNamesListView_SelectionChanged"
                     BorderThickness="1"
                     BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
                     MinHeight="200"
@@ -62,7 +64,13 @@
             </StackPanel>
 
 
-            <StackPanel Grid.Column="1" Margin="20" VerticalAlignment="Center" Spacing="24">
+            <StackPanel Grid.Column="1" Margin="20" VerticalAlignment="Center" Spacing="24" HorizontalAlignment="Center">
+                <!--动画设置-->
+                <StackPanel.ChildrenTransitions>
+                    <EntranceThemeTransition FromVerticalOffset="50" />
+                    <RepositionThemeTransition IsStaggeringEnabled="False" />
+                </StackPanel.ChildrenTransitions>
+                
                 <NumberBox
                 x:Name="DrawNumber"
                 Header="抽取数:"
@@ -71,8 +79,8 @@
                 SmallChange="1"
                 LargeChange="10"
                 HorizontalAlignment="Center"/>
-                <Button x:Name="DrawButton" Content="重新抽取 >" Style="{StaticResource AccentButtonStyle}" Click="DrawButton_Click"/>
-                <Button x:Name="AddedDrawButton" Content="追加抽取 >" Click="AddedDrawButton_Click"/>
+                <Button x:Name="DrawButton" Content="重新抽取 >" HorizontalAlignment="Center" Style="{StaticResource AccentButtonStyle}" Click="DrawButton_Click"/>
+                <Button x:Name="DrawInSelectionButton" HorizontalAlignment="Center" Content="从选定中抽选 >" Click="DrawInSelectionButton_Click" Visibility="Collapsed"/>
             </StackPanel>
 
             <StackPanel x:Name="DrawResultSP" Grid.Column="2" Margin="20" VerticalAlignment="Center" Visibility="Collapsed">
