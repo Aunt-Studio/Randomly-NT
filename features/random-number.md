@@ -6,11 +6,11 @@ description: 随机抽取一些整数。
 
 启动 Randomly NT。初次见面，你应该第一眼看到的就是这个功能。
 
-<figure><img src="../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (7).png" alt=""><figcaption></figcaption></figure>
 
 ## 参数设置区
 
-<figure><img src="../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 如你所见，左侧的三个输入框以及一个切换按钮，即为设置随机数抽取参数的几个控件。
 
@@ -38,9 +38,9 @@ _在启用_ [_避免重复_ ](random-number.md#bi-mian-chong-fu)_的情况下_�
 
 ### 避免重复
 
-<figure><img src="../.gitbook/assets/image (6).png" alt=""><figcaption><p>未激活的 避免重复</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (6) (1).png" alt=""><figcaption><p>未激活的 避免重复</p></figcaption></figure>
 
-<figure><img src="../.gitbook/assets/image (2).png" alt=""><figcaption><p>被点亮的 避免重复</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (2) (1).png" alt=""><figcaption><p>被点亮的 避免重复</p></figcaption></figure>
 
 该按钮是一个切换按钮。按下该按钮即可切换避免重复功能的启用状态。
 
