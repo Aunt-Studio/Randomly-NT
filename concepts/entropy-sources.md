@@ -61,7 +61,7 @@ C# System 命名空间中的 Random 类提供的默认构造函数中使用的�
 
 从 [Random.org](https://random.org/) 获得的 1 - 10000 的随机整数。
 
-Random.org 提供了一个便捷的服务，是的互联网上的任何人可以轻松地获取到真随机数。事实上，Random.org 在几个国家架设了若干台无线电接收器来监测大气噪声以获取高熵的比特流作为随机数种子。他们的服务也已经经过了[eCOGRA](http://www.ecogra.org/)、[TST Global](http://www.tstglobal.com/)[Gaming Labs International](http://www.gaminglabs.com/) 等机构的评估或认可。
+Random.org 提供了一个便捷的服务，使得互联网上的任何人可以轻松地获取到真随机数。事实上，Random.org 在几个国家架设了若干台无线电接收器来监测大气噪声以获取高熵的比特流作为随机数种子。他们的服务也已经经过了[eCOGRA](http://www.ecogra.org/)、[TST Global](http://www.tstglobal.com/)[Gaming Labs International](http://www.gaminglabs.com/) 等机构的评估或认可。
 
 Randomly NT 将在每次抽取前，访问 Random.org 的公共 API，获取 1 - 10000 的随机整数并参与随机数种子运算。
 
