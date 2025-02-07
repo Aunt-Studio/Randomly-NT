@@ -89,9 +89,9 @@
                                 </StackPanel>
                             </controls:SettingsCard>
                             <controls:SettingsCard ContentAlignment="Left">
-                                <StackPanel Margin="-24,0">
+                                <StackPanel Margin="-23,0">
                                     <HyperlinkButton Content="在 GitHub 上查看源代码" NavigateUri="https://github.com/Aunt-Studio/Randomly-NT"/>
-                                    <HyperlinkButton Content="查看用户手册文档" NavigateUri=""/>
+                                    <HyperlinkButton Content="查看用户手册文档" NavigateUri="https://docs.auntstudio.com/randomly-nt"/>
                                     <HyperlinkButton Content="Aunt Studio 官网" NavigateUri="https://auntstudio.com"/>
                                     <HyperlinkButton Content="MIT License" NavigateUri="https://opensource.org/license/MIT"/>
                                 </StackPanel>

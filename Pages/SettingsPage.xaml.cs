@@ -86,28 +86,28 @@ namespace Randomly_NT
         {
             Name = "默认随机数种子",
             Description = "系统 API 提供的默认随机数种子, 即 CPU 时钟。",
-            DocumentUrl = "https://docs.microsoft.com/zh-cn/dotnet/api/system.random"
+            DocumentUrl = "https://docs.auntstudio.com/randomly-nt/concepts/entropy-sources#mo-ren-sui-ji-shu-zhong-zi"
         };
 
         private RandomEntropyItem runtime = new()
         {
             Name = "运行时环境噪声",
             Description = "可能包含系统状态信息，如内存使用情况等。",
-            DocumentUrl = "https://docs.microsoft.com/zh-cn/dotnet/api/system.random"
+            DocumentUrl = "https://docs.auntstudio.com/randomly-nt/concepts/entropy-sources#yun-xing-shi-huan-jing-zao-sheng"
         };
 
         private RandomEntropyItem mouse = new()
         {
             Name = "鼠标指针",
             Description = "鼠标指针的位置。",
-            DocumentUrl = "https://docs.microsoft.com/zh-cn/dotnet/api/system.random"
+            DocumentUrl = "https://docs.auntstudio.com/randomly-nt/concepts/entropy-sources#shu-biao-zhi-zhen"
         };
 
         private RandomEntropyItem randomOrg = new()
         {
             Name = "真随机数接口 (需要访问网络)",
             Description = "从 Random.org 获取的利用大气噪声生成的真随机数。获取该熵可能会产生一定的时间开销。\n应用该熵后，随机数结果可认为是真随机。频繁抽取可能会导致 Random.org 限制。",
-            DocumentUrl = "https://docs.microsoft.com/zh-cn/dotnet/api/system.random"
+            DocumentUrl = "https://docs.auntstudio.com/randomly-nt/concepts/entropy-sources#zhen-sui-ji-shu-jie-kou-xu-yao-fang-wen-wang-luo"
         };
 
         #endregion
