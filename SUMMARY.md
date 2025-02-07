@@ -9,3 +9,9 @@
 * [👥| 随机姓名抽取](features/random-name.md)
 * [✏️| 学生列表数据编辑器](features/rsd-editor.md)
 * [⚙️| 设置](features/she-zhi.md)
+
+## 🧑‍💻 概念与技术文档 <a href="#concepts" id="concepts"></a>
+
+* [📃| Randomly 学生列表数据](concepts/randomly-students-data.md)
+* [⚛️| 随机数熵](concepts/entropy.md)
+* [✨| Randomly NT 内置熵源](concepts/entropy-sources.md)
