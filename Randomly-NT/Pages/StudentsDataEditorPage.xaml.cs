@@ -101,7 +101,7 @@ namespace Randomly_NT
         {
             dataEditor!.Saved = false;
             var studentName = NameAddTB.Text;
-            if (!string.IsNullOrEmpty(studentName))
+            if (!string.IsNullOrWhiteSpace(studentName))
             {
                 studentDataItems.Add(new StudentDataItem { Name = studentName });
             }
