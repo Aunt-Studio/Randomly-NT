@@ -143,6 +143,9 @@ namespace Randomly_NT
                     Version = $"Assembly Version {assemblyVer} (Unpackaged)";
                 }
             }
+#if DEBUG
+            Version += " Debug";
+#endif
 
             // 设置数据上下文
             this.DataContext = this;
