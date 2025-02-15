@@ -18,6 +18,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.ApplicationModel;
+using Microsoft.Extensions.DependencyInjection;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -45,6 +46,16 @@ namespace Randomly_NT
         public string Version { get; }
 
         /// <summary>
+        /// 用于更新显示的当前版本
+        /// </summary>
+        public string CurrentVersion { get; }
+
+
+        public string? RemoteVersion { get; private set; }
+
+        public string? ApplyUpdateButtonContent { get; private set; }
+
+        /// <summary>
         /// 随机性指数 字段
         /// </summary>
         private int _randomizeIndex = 0;
@@ -62,7 +73,13 @@ namespace Randomly_NT
                     OnPropertyChanged(nameof(RandomizeIndex));
                     ConfigureRandomizationFactors();
                 }
-            } }
+            } 
+        }
+
+        /// <summary>
+        /// 更新服务单例实例
+        /// </summary>
+        private readonly UpdateService _updateServiceInstance;
 
         /// <summary>
         /// 随机性熵源前端展示列表 字段
@@ -115,6 +132,14 @@ namespace Randomly_NT
         public SettingsPage()
         {
             this.InitializeComponent();
+
+            _updateServiceInstance = App.Host!.Services.GetRequiredService<UpdateService>();
+            if (_updateServiceInstance.HasNewVersion && _updateServiceInstance.NewVersionMeta is not null)
+            {
+                OnUpdateAvailable(this, new(_updateServiceInstance.NewVersionMeta));
+            }
+            _updateServiceInstance.NewVersionAvailable += OnUpdateAvailable;
+
             // 获取本地设置容器
             LocalSettings = ApplicationData.Current.LocalSettings;
             // 读取随机性指数
@@ -125,8 +150,6 @@ namespace Randomly_NT
             {
                 var version = Package.Current.Id.Version;
                 Version = $"Package Version {version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
-
-
             }
             else
             {
@@ -143,6 +166,7 @@ namespace Randomly_NT
                     Version = $"Assembly Version {assemblyVer} (Unpackaged)";
                 }
             }
+            CurrentVersion = "当前版本: " + Version;
 #if DEBUG
             Version += " Debug";
 #endif
@@ -152,6 +176,12 @@ namespace Randomly_NT
 
             // 配置随机性熵源前端列表展示
             ConfigureRandomizationFactors();
+        }
+
+        public void OnUpdateAvailable(object sender, UpdateService.NewVersionAvailableEventArgs e)
+        {
+            NewVersionSE.Visibility = Visibility.Visible;
+            RemoteVersion = "最新版本: " + e.NewVersionMeta.PackageVersion.ToString();
         }
 
         private void OnPropertyChanged(string propertyName)

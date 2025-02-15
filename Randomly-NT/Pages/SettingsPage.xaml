@@ -72,6 +72,25 @@
                     <!--关于-->
                     <TextBlock Text="关于" Style="{StaticResource BodyStrongTextBlockStyle}"/>
                     <controls:SettingsExpander
+                        x:Name="NewVersionSE"
+                        Header="发现新的版本"
+                        IsExpanded="True"
+                        Visibility="Visible">
+                        <Button Content="{x:Bind ApplyUpdateButtonContent}" Style="{StaticResource AccentButtonStyle}"/>
+                        <controls:SettingsExpander.Items>
+                            <controls:SettingsCard>
+                                <controls:SettingsCard.Header>
+                                    <StackPanel Margin="-12,0,0,0">
+                                        <TextBlock Text="{x:Bind CurrentVersion}"/>
+                                        <TextBlock Text="{x:Bind RemoteVersion}"/>
+                                    </StackPanel>
+                                </controls:SettingsCard.Header>
+                                <Button Content="Release Log"/>
+                            </controls:SettingsCard>
+                        </controls:SettingsExpander.Items>
+                    </controls:SettingsExpander>
+                    
+                    <controls:SettingsExpander
                 Header="Randomly NT"
                 Description="© 2025 Aunt Studio. All rights reserved.">
                         <TextBlock Text="{x:Bind Version}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
