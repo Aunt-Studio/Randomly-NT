@@ -18,6 +18,8 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.ApplicationSettings;
 using WinRT.Interop;
+using static Randomly_NT.UpdateService;
+using Microsoft.Extensions.DependencyInjection;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -29,11 +31,13 @@ namespace Randomly_NT
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        private UpdateService? _updateInstance;
         public MainWindow()
         {
             this.InitializeComponent();
             ResizeWindow();
             CenterWindow();
+
         }
 
 
@@ -70,6 +74,10 @@ namespace Randomly_NT
 
         private void mainNv_Loaded(object sender, RoutedEventArgs e)
         {
+            _updateInstance = App.Host!.Services.GetRequiredService<UpdateService>();
+            _updateInstance.NewVersionAvailable += OnUpdateAvailable;
+            _ = _updateInstance.CheckUpdateAsync();
+
             // NavView doesn't load any page by default, so load home page.
             mainNv.SelectedItem = mainNv.MenuItems[0];
             // If navigation occurs on SelectionChanged, this isn't needed.
@@ -88,6 +96,11 @@ namespace Randomly_NT
             int y = (displayArea.WorkArea.Height - size.Height) / 2 + displayArea.WorkArea.Y;
 
             this.AppWindow.Move(new Windows.Graphics.PointInt32(x, y));
+        }
+
+        public void OnUpdateAvailable(object sender, NewVersionAvailableEventArgs e)
+        {
+            updateBadge.Visibility = Visibility.Visible;
         }
     }
 }

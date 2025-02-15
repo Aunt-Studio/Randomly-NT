@@ -28,7 +28,11 @@
         </NavigationView.MenuItems>
         
         <NavigationView.FooterMenuItems>
-            <NavigationViewItem Icon="Setting"  Content="设置" Tag="Randomly_NT.SettingsPage"/>
+            <NavigationViewItem Icon="Setting"  Content="设置" Tag="Randomly_NT.SettingsPage">
+                <NavigationViewItem.InfoBadge>
+                    <InfoBadge x:Name="updateBadge" Value="1" Visibility="Collapsed"/>
+                </NavigationViewItem.InfoBadge>
+            </NavigationViewItem>
         </NavigationView.FooterMenuItems>
         <Frame x:Name="ContentFrame"/>
     </NavigationView>
