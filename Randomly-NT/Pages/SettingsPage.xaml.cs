@@ -19,6 +19,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.ApplicationModel;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -50,10 +51,19 @@ namespace Randomly_NT
         /// </summary>
         public string CurrentVersion { get; }
 
-
-        public string? RemoteVersion { get; private set; }
-
-        public string? ApplyUpdateButtonContent { get; private set; }
+        private string? _remoteVersion;
+        public string? RemoteVersion
+        {
+            get => _remoteVersion;
+            private set
+            {
+                if (_remoteVersion != value)
+                {
+                    _remoteVersion = value;
+                    OnPropertyChanged(nameof(RemoteVersion));
+                }
+            }
+        }
 
         /// <summary>
         /// 随机性指数 字段
@@ -126,6 +136,7 @@ namespace Randomly_NT
             Description = "从 Random.org 获取的利用大气噪声生成的真随机数。获取该熵可能会产生一定的时间开销。\n应用该熵后，随机数结果可认为是真随机。频繁抽取可能会导致 Random.org 限制。",
             DocumentUrl = "https://docs.auntstudio.com/randomly-nt/concepts/entropy-sources#zhen-sui-ji-shu-jie-kou-xu-yao-fang-wen-wang-luo"
         };
+        
 
         #endregion
 
@@ -182,6 +193,35 @@ namespace Randomly_NT
         {
             NewVersionSE.Visibility = Visibility.Visible;
             RemoteVersion = "最新版本: " + e.NewVersionMeta.PackageVersion.ToString();
+            UpdateButtonContent(e.NewVersionMeta);
+
+        }
+
+        private void UpdateButtonContent(NewVersionMeta newVersionMeta)
+        {
+            switch (newVersionMeta.Status)
+            {
+                case NewVersionMeta.UpdateStatus.None:
+                    ApplyUpdateButton.IsEnabled = true;
+                    ApplyUpdateButton.Content = "下载更新包";
+                    break;
+                case NewVersionMeta.UpdateStatus.Downloading:
+                    ApplyUpdateButton.IsEnabled = false;
+                    ApplyUpdateButton.Content = "下载中...";
+                    break;
+                case NewVersionMeta.UpdateStatus.Downloaded:
+                    ApplyUpdateButton.IsEnabled = true;
+                    ApplyUpdateButton.Content = "安装更新 (将关闭程序)";
+                    break;
+                case NewVersionMeta.UpdateStatus.Updating:
+                    ApplyUpdateButton.IsEnabled = false;
+                    ApplyUpdateButton.Content = "安装中...";
+                    break;
+                case NewVersionMeta.UpdateStatus.Error:
+                    ApplyUpdateButton.IsEnabled = true;
+                    ApplyUpdateButton.Content = "重新尝试下载";
+                    break;
+            }
         }
 
         private void OnPropertyChanged(string propertyName)
@@ -219,6 +259,54 @@ namespace Randomly_NT
             }
         }
 
+        private async void ApplyUpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_updateServiceInstance.NewVersionMeta is not null)
+            {
+                if (_updateServiceInstance.NewVersionMeta.Status == NewVersionMeta.UpdateStatus.None
+                 || _updateServiceInstance.NewVersionMeta.Status == NewVersionMeta.UpdateStatus.Error)
+                {
+                    ApplyUpdateButton.IsEnabled = false;
+                    ApplyUpdateButton.Content = "下载中...";
+                    DownloadingSC.Visibility = Visibility.Visible;
+                    _ = _updateServiceInstance.NewVersionMeta.Download();
+                    _updateServiceInstance.NewVersionMeta.UpdateErrorOccurred += (sender, e) =>
+                    {
+                        ErrorMessageTB.Text = e.Message;
+                        ErrorDetailsTB.Text = e.Exception.ToString();
+                        DownloadingErrorSC.Visibility = Visibility.Visible;
+                        ApplyUpdateButton.IsEnabled = true;
+                        ApplyUpdateButton.Content = "重新尝试下载";
+                    };
+                    while (_updateServiceInstance.NewVersionMeta.FileDownloader is null)
+                    {
+                        
+                    }
+
+                    _updateServiceInstance.NewVersionMeta.FileDownloader.ProgressChanged += (sender, e) =>
+                    {
+                        UpdateButtonContent(_updateServiceInstance.NewVersionMeta);
+                        BytesReceived.Text = $"{((int)e.ProgressPercentage)} %";
+                        DownloadProgressBar.Value = e.ProgressPercentage;
+                        Debug.WriteLine(e.ProgressPercentage);
+                    };
+                    _updateServiceInstance.NewVersionMeta.FileDownloader.DownloadCompleted += (sender, e) =>
+                    {
+                        Debug.WriteLine(e.FilePath);
+                        ApplyUpdateButton.Content = "安装更新 (将关闭程序)";
+                        ApplyUpdateButton.IsEnabled = true;
+                        DownloadingSC.Visibility = Visibility.Collapsed;
+                    };
+
+                }
+                else if (_updateServiceInstance.NewVersionMeta.Status == NewVersionMeta.UpdateStatus.Downloaded)
+                {
+                    ApplyUpdateButton.IsEnabled = false;
+                    ApplyUpdateButton.Content = "安装中...";
+                    await _updateServiceInstance.NewVersionMeta.Update();
+                }
+            }
+        }
     }
 
     /// <summary>

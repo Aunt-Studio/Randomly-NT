@@ -75,17 +75,39 @@
                         x:Name="NewVersionSE"
                         Header="发现新的版本"
                         IsExpanded="True"
-                        Visibility="Visible">
-                        <Button Content="{x:Bind ApplyUpdateButtonContent}" Style="{StaticResource AccentButtonStyle}"/>
+                        Visibility="Collapsed">
+                        <Button x:Name="ApplyUpdateButton" Click="ApplyUpdateButton_Click" Style="{StaticResource AccentButtonStyle}" />
                         <controls:SettingsExpander.Items>
                             <controls:SettingsCard>
                                 <controls:SettingsCard.Header>
                                     <StackPanel Margin="-12,0,0,0">
                                         <TextBlock Text="{x:Bind CurrentVersion}"/>
-                                        <TextBlock Text="{x:Bind RemoteVersion}"/>
+                                        <TextBlock Text="{x:Bind RemoteVersion, Mode=OneWay}"/>
                                     </StackPanel>
                                 </controls:SettingsCard.Header>
                                 <Button Content="Release Log"/>
+                            </controls:SettingsCard>
+                            <controls:SettingsCard 
+                                x:Name="DownloadingSC"
+                                Visibility="Collapsed">
+                                <controls:SettingsCard.Header>
+                                    <StackPanel Margin="-12,0,0,0">
+                                        <TextBlock Text="下载进度"/>
+                                        <TextBlock x:Name="BytesReceived" Text=""/>
+                                    </StackPanel>
+                                </controls:SettingsCard.Header>
+                                <ProgressBar Width="100" x:Name="DownloadProgressBar" Value="0"/>
+                            </controls:SettingsCard>
+                            <controls:SettingsCard 
+                                x:Name="DownloadingErrorSC"
+                                Visibility="Collapsed"
+                                ContentAlignment="Left">
+                                <controls:SettingsCard.Header>
+                                    <StackPanel Margin="-12,0,0,0">
+                                        <TextBlock x:Name="ErrorMessageTB"/>
+                                    </StackPanel>
+                                </controls:SettingsCard.Header>
+                                <TextBlock x:Name="ErrorDetailsTB"/>
                             </controls:SettingsCard>
                         </controls:SettingsExpander.Items>
                     </controls:SettingsExpander>

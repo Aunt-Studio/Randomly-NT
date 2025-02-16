@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randomly-NT", "Randomly-NT\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "Updater\Updater.csproj", "{C4CAFE82-0A69-440F-98F2-3F266531DBD7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevTools", "DevTools\DevTools.csproj", "{5C7DD043-FF4E-4944-B823-E42C0DE434D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
@@ -47,6 +49,18 @@ Global
 		{C4CAFE82-0A69-440F-98F2-3F266531DBD7}.Release|x64.Build.0 = Release|Any CPU
 		{C4CAFE82-0A69-440F-98F2-3F266531DBD7}.Release|x86.ActiveCfg = Release|Any CPU
 		{C4CAFE82-0A69-440F-98F2-3F266531DBD7}.Release|x86.Build.0 = Release|Any CPU
+		{5C7DD043-FF4E-4944-B823-E42C0DE434D6}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{5C7DD043-FF4E-4944-B823-E42C0DE434D6}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{5C7DD043-FF4E-4944-B823-E42C0DE434D6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5C7DD043-FF4E-4944-B823-E42C0DE434D6}.Debug|x64.Build.0 = Debug|Any CPU
+		{5C7DD043-FF4E-4944-B823-E42C0DE434D6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5C7DD043-FF4E-4944-B823-E42C0DE434D6}.Debug|x86.Build.0 = Debug|Any CPU
+		{5C7DD043-FF4E-4944-B823-E42C0DE434D6}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{5C7DD043-FF4E-4944-B823-E42C0DE434D6}.Release|ARM64.Build.0 = Release|Any CPU
+		{5C7DD043-FF4E-4944-B823-E42C0DE434D6}.Release|x64.ActiveCfg = Release|Any CPU
+		{5C7DD043-FF4E-4944-B823-E42C0DE434D6}.Release|x64.Build.0 = Release|Any CPU
+		{5C7DD043-FF4E-4944-B823-E42C0DE434D6}.Release|x86.ActiveCfg = Release|Any CPU
+		{5C7DD043-FF4E-4944-B823-E42C0DE434D6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

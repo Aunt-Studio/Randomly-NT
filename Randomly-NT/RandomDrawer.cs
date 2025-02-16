@@ -321,7 +321,7 @@ namespace Randomly_NT
         /// <param Name="resultList">用于存储结果的可监视集合, 注意每次函数执行时都会自动清空集合里的内容。</param>
         /// <param Name="randomEntropySources">熵源,仅传入 <seealso cref="RandomEntropySource.SystemClock"/> 以使用默认随机数种子。</param>
         /// <returns>任务</returns>
-        /// <exception cref="ArgumentException">当<paramref Name="max"/> - <paramref Name="min"/> + 1 小于 <paramref Name="count"/>时</exception>"
+        /// <Exception cref="ArgumentException">当<paramref Name="max"/> - <paramref Name="min"/> + 1 小于 <paramref Name="count"/>时</Exception>"
         public static async Task DrawUniqueRandomIntAsync(int min, int max, int count, ICollection<int> resultList, params RandomEntropySource[] randomEntropySources)
         {
             if (max - min + 1 < count)
@@ -387,8 +387,8 @@ namespace Randomly_NT
         /// <param Name="min"></param>
         /// <param Name="max"></param>
         /// <returns></returns>
-        /// <exception cref="FormatException"></exception>
-        /// <exception cref="HttpRequestException"></exception>
+        /// <Exception cref="FormatException"></Exception>
+        /// <Exception cref="HttpRequestException"></Exception>
         private static async Task<int> GetTrueRandomNumberFromRandomOrg(int min, int max)
         {
             // 从 Random.org 获取真随机数
