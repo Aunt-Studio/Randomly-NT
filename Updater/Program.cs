@@ -4,29 +4,37 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Management.Automation;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Drawing.Text;
 
 
 namespace Randomly_NT.Updater
 {
     internal class Program
     {
+        private const string DefaultCertHash = "A1B2C3D4E5F6";
         /*
          传入 args 规范
+            -AF 选项: 从当前位置自动匹配安装（推荐）
+            -
             args[0]: 是否包含安装PS脚本 - true: 包含 ; false: 不包含
             -
             <如果包含安装脚本>
             args[1]: 脚本路径
-            args[2]: 主程序路径
+            args[2]: 主程序 AUMID
             -
             <如果不包含安装脚本>
             args[1]: 证书路径
             args[2]: 包路径
             args[3]: 包哈希
-            args[4]: 主程序路径
+            args[4]: 主程序 AUMID
          */
         static void Main(string[] args)
         {
-            string appPath = string.Empty;
+            // 等待300ms ，确保主程序已经关闭
+            Thread.Sleep(300);
+            bool autoFetch = false;
+            if (args.Length == 1 && args[0] == "-AF") autoFetch = true;
+            string AUMID = "com.auntstudio.RandomlyNT_ebq4pdwzs4tag!App";
             bool usingScript = false;
             try
             {
@@ -47,15 +55,36 @@ namespace Randomly_NT.Updater
                     {
                         throw new ArgumentException("预期外的参数[0]: " + args[0]);
                     }
-                    appPath = args[2];
+                    AUMID = args[2];
                 }
-                else if (args.Length != 3)
+                else if (!autoFetch && args.Length != 3)
                 {
                     throw new ArgumentException($"预期外的参数数量: {args.Length}");
                 }
                 // 检查参数结束
+                if (autoFetch)
+                {
+                    if (File.Exists("Install.ps1"))
+                    {
+                        InstallWithScript(scriptPath);
+                    }
+                    else
+                    {
 
-                if (usingScript)
+                        var certPath = Directory.GetFiles(Directory.GetCurrentDirectory(), "Randomly-NT_*.*.*.*_x64.cer").FirstOrDefault();
+                        var packagePath = Directory.GetFiles(Directory.GetCurrentDirectory(), "Randomly-NT_*.*.*.*_x64.msix").FirstOrDefault();
+                        if (certPath is null)
+                        {
+                            throw new FileNotFoundException("找不到证书文件。");
+                        }
+                        if (packagePath is null)
+                        {
+                            throw new FileNotFoundException("找不到程序包文件。");
+                        }
+                        Install(certPath, packagePath, DefaultCertHash);
+                    }
+                }
+                else if (usingScript)
                 {
                     InstallWithScript(scriptPath);
                 }
@@ -65,22 +94,11 @@ namespace Randomly_NT.Updater
                     var certPath = args[1];
                     var packagePath = args[2];
                     var expectedHash = args[3];
-                    appPath = args[4];
+                    AUMID = args[4];
 
-                    Console.WriteLine("尝试校验证书...");
-                    if (!VerifyCertificateHash(certPath, expectedHash))
-                    {
-                        throw new SecurityException("证书 Hash 校验失败，请检查证书是否完整、篡改。");
-                    }
-                    else
-                    {
-                        Console.WriteLine("成功校验证书。");
-                    }
-
-                    InstallCertificate(certPath);
-                    InstallPackage(packagePath);
+                    Install(certPath, packagePath, expectedHash);
                 }
-                LaunchMainApp(appPath);
+                LaunchMainApp(AUMID);
                 Console.WriteLine("更新完成，按下回车键退出。");
                 Console.ReadLine();
             }
@@ -90,6 +108,22 @@ namespace Randomly_NT.Updater
                 Environment.Exit(1);
             }
 
+        }
+
+        private static void Install(string certPath, string packagePath, string expectedHash)
+        {
+            Console.WriteLine("尝试校验证书...");
+            if (!VerifyCertificateHash(certPath, expectedHash))
+            {
+                throw new SecurityException("证书 Hash 校验失败，请检查证书是否完整、篡改。");
+            }
+            else
+            {
+                Console.WriteLine("成功校验证书。");
+            }
+
+            InstallCertificate(certPath);
+            InstallPackage(packagePath);
         }
 
         private static void ShowExceptionDialog(Exception ex, bool usingScript)
@@ -133,8 +167,8 @@ namespace Randomly_NT.Updater
             Console.WriteLine($"尝试安装位于 {packagePath} 的程序包。\n");
             using PowerShell ps = PowerShell.Create();
             ps.AddCommand("Add-AppxPackage")
-                .AddParameter("-Path", packagePath)
-                .AddParameter("-ForceUpdateFromAnyVersion");
+                .AddParameter("Path", packagePath)
+                .AddParameter("ForceUpdateFromAnyVersion");
             var result = ps.Invoke();
             Console.WriteLine(ps.Streams);
             if (ps.HadErrors)
@@ -154,6 +188,7 @@ namespace Randomly_NT.Updater
             using var cert = X509CertificateLoader.LoadCertificateFromFile(certPath);
             var actualHash = BitConverter.ToString(cert.GetCertHash(HashAlgorithmName.SHA256))
                               .Replace("-", "").ToLower();
+            Console.WriteLine(actualHash);
             return actualHash.Equals(expectedHash, StringComparison.CurrentCultureIgnoreCase);
         }
 
@@ -179,12 +214,28 @@ namespace Randomly_NT.Updater
             }
             Console.WriteLine("================================");
         }
-        private static void LaunchMainApp(string appPath)
+        private static void LaunchMainApp(string AUMID)
         {
-            Console.WriteLine($"更新已完成，尝试启动主程序{appPath}");
-            if (Process.Start(appPath) is null)
+            Console.WriteLine($"更新已完成，尝试启动主程序{AUMID}");
+            try
+            {
+                using PowerShell ps = PowerShell.Create();
+                ps.AddCommand("Start-Process")
+                  .AddArgument($"shell:AppsFolder\\{AUMID}");
+                var result = ps.Invoke();
+                if (ps.HadErrors)
+                {
+                    throw new Exception($"启动程序时 PowerShell 报告错误:\n{ps.Streams.Error}");
+                }
+                else
+                {
+                    Console.WriteLine("主程序启动成功。");
+                }
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine("更新已经完成，但主程序启动失败。你可以在稍后手动启动。");
+                Console.WriteLine($"错误信息: {ex.Message}");
             }
         }
     }
