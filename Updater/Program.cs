@@ -64,13 +64,14 @@ namespace Randomly_NT.Updater
                 // 检查参数结束
                 if (autoFetch)
                 {
-                    if (File.Exists("Install.ps1"))
+                    scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Install.ps1");
+                    if (File.Exists(scriptPath))
                     {
+                        usingScript = true;
                         InstallWithScript(scriptPath);
                     }
                     else
                     {
-
                         var certPath = Directory.GetFiles(Directory.GetCurrentDirectory(), "Randomly-NT_*.*.*.*_x64.cer").FirstOrDefault();
                         var packagePath = Directory.GetFiles(Directory.GetCurrentDirectory(), "Randomly-NT_*.*.*.*_x64.msix").FirstOrDefault();
                         if (certPath is null)

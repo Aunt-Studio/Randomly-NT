@@ -160,6 +160,7 @@ namespace Randomly_NT
             if (Package.Current is not null)
             {
                 var version = Package.Current.Id.Version;
+                CurrentVersion = $"当前版本: {version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
                 Version = $"Package Version {version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
             }
             else
@@ -170,14 +171,16 @@ namespace Randomly_NT
                 if (!string.IsNullOrEmpty(infoVersion))
                 {
                     Version = $"Assembly Info Version {infoVersion} (Unpackaged)";
+                    CurrentVersion = infoVersion;
                 }
                 else
                 {
                     var assemblyVer = Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? "未知程序集版本";
+                    CurrentVersion =(string)assemblyVer;
                     Version = $"Assembly Version {assemblyVer} (Unpackaged)";
                 }
             }
-            CurrentVersion = "当前版本: " + Version;
+            
 #if DEBUG
             Version += " Debug";
 #endif
@@ -194,7 +197,6 @@ namespace Randomly_NT
             NewVersionSE.Visibility = Visibility.Visible;
             RemoteVersion = "最新版本: " + e.NewVersionMeta.PackageVersion.ToString();
             UpdateButtonContent(e.NewVersionMeta);
-
         }
 
         private void UpdateButtonContent(NewVersionMeta newVersionMeta)
