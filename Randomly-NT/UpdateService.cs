@@ -16,6 +16,7 @@ using System.Threading;
 using System.Security.Cryptography;
 using System.Net;
 using System.Collections.Concurrent;
+using Ionic.Zip;
 
 namespace Randomly_NT
 {
@@ -175,6 +176,10 @@ namespace Randomly_NT
         /// 确保运行过一次Download方法后才能访问
         /// </summary>
         public FileDownloader? FileDownloader { get; private set; }
+        /// <summary>
+        /// 确保 Status 为 Downloaded 才能访问
+        /// </summary>
+        public string? UpdatePkgPath { get; private set; }
         public event EventHandler<UpdateErrorEventArgs>? UpdateErrorOccurred;
         public NewVersionMeta(Version packageVersion, Version assemblyVersion, string downloadUrl, string hash, bool hasScript) : base(packageVersion, assemblyVersion)
         {
@@ -200,6 +205,7 @@ namespace Randomly_NT
                 {
                     // 下好了
                     Status = UpdateStatus.Downloaded;
+                    UpdatePkgPath = e.FilePath;
                 };
                 await FileDownloader.DownloadAsync(DownloadUrl, targetPath, Hash, true);
 
@@ -219,33 +225,60 @@ namespace Randomly_NT
         /// <returns></returns>
         public async Task Update()
         {
-            if (Status != UpdateStatus.None && Status != UpdateStatus.Downloaded)
+            try
             {
-                // 下载中或更新中
-                return;
-            }
-            else if (Status != UpdateStatus.Downloaded)
-            {
-                // 还没下载
-                await Download();
-            }
-            // 等待下载完成
-            while (Status != UpdateStatus.Downloaded)
-            {
-                await Task.Delay(400);
-                if (Status == UpdateStatus.Error)
+                if (Status != UpdateStatus.None && Status != UpdateStatus.Downloaded)
                 {
+                    // 下载中或更新中
                     return;
                 }
+                else if (Status != UpdateStatus.Downloaded)
+                {
+                    // 还没下载
+                    await Download();
+                }
+                // 等待下载完成
+                while (Status != UpdateStatus.Downloaded)
+                {
+                    await Task.Delay(400);
+                    if (Status == UpdateStatus.Error)
+                    {
+                        return;
+                    }
+                }
+                // 下好了
+                if (!File.Exists(UpdatePkgPath))
+                {
+                    Status = UpdateStatus.Error;
+                    throw new FileNotFoundException("找不到更新包文件。请重新下载更新包。");
+                }
+                // 解压
+                var path = Path.Combine(Path.GetDirectoryName(UpdatePkgPath) ?? Path.GetTempPath(), Path.GetFileNameWithoutExtension(UpdatePkgPath));
+                Directory.CreateDirectory(path);
+                using ZipFile zip = ZipFile.Read(UpdatePkgPath);
+                zip.ExtractAll(path, ExtractExistingFileAction.OverwriteSilently);
+                // 触发更新器安装更新
+                if (!File.Exists(Path.Combine(path, "Updater.exe")))
+                {
+                    throw new FileNotFoundException($"无法找到自动部署更新程序。请手动安装。\n已解压到目录{path}");
+                }
+                var psi = new ProcessStartInfo
+                {
+                    FileName = Path.Combine(path, "Updater.exe"),
+                    Arguments = "-AF",
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+                Environment.Exit(2);
             }
-            // 下好了
+            catch (Exception ex)
+            {
+                Status = UpdateStatus.Error;
+                ErrorInfo = ex.Message;
+                Debug.WriteLine("安装更新异常: \n" + ex.ToString());
+                UpdateErrorOccurred?.Invoke(this, new("安装更新时发生异常:" + ex.Message, ex));
+            }
 
-            // 此处作为测试，在资源管理器中打开文件
-            Process.Start("explorer.exe", Path.Combine(Path.GetTempPath(), $"Randomly-update-pkg.{PackageVersion}.zip"));
-
-            // 解压
-
-            // 触发更新器安装更新
         }
     }
     public class UpdateErrorEventArgs : EventArgs
