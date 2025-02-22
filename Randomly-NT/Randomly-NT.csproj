@@ -98,5 +98,6 @@
     <DefaultLanguage>zh-cn</DefaultLanguage>
     <PackageCertificateThumbprint>ACA97AC4C44E2ACB2D2AAD566BF118133CED0328</PackageCertificateThumbprint>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 </Project>
