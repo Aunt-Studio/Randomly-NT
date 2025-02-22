@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Management.Automation;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Drawing.Text;
+using System.Management.Automation.Runspaces;
 
 
 namespace Randomly_NT.Updater
@@ -33,7 +34,12 @@ namespace Randomly_NT.Updater
             // 等待300ms ，确保主程序已经关闭
             Thread.Sleep(300);
             bool autoFetch = false;
-            if (args.Length == 1 && args[0] == "-AF") autoFetch = true;
+            if (args.Length == 1 && args[0] == "-AF")
+            {
+                autoFetch = true;
+                Console.WriteLine("自动匹配安装...");
+            }
+                
             string AUMID = "com.auntstudio.RandomlyNT_ebq4pdwzs4tag!App";
             bool usingScript = false;
             try
@@ -64,16 +70,17 @@ namespace Randomly_NT.Updater
                 // 检查参数结束
                 if (autoFetch)
                 {
-                    scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Install.ps1");
+                    scriptPath = Path.Combine(Environment.CurrentDirectory, "Install.ps1");
                     if (File.Exists(scriptPath))
                     {
                         usingScript = true;
+                        Console.WriteLine("匹配到安装脚本，尝试运行...");
                         InstallWithScript(scriptPath);
                     }
                     else
                     {
-                        var certPath = Directory.GetFiles(Directory.GetCurrentDirectory(), "Randomly-NT_*.*.*.*_x64.cer").FirstOrDefault();
-                        var packagePath = Directory.GetFiles(Directory.GetCurrentDirectory(), "Randomly-NT_*.*.*.*_x64.msix").FirstOrDefault();
+                        var certPath = Directory.GetFiles(Environment.CurrentDirectory, "Randomly-NT_*.*.*.*_x64.cer").FirstOrDefault();
+                        var packagePath = Directory.GetFiles(Environment.CurrentDirectory, "Randomly-NT_*.*.*.*_x64.msix").FirstOrDefault();
                         if (certPath is null)
                         {
                             throw new FileNotFoundException("找不到证书文件。");
@@ -198,21 +205,50 @@ namespace Randomly_NT.Updater
         {
             Console.WriteLine("================================");
             Console.WriteLine($"尝试运行位于 {scriptPath} 的安装脚本。");
-            // 读取脚本内容
-            string scriptContent = File.ReadAllText(scriptPath);
-            using PowerShell ps = PowerShell.Create();
-            ps.AddScript(scriptContent);
-            var result = ps.Invoke();
-            Console.WriteLine(ps.Streams);
-            // 检查是否有错误
-            if (ps.HadErrors)
+            // 使用 Process 运行脚本
+            try
             {
-                throw new Exception($"PowerShell 脚本安装运行错误: {ps.Streams.Error}");
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = "powershell.exe",
+                    Arguments = $"-ExecutionPolicy RemoteSigned -File \"{scriptPath}\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = false
+                };
+
+                using Process process = new Process { StartInfo = startInfo };
+                process.Start();
+
+                string output = process.StandardOutput.ReadToEnd();
+                string error = process.StandardError.ReadToEnd();
+
+                process.WaitForExit();
+
+                Console.WriteLine(output);
+
+                if (process.ExitCode != 0)
+                {
+                    Console.WriteLine($"错误: {error}");
+                    throw new Exception($"PowerShell 脚本安装运行错误: {error}");
+                }
+                else
+                {
+                    Console.WriteLine("完成。");
+                }
             }
-            else
+            catch (ArgumentNullException anex)
             {
-                Console.WriteLine("完成。");
+                var originalColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.WriteLine($"参数{anex.ParamName}为null。");
+                Console.WriteLine($"工作目录: {Environment.CurrentDirectory}");
+                Console.WriteLine($"AppDomain基目录: {AppDomain.CurrentDomain.BaseDirectory}");
+                Console.ForegroundColor = originalColor;
+                throw;
             }
+
             Console.WriteLine("================================");
         }
         private static void LaunchMainApp(string AUMID)
