@@ -16,6 +16,12 @@
 
 <figure><img src="../.gitbook/assets/image (1).png" alt=""><figcaption><p>随机化因子为4时应用的熵源</p></figcaption></figure>
 
+有关 Randomly NT 内置的熵源，请参见:
+
+{% content-ref url="../concepts/entropy-sources.md" %}
+[entropy-sources.md](../concepts/entropy-sources.md)
+{% endcontent-ref %}
+
 该部分熵源将通过某些运算，作为随机数种子的一部分，在每次计算随机数时影响随机数结果。
 
 {% hint style="info" %}
