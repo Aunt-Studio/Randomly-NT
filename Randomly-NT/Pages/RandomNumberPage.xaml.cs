@@ -32,15 +32,42 @@ namespace Randomly_NT
     public sealed partial class RandomNumberPage : Page
     {
         private ObservableCollection<int> numberResult = new();
-        private bool disableRepeat = false;
+        private bool avoidRepeat = false;
         private ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
         public RandomNumberPage()
         {
             this.InitializeComponent();
-            
+            bool saveRNumRange = localSettings.Values.ContainsKey("SaveRNumRange") ? (bool)localSettings.Values["SaveRNumRange"] : true;
+            bool saveRNumDraw = localSettings.Values.ContainsKey("SaveRNumDraw") ? (bool)localSettings.Values["SaveRNumDraw"] : true;
+            int min = localSettings.Values.ContainsKey("MinNumber") ? (int)localSettings.Values["MinNumber"] : 1;
+            int max = localSettings.Values.ContainsKey("MaxNumber") ? (int)localSettings.Values["MaxNumber"] : 50;
+
+            int count = localSettings.Values.ContainsKey("NumberCount") ? (int)localSettings.Values["NumberCount"] : 10;
+            bool avoidRepeat = localSettings.Values.ContainsKey("AvoidRepeat") ? (bool)localSettings.Values["AvoidRepeat"] : false;
+            if (saveRNumRange)
+            {
+                MinNumber.Text = min.ToString();
+                MaxNumber.Text = max.ToString();
+            }
+            else
+            {
+                MinNumber.Text = "1";
+                MaxNumber.Text = "50";
+            }
+            if (saveRNumDraw)
+            {
+                Number.Text = count.ToString();
+                DisableRepeatSwitch.IsChecked = avoidRepeat;
+            }
+            else
+            {
+                Number.Text = "10";
+                DisableRepeatSwitch.IsChecked = false;
+            }
         }
         private async void StartDrawButton_Click(object sender, RoutedEventArgs e)
         {
+            // 这个 flag 只能作为参考，实际上只控制进度条是否显示错误
             bool isSuccess = false;
             // 禁止按钮再次触发
             StartDrawButton.IsEnabled = false;
@@ -67,7 +94,7 @@ namespace Randomly_NT
                             if (count > 50000) ShowWarningBar("生成的随机数过多，将启用分批处理，但仍可能导致UI线程卡顿。\n可能的结果框溢出系 WinUI 组件已知问题。");
                             else ShowWarningBar("生成的随机数过多，将启用分批处理，但仍可能导致UI线程卡顿。");
                         }
-                        if (disableRepeat)
+                        if (avoidRepeat)
                         {
                             if (max - min + 1 < count)
                             {
@@ -77,6 +104,9 @@ namespace Randomly_NT
                             }
                             else
                             {
+                                // 保存参数
+                                SaveRandomNumberSettings(min, max, count);
+                                // 生成随机数
                                 await StartDrawUniqueRandom(min, max, count, numberResult);
                                 isSuccess = true;
                             }
@@ -84,6 +114,8 @@ namespace Randomly_NT
                         }
                         else
                         {
+                            // 保存参数
+                            SaveRandomNumberSettings(min, max, count);
                             // 生成随机数
                             await StartDrawRandom(min, max, count, numberResult);
                             isSuccess = true;
@@ -135,6 +167,26 @@ namespace Randomly_NT
                 IndeterminateProgressBar.Visibility = Visibility.Collapsed;
             }
             
+        }
+
+        private void SaveRandomNumberSettings(int min, int max, int count)
+        {
+            bool saveRNumRange = localSettings.Values.ContainsKey("SaveRNumRange") ? (bool)localSettings.Values["SaveRNumRange"] : true;
+            bool saveRNumDraw = localSettings.Values.ContainsKey("SaveRNumDraw") ? (bool)localSettings.Values["SaveRNumDraw"] : true;
+            if (saveRNumRange)
+            {
+                Debug.WriteLine("Saving RNumRange.");
+                localSettings.Values["MinNumber"] = min;
+                localSettings.Values["MaxNumber"] = max;
+                Debug.WriteLine("Saved RNumRange.");
+            }
+            if (saveRNumDraw)
+            {
+                Debug.WriteLine("Saving RNumDraw.");
+                localSettings.Values["NumberCount"] = count;
+                localSettings.Values["AvoidRepeat"] = avoidRepeat;
+                Debug.WriteLine("Saved RNumRange.");
+            }
         }
 
         private async Task StartDrawRandom(int min, int max, int count, ObservableCollection<int> numberResult)
@@ -230,7 +282,8 @@ namespace Randomly_NT
 
         private void DisableRepeatSwitch_Click(object sender, RoutedEventArgs e)
         {
-            disableRepeat = DisableRepeatSwitch.IsChecked ?? false;
+            // 这里做成数据绑定会不会更好？但我今天懒得写了
+            avoidRepeat = DisableRepeatSwitch.IsChecked ?? false;
         }
 
 

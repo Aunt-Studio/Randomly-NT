@@ -17,7 +17,6 @@ using Windows.Storage.Pickers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Diagnostics;
 using System.Numerics;
 using Windows.Storage;
@@ -43,6 +42,22 @@ namespace Randomly_NT
         public RandomNamePage()
         {
             this.InitializeComponent();
+            bool SaveRNameDataPath = localSettings.Values.ContainsKey("SaveRNameDataPath") ? (bool)localSettings.Values["SaveRNameDataPath"] : true;
+            bool SaveRNameDraw = localSettings.Values.ContainsKey("SaveRNameDraw") ? (bool)localSettings.Values["SaveRNameDraw"] : false;
+            if (SaveRNameDataPath)
+            {
+                STDFilePath = localSettings.Values.ContainsKey("NameDataPath") ? (string)localSettings.Values["NameDataPath"] : string.Empty;
+                if (!string.IsNullOrEmpty(STDFilePath))
+                {
+                    LoadStudentDataFile(STDFilePath);
+                }
+            }
+            if (SaveRNameDraw)
+            {
+                int NameDrawNumber = localSettings.Values.ContainsKey("NameDrawNumber") ? (int)localSettings.Values["NameDrawNumber"] : 5;
+                DrawNumber.Text = NameDrawNumber.ToString();
+            }
+
         }
 
         private async void ImportButton_Click(object sender, RoutedEventArgs e)
@@ -66,7 +81,8 @@ namespace Randomly_NT
                 if (file != null)
                 {
                     STDFilePath = file.Path;
-                    await LoadStudentDataFile(STDFilePath);
+                    localSettings.Values["NameDataPath"] = STDFilePath;
+                    await LoadStudentDataFileAsync(STDFilePath);
                 }
             }
             catch (Exception ex)
@@ -81,7 +97,35 @@ namespace Randomly_NT
 
         }
 
-        private async Task LoadStudentDataFile(string filePath)
+        private void LoadStudentDataFile(string filePath)
+        {
+            try
+            {
+                JObject studentsDataJObject = JObject.Parse(File.ReadAllText(filePath));
+                var fileVersion = studentsDataJObject["version"]?.ToString() ?? "null";
+                if (fileVersion == "1.0")
+                {
+                    if (studentsDataJObject["students"] is JArray studentNames) // 匹配 studentsDataJObject 数组
+                    {
+                        OriginalNames.Clear();
+                        foreach (var student in studentNames)
+                        {
+                            OriginalNames.Add(student.ToString());
+                        }
+                    }
+
+                }
+                else
+                {
+                    throw new InvalidDataException($"载入的文件版本({fileVersion})不受支持, 预期文件版本为\"1.0\"。");
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        private async Task LoadStudentDataFileAsync(string filePath)
         {
             try
             {
@@ -97,6 +141,7 @@ namespace Randomly_NT
                             OriginalNames.Add(student.ToString());
                         }
                     }
+                    
                 }
                 else
                 {
@@ -163,6 +208,7 @@ namespace Randomly_NT
                     }
                     else
                     {
+                        localSettings.Values["NameDrawNumber"] = count;
                         await StartDrawUniqueRandomName(min, max, count);
                         isSuccess = true;
                     }
@@ -349,6 +395,7 @@ namespace Randomly_NT
                     }
                     else
                     {
+                        localSettings.Values["NameDrawNumber"] = count;
                         await StartDrawUniqueRandomNameInRange(min, max, count, names);
                         isSuccess = true;
                     }
