@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net.Http;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
-using System.Reflection;
-using Windows.ApplicationModel;
-using Windows.Media.Devices;
-using System.IO;
-using System.Net.Http.Headers;
-using System.Threading;
-using System.Security.Cryptography;
-using System.Net;
+using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.IO;
 using System.IO.Compression;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.ApplicationModel;
 
 namespace Randomly_NT
 {
@@ -164,9 +161,9 @@ namespace Randomly_NT
             Error
         }
 
-        string DownloadUrl { get; set; }
-        string Hash { get; set; }
-        bool HasScript { get; set; }
+        private string DownloadUrl { get; set; }
+        private string Hash { get; set; }
+        private bool HasScript { get; set; }
         public UpdateStatus Status { get; private set; } = UpdateStatus.None;
         /// <summary>
         /// 错误信息，只有当 Status 为 Error 时才非 null
@@ -564,7 +561,7 @@ namespace Randomly_NT
                             continue; // 保留有效状态
                         }
                     }
-                    catch {}
+                    catch { }
                     File.Delete(stateFile);
                 }
             }

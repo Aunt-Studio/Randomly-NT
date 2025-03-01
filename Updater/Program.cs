@@ -1,11 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
+using System.Management.Automation;
 using System.Security;
 using System.Security.Cryptography;
-using System.Management.Automation;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Drawing.Text;
-using System.Management.Automation.Runspaces;
+using System.Security.Cryptography.X509Certificates;
 
 
 namespace Randomly_NT.Updater
@@ -13,6 +10,7 @@ namespace Randomly_NT.Updater
     internal class Program
     {
         private const string DefaultCertHash = "A1B2C3D4E5F6";
+
         /*
          传入 args 规范
             -AF 选项: 从当前位置自动匹配安装（推荐）
@@ -29,7 +27,7 @@ namespace Randomly_NT.Updater
             args[3]: 包哈希
             args[4]: 主程序 AUMID
          */
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             // 等待300ms ，确保主程序已经关闭
             Thread.Sleep(300);
@@ -39,7 +37,7 @@ namespace Randomly_NT.Updater
                 autoFetch = true;
                 Console.WriteLine("自动匹配安装...");
             }
-                
+
             string AUMID = "com.auntstudio.RandomlyNT_ebq4pdwzs4tag!App";
             bool usingScript = false;
             try

@@ -1,25 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using System.Diagnostics;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using Windows.Storage;
-using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Hosting;
-using System.Numerics;
+using System;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Net.Http;
+using System.Numerics;
+using System.Threading.Tasks;
+using Windows.Storage;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -80,11 +68,11 @@ namespace Randomly_NT
             // 清空之前的结果
             numberResult.Clear();
             // 检查数值合法性并转换为 int
-            if (int.TryParse(MinNumber.Text, out int min) 
-                && int.TryParse(MaxNumber.Text, out int max) 
+            if (int.TryParse(MinNumber.Text, out int min)
+                && int.TryParse(MaxNumber.Text, out int max)
                 && int.TryParse(Number.Text, out int count))
             {
-                if (min <= max) 
+                if (min <= max)
                 {
                     try
                     {
@@ -166,7 +154,7 @@ namespace Randomly_NT
             {
                 IndeterminateProgressBar.Visibility = Visibility.Collapsed;
             }
-            
+
         }
 
         private void SaveRandomNumberSettings(int min, int max, int count)
