@@ -118,8 +118,8 @@
                                             <TextBlock Text="{x:Bind RemoteVersion, Mode=OneWay}"/>
                                         </StackPanel>
                                     </controls:SettingsCard.Header>
-                                    <Button Content="Release Log"/>
-                                </controls:SettingsCard>
+                                <HyperlinkButton Content="Release Log" NavigateUri="https://github.com/Aunt-Studio/Randomly-NT/releases/latest"/>
+                            </controls:SettingsCard>
                                 <controls:SettingsCard 
                                     x:Name="DownloadingSC"
                                     Visibility="Collapsed">

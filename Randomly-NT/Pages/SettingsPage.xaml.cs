@@ -323,8 +323,10 @@ namespace Randomly_NT
                 if (_updateServiceInstance.NewVersionMeta.Status == NewVersionMeta.UpdateStatus.None
                  || _updateServiceInstance.NewVersionMeta.Status == NewVersionMeta.UpdateStatus.Error)
                 {
+                    DownloadingErrorSC.Visibility = Visibility.Collapsed;
                     ApplyUpdateButton.IsEnabled = false;
                     ApplyUpdateButton.Content = "下载中...";
+                    DownloadProgressBar.Value = 0;
                     DownloadingSC.Visibility = Visibility.Visible;
                     _ = _updateServiceInstance.NewVersionMeta.Download();
                     _updateServiceInstance.NewVersionMeta.UpdateErrorOccurred += (sender, e) =>
@@ -337,7 +339,7 @@ namespace Randomly_NT
                     };
                     while (_updateServiceInstance.NewVersionMeta.FileDownloader is null)
                     {
-
+                        // 等待直到下载器初始化完成
                     }
 
                     _updateServiceInstance.NewVersionMeta.FileDownloader.ProgressChanged += (sender, e) =>
