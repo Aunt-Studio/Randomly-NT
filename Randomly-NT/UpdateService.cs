@@ -16,7 +16,7 @@ using System.Threading;
 using System.Security.Cryptography;
 using System.Net;
 using System.Collections.Concurrent;
-using Ionic.Zip;
+using System.IO.Compression;
 
 namespace Randomly_NT
 {
@@ -255,8 +255,8 @@ namespace Randomly_NT
                 // 解压
                 var path = Path.Combine(Path.GetDirectoryName(UpdatePkgPath) ?? Path.GetTempPath(), Path.GetFileNameWithoutExtension(UpdatePkgPath));
                 Directory.CreateDirectory(path);
-                using ZipFile zip = ZipFile.Read(UpdatePkgPath);
-                zip.ExtractAll(path, ExtractExistingFileAction.OverwriteSilently);
+                // 覆盖已存在的文件
+                ZipFile.ExtractToDirectory(UpdatePkgPath, path, overwriteFiles: true);
                 // 触发更新器安装更新
                 if (!File.Exists(Path.Combine(path, "Updater.exe")))
                 {
@@ -334,7 +334,9 @@ namespace Randomly_NT
                     {
                         SHA256 sha256 = SHA256.Create();
                         byte[] hashBytes = sha256.ComputeHash(stream);
-                        if (expectedHash is not null && expectedHash.Equals(BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant(), StringComparison.OrdinalIgnoreCase))
+                        if (expectedHash is not null
+                            && expectedHash.Equals(BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant(),
+                                                   StringComparison.OrdinalIgnoreCase))
                         {
                             await Task.Delay(300);
                             ProgressChanged?.Invoke(this, new DownloadProgressEventArgs(
