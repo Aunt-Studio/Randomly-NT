@@ -11,7 +11,7 @@
   <Identity
     Name="com.auntstudio.RandomlyNT"
     Publisher="CN=Aunt Studio"
-    Version="1.1.0.0" />
+    Version="1.2.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="e866ad9d-b139-425e-a2c4-bbe9627b3555" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

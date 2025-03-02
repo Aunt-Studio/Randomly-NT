@@ -97,7 +97,7 @@
     <DefaultLanguage>zh-cn</DefaultLanguage>
     <PackageCertificateThumbprint>ACA97AC4C44E2ACB2D2AAD566BF118133CED0328</PackageCertificateThumbprint>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <ApplicationIcon>Assets/Win32logo.ico</ApplicationIcon>
   </PropertyGroup>
 </Project>
