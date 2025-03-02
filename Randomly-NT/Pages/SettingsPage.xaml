@@ -26,121 +26,154 @@
             </StackPanel>
 
                 <StackPanel Spacing="16">
-                    <!--动画设置-->
-                    <StackPanel.ChildrenTransitions>
-                        <EntranceThemeTransition FromVerticalOffset="50" />
-                        <RepositionThemeTransition IsStaggeringEnabled="False" />
-                    </StackPanel.ChildrenTransitions>
+                    <!--#region 动画设置-->
+                        <StackPanel.ChildrenTransitions>
+                            <EntranceThemeTransition FromVerticalOffset="50" />
+                            <RepositionThemeTransition IsStaggeringEnabled="False" />
+                        </StackPanel.ChildrenTransitions>
+                    <!--#endregion-->
                     
-                    <!--随机化因子调整-->
-                    <TextBlock Text="随机数熵源" Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                    <controls:SettingsExpander
-                    Header="随机化指数"
-                    Description="调整随机化指数以控制随机数熵。"
-                    IsExpanded="True">
-                        <controls:SettingsExpander.Items>
-                            <controls:SettingsCard
-                            Header="调整随机化指数"
-                            Description="随机化指数越大, 随机数的熵越高，随机数种子取值因子越复杂, 随机数结果越难观测。">
-                                <Slider
-                                Minimum="1"
-                                Maximum="4"
-                                Value="{Binding RandomizeIndex, Mode=TwoWay}"
-                                TickFrequency="1"
-                                TickPlacement="Outside"
-                                StepFrequency="1"
-                                SnapsTo="Ticks"/>
-                            </controls:SettingsCard>
-                        </controls:SettingsExpander.Items>
-                    </controls:SettingsExpander>
-                    <controls:SettingsExpander
-                    Header="已应用的熵源"
-                    Description="当前随机化指数下将参与随机数种子计算的熵。"
-                    ItemsSource="{x:Bind EntropyItems, Mode=OneWay}">
-
-                        <controls:SettingsExpander.ItemTemplate>
-                            <DataTemplate x:DataType="local:RandomEntropyItem">
-                                <controls:SettingsCard Header="{x:Bind Name}"
-                                Description="{x:Bind Description}">
-                                    <HyperlinkButton Content="查看文档"
-                                         NavigateUri="{x:Bind DocumentUrl}" />
+                    <!--#region 随机化因子调整-->
+                        <TextBlock Text="随机数熵源" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                        <controls:SettingsExpander
+                        Header="随机化指数"
+                        Description="调整随机化指数以控制随机数熵。"
+                        IsExpanded="True">
+                            <controls:SettingsExpander.Items>
+                                <controls:SettingsCard
+                                Header="调整随机化指数"
+                                Description="随机化指数越大, 随机数的熵越高，随机数种子取值因子越复杂, 随机数结果越难观测。">
+                                    <Slider
+                                    Minimum="1"
+                                    Maximum="4"
+                                    Value="{Binding RandomizeIndex, Mode=TwoWay}"
+                                    TickFrequency="1"
+                                    TickPlacement="Outside"
+                                    StepFrequency="1"
+                                    SnapsTo="Ticks"/>
                                 </controls:SettingsCard>
-                            </DataTemplate>
-                        </controls:SettingsExpander.ItemTemplate>
-                    </controls:SettingsExpander>
+                            </controls:SettingsExpander.Items>
+                        </controls:SettingsExpander>
+                        <controls:SettingsExpander
+                        Header="已应用的熵源"
+                        Description="当前随机化指数下将参与随机数种子计算的熵。"
+                        ItemsSource="{x:Bind EntropyItems, Mode=OneWay}">
 
-                    <!--关于-->
-                    <TextBlock Text="关于" Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                    <controls:SettingsExpander
-                        x:Name="NewVersionSE"
-                        Header="发现新的版本"
-                        IsExpanded="True"
-                        Visibility="Collapsed">
-                        <Button x:Name="ApplyUpdateButton" Click="ApplyUpdateButton_Click" Style="{StaticResource AccentButtonStyle}" />
-                        <controls:SettingsExpander.Items>
-                            <controls:SettingsCard>
-                                <controls:SettingsCard.Header>
-                                    <StackPanel Margin="-12,0,0,0">
-                                        <TextBlock Text="{x:Bind CurrentVersion}"/>
-                                        <TextBlock Text="{x:Bind RemoteVersion, Mode=OneWay}"/>
-                                    </StackPanel>
-                                </controls:SettingsCard.Header>
-                                <Button Content="Release Log"/>
-                            </controls:SettingsCard>
-                            <controls:SettingsCard 
-                                x:Name="DownloadingSC"
-                                Visibility="Collapsed">
-                                <controls:SettingsCard.Header>
-                                    <StackPanel Margin="-12,0,0,0">
-                                        <TextBlock Text="下载进度"/>
-                                        <TextBlock x:Name="BytesReceived" Text=""/>
-                                    </StackPanel>
-                                </controls:SettingsCard.Header>
-                                <ProgressBar Width="100" x:Name="DownloadProgressBar" Value="0"/>
-                            </controls:SettingsCard>
-                            <controls:SettingsCard 
-                                x:Name="DownloadingErrorSC"
-                                Visibility="Collapsed"
-                                ContentAlignment="Left">
-                                <controls:SettingsCard.Header>
-                                    <StackPanel Margin="-12,0,0,0">
-                                        <TextBlock x:Name="ErrorMessageTB"/>
-                                    </StackPanel>
-                                </controls:SettingsCard.Header>
-                                <TextBlock x:Name="ErrorDetailsTB"/>
-                            </controls:SettingsCard>
-                        </controls:SettingsExpander.Items>
-                    </controls:SettingsExpander>
+                            <controls:SettingsExpander.ItemTemplate>
+                                <DataTemplate x:DataType="local:RandomEntropyItem">
+                                    <controls:SettingsCard Header="{x:Bind Name}"
+                                    Description="{x:Bind Description}">
+                                        <HyperlinkButton Content="查看文档"
+                                             NavigateUri="{x:Bind DocumentUrl}" />
+                                    </controls:SettingsCard>
+                                </DataTemplate>
+                            </controls:SettingsExpander.ItemTemplate>
+                        </controls:SettingsExpander>
+                    <!--#endregion-->
                     
-                    <controls:SettingsExpander
-                Header="Randomly NT"
-                Description="© 2025 Aunt Studio. All rights reserved.">
-                        <TextBlock Text="{x:Bind Version}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                        <controls:SettingsExpander.Items>
-                            <controls:SettingsCard>
-                                <controls:SettingsCard.Header>
-                                    <StackPanel Margin="-12,0,0,0">
-                                        <TextBlock Text="Developed by Aunt_nuozhen with ❤"/>
-                                        <TextBlock Text="Licensed under MIT License."/>
-                                    </StackPanel>
-                                </controls:SettingsCard.Header>
-                                <StackPanel Margin="-12,0,0,0" >
-                                    <TextBlock Text="E9C0B2800DC11294" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                    <TextBlock Text="© 2025 Aunt Studio" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                </StackPanel>
-                            </controls:SettingsCard>
-                            <controls:SettingsCard ContentAlignment="Left">
-                                <StackPanel Margin="-23,0">
-                                    <HyperlinkButton Content="在 GitHub 上查看源代码" NavigateUri="https://github.com/Aunt-Studio/Randomly-NT"/>
-                                    <HyperlinkButton Content="查看用户手册文档" NavigateUri="https://docs.auntstudio.com/randomly-nt"/>
-                                    <HyperlinkButton Content="Aunt Studio 官网" NavigateUri="https://auntstudio.com"/>
-                                    <HyperlinkButton Content="MIT License" NavigateUri="https://opensource.org/license/MIT"/>
-                                </StackPanel>
-                            </controls:SettingsCard>
-                        </controls:SettingsExpander.Items>
+                    <!--#region 应用设置-->
+                        <TextBlock Text="应用设置" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                        <controls:SettingsExpander
+                                Header="保留设置"
+                                Description="选择保留上次使用的参数等。">
+                            <controls:SettingsExpander.Items>
+                                <controls:SettingsCard
+                                    Header="随机数字取值范围"
+                                    Description="包括随机整数抽取中的最大值、最小值参数。">
+                                    <ToggleSwitch IsOn="{x:Bind SaveRNumRange, Mode=TwoWay}"/>
+                                </controls:SettingsCard>
+                                <controls:SettingsCard
+                                    Header="随机数字抽取参数"
+                                    Description="包括随机整数抽取中的抽取数量等参数。">
+                                    <ToggleSwitch IsOn="{x:Bind SaveRNumDraw, Mode=TwoWay}"/>
+                                </controls:SettingsCard>
+                                <controls:SettingsCard
+                                    Header="随机姓名抽取学生列表"
+                                    Description="随机姓名抽取中原始学生列表路径。启动时将从上次的路径中读取学生列表数据。">
+                                    <ToggleSwitch IsOn="{x:Bind SaveRNameDataPath, Mode=TwoWay}"/>
+                                </controls:SettingsCard>
+                                <controls:SettingsCard
+                                    Header="随机姓名抽取参数"
+                                    Description="包括随机姓名抽取的抽取数量等参数。">
+                                    <ToggleSwitch IsOn="{x:Bind SaveRNameDraw, Mode=TwoWay}"/>
+                                </controls:SettingsCard>
+                            </controls:SettingsExpander.Items>
 
                     </controls:SettingsExpander>
+                    <!--#endregion-->
+                    
+                    <!--#region 关于-->
+                        <TextBlock Text="关于" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                        <controls:SettingsExpander
+                            x:Name="NewVersionSE"
+                            Header="发现新的版本"
+                            IsExpanded="True"
+                            Visibility="Collapsed">
+                            <Button x:Name="ApplyUpdateButton" Click="ApplyUpdateButton_Click" Style="{StaticResource AccentButtonStyle}" />
+                            <controls:SettingsExpander.Items>
+                                <controls:SettingsCard>
+                                    <controls:SettingsCard.Header>
+                                        <StackPanel Margin="-12,0,0,0">
+                                            <TextBlock Text="{x:Bind CurrentVersion}"/>
+                                            <TextBlock Text="{x:Bind RemoteVersion, Mode=OneWay}"/>
+                                        </StackPanel>
+                                    </controls:SettingsCard.Header>
+                                <HyperlinkButton Content="Release Log" NavigateUri="https://github.com/Aunt-Studio/Randomly-NT/releases/latest"/>
+                            </controls:SettingsCard>
+                                <controls:SettingsCard 
+                                    x:Name="DownloadingSC"
+                                    Visibility="Collapsed">
+                                    <controls:SettingsCard.Header>
+                                        <StackPanel Margin="-12,0,0,0">
+                                            <TextBlock Text="下载进度"/>
+                                            <TextBlock x:Name="BytesReceived" Text=""/>
+                                        </StackPanel>
+                                    </controls:SettingsCard.Header>
+                                    <ProgressBar Width="100" x:Name="DownloadProgressBar" Value="0"/>
+                                </controls:SettingsCard>
+                                <controls:SettingsCard 
+                                    x:Name="DownloadingErrorSC"
+                                    Visibility="Collapsed"
+                                    ContentAlignment="Left">
+                                    <controls:SettingsCard.Header>
+                                        <StackPanel Margin="-12,0,0,0">
+                                            <TextBlock x:Name="ErrorMessageTB"/>
+                                        </StackPanel>
+                                    </controls:SettingsCard.Header>
+                                    <TextBlock x:Name="ErrorDetailsTB"/>
+                                </controls:SettingsCard>
+                            </controls:SettingsExpander.Items>
+                        </controls:SettingsExpander>
+                    
+                        <controls:SettingsExpander
+                            Header="Randomly NT"
+                            Description="© 2025 Aunt Studio. All rights reserved.">
+                            <TextBlock Text="{x:Bind Version}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <controls:SettingsExpander.Items>
+                                <controls:SettingsCard>
+                                    <controls:SettingsCard.Header>
+                                        <StackPanel Margin="-12,0,0,0">
+                                            <TextBlock Text="Developed by Aunt_nuozhen with ❤"/>
+                                            <TextBlock Text="Licensed under MIT License."/>
+                                        </StackPanel>
+                                    </controls:SettingsCard.Header>
+                                    <StackPanel Margin="-12,0,0,0" >
+                                        <TextBlock Text="E9C0B2800DC11294" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                        <TextBlock Text="© 2025 Aunt Studio" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    </StackPanel>
+                                </controls:SettingsCard>
+                                <controls:SettingsCard ContentAlignment="Left">
+                                    <StackPanel Margin="-23,0">
+                                        <HyperlinkButton Content="在 GitHub 上查看源代码" NavigateUri="https://github.com/Aunt-Studio/Randomly-NT"/>
+                                        <HyperlinkButton Content="查看用户手册文档" NavigateUri="https://docs.auntstudio.com/randomly-nt"/>
+                                        <HyperlinkButton Content="Aunt Studio 官网" NavigateUri="https://auntstudio.com"/>
+                                        <HyperlinkButton Content="MIT License" NavigateUri="https://opensource.org/license/MIT"/>
+                                    </StackPanel>
+                                </controls:SettingsCard>
+                            </controls:SettingsExpander.Items>
 
+                        </controls:SettingsExpander>
+                    <!--#endregion-->
                 </StackPanel>
             
         </StackPanel>

@@ -41,7 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.0.240109" />
-    <PackageReference Include="DotNetZip" Version="1.16.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.2" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.250108002" />
@@ -98,6 +97,7 @@
     <DefaultLanguage>zh-cn</DefaultLanguage>
     <PackageCertificateThumbprint>ACA97AC4C44E2ACB2D2AAD566BF118133CED0328</PackageCertificateThumbprint>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
+    <ApplicationIcon>Assets/Win32logo.ico</ApplicationIcon>
   </PropertyGroup>
 </Project>

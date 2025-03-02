@@ -22,7 +22,6 @@
                 <NumberBox
                 x:Name="MinNumber"
                 Header="最小取值:"
-                Value="1"
                 SpinButtonPlacementMode="Compact"
                 SmallChange="1"
                 LargeChange="10"
@@ -30,7 +29,6 @@
                 <NumberBox
                 x:Name="MaxNumber"
                 Header="最大取值:"
-                Value="50"
                 SpinButtonPlacementMode="Compact"
                 SmallChange="1"
                 LargeChange="10"
@@ -38,7 +36,6 @@
                 <NumberBox
                 x:Name="Number"
                 Header="抽取数量:"
-                Value="10"
                 SpinButtonPlacementMode="Compact"
                 SmallChange="1"
                 LargeChange="10"

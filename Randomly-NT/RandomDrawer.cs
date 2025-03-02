@@ -1,22 +1,16 @@
 ﻿using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Randomly_NT
 {
-    static class RandomDrawer
+    internal static class RandomDrawer
     {
         #region CursorPositionGetRegion
         // 使用 P/Invoke 调用 Windows API 获取鼠标位置

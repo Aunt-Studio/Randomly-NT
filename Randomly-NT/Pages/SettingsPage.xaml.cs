@@ -1,25 +1,12 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Windows.Storage;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.ApplicationModel;
-using Microsoft.Extensions.DependencyInjection;
-using System.Threading;
+using Windows.Storage;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -73,17 +60,18 @@ namespace Randomly_NT
         /// <summary>
         /// 随机性指数 属性
         /// </summary>
-        public int RandomizeIndex { 
+        public int RandomizeIndex
+        {
             get => _randomizeIndex;
             set
             {
-                if (_randomizeIndex != value) 
+                if (_randomizeIndex != value)
                 {
                     _randomizeIndex = value;
                     OnPropertyChanged(nameof(RandomizeIndex));
                     ConfigureRandomizationFactors();
                 }
-            } 
+            }
         }
 
         /// <summary>
@@ -98,13 +86,14 @@ namespace Randomly_NT
         /// <summary>
         /// 随机性熵源前端展示列表 属性
         /// </summary>
-        public ObservableCollection<RandomEntropyItem> EntropyItems { 
+        public ObservableCollection<RandomEntropyItem> EntropyItems
+        {
             get => _entropyItems;
             set
             {
                 _entropyItems = value;
                 OnPropertyChanged(nameof(EntropyItems));
-            } 
+            }
         }
 
         #region 随机性熵源前端展示列表项定义
@@ -136,8 +125,57 @@ namespace Randomly_NT
             Description = "从 Random.org 获取的利用大气噪声生成的真随机数。获取该熵可能会产生一定的时间开销。\n应用该熵后，随机数结果可认为是真随机。频繁抽取可能会导致 Random.org 限制。",
             DocumentUrl = "https://docs.auntstudio.com/randomly-nt/concepts/entropy-sources#zhen-sui-ji-shu-jie-kou-xu-yao-fang-wen-wang-luo"
         };
-        
 
+        #endregion
+
+        #region 保留设置相关属性
+        // 这里所有字段初始属性只是备忘用的。。实际上初始化在构造函数里
+        private bool _saveRNumRange = true;
+        public bool SaveRNumRange
+        {
+            get => _saveRNumRange;
+            set
+            {
+                _saveRNumRange = value;
+                SaveRemainedSettings();
+            }
+        }
+        private bool _saveRNumDraw = false;
+        public bool SaveRNumDraw
+        {
+            get => _saveRNumDraw; set
+            {
+                _saveRNumDraw = value;
+                SaveRemainedSettings();
+            }
+        }
+        private bool _saveRNameDataPath = true;
+        public bool SaveRNameDataPath
+        {
+            get => _saveRNameDataPath;
+            set
+            {
+                _saveRNameDataPath = value;
+                SaveRemainedSettings();
+            }
+        }
+        private bool _saveRNameDraw = false;
+        public bool SaveRNameDraw
+        {
+            get => _saveRNameDraw;
+            set
+            {
+                _saveRNameDraw = value;
+                SaveRemainedSettings();
+            }
+        }
+        public void SaveRemainedSettings()
+        {
+            LocalSettings.Values["SaveRNumRange"] = SaveRNumRange;
+            LocalSettings.Values["SaveRNumDraw"] = SaveRNumDraw;
+            LocalSettings.Values["SaveRNameDataPath"] = SaveRNameDataPath;
+            LocalSettings.Values["SaveRNameDraw"] = SaveRNameDraw;
+        }
         #endregion
 
         public SettingsPage()
@@ -155,7 +193,11 @@ namespace Randomly_NT
             LocalSettings = ApplicationData.Current.LocalSettings;
             // 读取随机性指数
             _randomizeIndex = LocalSettings.Values.ContainsKey("RandomizeIndex") ? (int)LocalSettings.Values["RandomizeIndex"] : 1;
-
+            // 读取保留设置
+            _saveRNumRange = LocalSettings.Values.ContainsKey("SaveRNumRange") ? (bool)LocalSettings.Values["SaveRNumRange"] : true;
+            _saveRNumDraw = LocalSettings.Values.ContainsKey("SaveRNumDraw") ? (bool)LocalSettings.Values["SaveRNumDraw"] : false;
+            _saveRNameDataPath = LocalSettings.Values.ContainsKey("SaveRNameDataPath") ? (bool)LocalSettings.Values["SaveRNameDataPath"] : true;
+            _saveRNameDraw = LocalSettings.Values.ContainsKey("SaveRNameDraw") ? (bool)LocalSettings.Values["SaveRNameDraw"] : false;
             // 获取程序集版本
             if (Package.Current is not null)
             {
@@ -176,11 +218,11 @@ namespace Randomly_NT
                 else
                 {
                     var assemblyVer = Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? "未知程序集版本";
-                    CurrentVersion =(string)assemblyVer;
+                    CurrentVersion = assemblyVer;
                     Version = $"Assembly Version {assemblyVer} (Unpackaged)";
                 }
             }
-            
+
 #if DEBUG
             Version += " Debug";
 #endif
@@ -268,8 +310,10 @@ namespace Randomly_NT
                 if (_updateServiceInstance.NewVersionMeta.Status == NewVersionMeta.UpdateStatus.None
                  || _updateServiceInstance.NewVersionMeta.Status == NewVersionMeta.UpdateStatus.Error)
                 {
+                    DownloadingErrorSC.Visibility = Visibility.Collapsed;
                     ApplyUpdateButton.IsEnabled = false;
                     ApplyUpdateButton.Content = "下载中...";
+                    DownloadProgressBar.Value = 0;
                     DownloadingSC.Visibility = Visibility.Visible;
                     _ = _updateServiceInstance.NewVersionMeta.Download();
                     _updateServiceInstance.NewVersionMeta.UpdateErrorOccurred += (sender, e) =>
@@ -282,7 +326,7 @@ namespace Randomly_NT
                     };
                     while (_updateServiceInstance.NewVersionMeta.FileDownloader is null)
                     {
-                        
+                        // 等待直到下载器初始化完成
                     }
 
                     _updateServiceInstance.NewVersionMeta.FileDownloader.ProgressChanged += (sender, e) =>
