@@ -18,13 +18,19 @@
                     <FontIcon Glyph="&#xE75F;" />
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
-            
+
             <NavigationViewItem Content="抽取名称" Tag="Randomly_NT.RandomNamePage">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE97C;" />
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
-            
+
+            <NavigationViewItem Content="课堂模式" Tag="Randomly_NT.ClassPreparePage">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE7F4;" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+
         </NavigationView.MenuItems>
         
         <NavigationView.FooterMenuItems>

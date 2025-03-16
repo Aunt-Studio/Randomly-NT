@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Randomly_NT.ClassMode.Pages.StudentsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Randomly_NT.ClassMode.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid>
+        <StackPanel x:Name="infoBarStack" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
+        <StackPanel Margin="36, 48">
+            <TextBlock Text="Set Questions" Style="{StaticResource TitleTextBlockStyle}"/>
+            <TextBlock Text="| 设定学生数据." Style="{StaticResource BodyStrongTextBlockStyle}"/>
+        </StackPanel>
+        <StackPanel x:Name="ImportNameSP" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
+            <TextBlock Text="1. 导入该课程学生列表" HorizontalAlignment="Center"/>
+            <TextBox x:Name="StudentListTextBox" Header="学生姓名列表 (一行一个)" AcceptsReturn="True" MinWidth="400" MinHeight="200" MaxHeight="300" HorizontalAlignment="Center"/>
+            <Button Content="完成" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Center" Click="ImportFormTextButton_Click"/>
+            <TextBlock Text="-" HorizontalAlignment="Center"/>
+            <TextBlock Text="已有 Randomly 学生列表数据文件 (RSD) ?" HorizontalAlignment="Center"/>
+            <Button x:Name="ImportRSDButton" Content="从 RSD 文件导入" HorizontalAlignment="Center" Click="ImportRSDButton_Click"/>
+        </StackPanel>
+        <StackPanel x:Name="ScoreSP" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16" Visibility="Collapsed">
+            <TextBlock Text="2. 将成绩与学生匹配" HorizontalAlignment="Center"/>
+            
+        </StackPanel>
+    </Grid>
+</Page>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Randomly_NT.ClassMode.Pages.BasicDataPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Randomly_NT.ClassMode.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    NavigationCacheMode="Enabled">
+
+    <Grid>
+        <StackPanel Margin="36, 48">
+                <TextBlock Text="Set Meta Data" Style="{StaticResource TitleTextBlockStyle}"/>
+                <TextBlock Text="| 设定课堂的基本信息." Style="{StaticResource BodyStrongTextBlockStyle}"/>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="16">
+            <TextBox x:Name="ClassNameTB" Header="课程名称*" MinWidth="600" PlaceholderText="填写本课程的名称, 必填。" TextChanged="ClassNameChanged"/>
+            <TextBox x:Name="TeacherNameTB"  Header="授课教师" MinWidth="600" PlaceholderText="填写本课程的授课教师, 选填。" TextChanged="TeacherNameChanged"/>
+            <TextBox x:Name="CourseNameTB" Header="科目" MinWidth="600" PlaceholderText="选填。" TextChanged="CourseNameChanged"/>
+            <StackPanel Orientation="Horizontal" Spacing="32">
+                <Button Content="&lt; 上一步" Click="PrevButton_Click"/>
+                <Button x:Name="NextButton" Content="下一步 >" Style="{StaticResource AccentButtonStyle}" IsEnabled="False" Click="NextButton_Click"/>
+            </StackPanel>
+        </StackPanel>
+
+    </Grid>
+</Page>
