@@ -28,6 +28,7 @@ namespace Randomly_NT.ClassMode
     {
         public ClassData ClassData { get; set; }
         public List<QuestionItem> QuestionItems { get; set; } = new();
+        public List<Student> Students { get; set; } = new();
         public ClassEditor()
         {
             this.InitializeComponent();

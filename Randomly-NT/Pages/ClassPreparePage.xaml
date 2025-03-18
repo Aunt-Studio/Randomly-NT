@@ -25,7 +25,6 @@
             <Button Content="重新选择课程文件" HorizontalAlignment="Center" Click="ImportButton_Click"/>
             <Button Content="编辑课程文件" HorizontalAlignment="Center" Click="OpenEditorButton_Click"/>
         </StackPanel>
-        <Button Content="Debug" Click="DebugButton_Click"/>
         <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" Text="实验性功能，不建议过度依赖。更多信息请参见文档。" Style="{StaticResource CaptionTextBlockStyle}" Margin="0,24" Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
     </Grid>
 </Page>

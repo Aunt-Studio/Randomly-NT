@@ -50,41 +50,5 @@ namespace Randomly_NT
             var editor = new ClassMode.ClassEditor();
             editor.Activate();
         }
-
-        private void DebugButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (selector is null)
-            {
-                var rawStudents = new List<RawStudent>
-            {
-                new RawStudent { Name = "张三", Score = 90 },
-                new RawStudent { Name = "李四", Score = 80 },
-                new RawStudent { Name = "王五", Score = 70 },
-                new RawStudent { Name = "赵六", Score = 60 },
-                new RawStudent { Name = "钱七", Score = 50 },
-                new RawStudent { Name = "张dx", Score = 100 },
-                new RawStudent { Name = "sssc", Score = 25 },
-                new RawStudent { Name = "王qw五", Score = 36 },
-                new RawStudent { Name = "scv", Score = 38 },
-                new RawStudent { Name = "rwer", Score = 72 },
-                new RawStudent { Name = "张dxsx", Score = 100 },
-                new RawStudent { Name = "swsc", Score = 26 },
-                new RawStudent { Name = "王qwww五", Score = 36 },
-                new RawStudent { Name = "sclv", Score = 70 },
-                new RawStudent { Name = "rwewr", Score = 72 },
-            };
-                var service = new StudentClusterService();
-                var students = service.ClusterStudents(rawStudents);
-                foreach (var s in students)
-                {
-                    Debug.WriteLine($"{s.Name} => {s.Level}");
-                }
-
-                selector = new StudentSelector(students);
-            }
-
-            var selectedStudent = selector.Select(Difficulty.Hard, RandomEntropySource.SystemClock);
-            Debug.WriteLine($"Selected {selectedStudent.Name} as Level{selectedStudent.Level}");
-        }
     }
 }

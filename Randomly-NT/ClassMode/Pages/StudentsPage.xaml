@@ -4,18 +4,21 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Randomly_NT.ClassMode.Pages"
+    xmlns:class="using:Randomly_NT.ClassMode"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    NavigationCacheMode="Enabled">
 
     <Grid>
         <StackPanel x:Name="infoBarStack" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
+        <ProgressBar x:Name="IndeterminateProgressBar" Margin="0,4" IsIndeterminate="True" VerticalAlignment="Top" HorizontalAlignment="Stretch" Visibility="Collapsed"/>
         <StackPanel Margin="36, 48">
             <TextBlock Text="Set Questions" Style="{StaticResource TitleTextBlockStyle}"/>
             <TextBlock Text="| 设定学生数据." Style="{StaticResource BodyStrongTextBlockStyle}"/>
         </StackPanel>
         <StackPanel x:Name="ImportNameSP" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
-            <TextBlock Text="1. 导入该课程学生列表" HorizontalAlignment="Center"/>
+            <TextBlock Text="1. 导入该课程学生列表" HorizontalAlignment="Center" Style="{StaticResource SubtitleTextBlockStyle}"/>
             <TextBox x:Name="StudentListTextBox" Header="学生姓名列表 (一行一个)" AcceptsReturn="True" MinWidth="400" MinHeight="200" MaxHeight="300" HorizontalAlignment="Center"/>
             <Button Content="完成" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Center" Click="ImportFormTextButton_Click"/>
             <TextBlock Text="-" HorizontalAlignment="Center"/>
@@ -23,8 +26,81 @@
             <Button x:Name="ImportRSDButton" Content="从 RSD 文件导入" HorizontalAlignment="Center" Click="ImportRSDButton_Click"/>
         </StackPanel>
         <StackPanel x:Name="ScoreSP" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16" Visibility="Collapsed">
-            <TextBlock Text="2. 将成绩与学生匹配" HorizontalAlignment="Center"/>
-            
+            <TextBlock Text="2. 将成绩与学生匹配" HorizontalAlignment="Center" Style="{StaticResource SubtitleTextBlockStyle}"/>
+            <StackPanel Orientation="Horizontal" Spacing="64">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="学生列表"/>
+                    <ListView x:Name="OriginalStudentListView"
+                                BorderThickness="1"
+                                BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
+                                MinHeight="200"
+                                MaxHeight="350"
+                                ItemsSource="{x:Bind OriginalNames, Mode=TwoWay}"
+                                SelectionMode="Extended"/>
+                </StackPanel>
+                
+                <TextBox x:Name="ScoreTextBox"
+                     Header="学生成绩列表 (一行一个, 从上到下按顺序)"
+                     AcceptsReturn="True"
+                     MinWidth="200"
+                     MinHeight="200"
+                     MaxHeight="350"
+                     HorizontalAlignment="Center"/>
+            </StackPanel>
+            <Button x:Name="FetchScoreButton" Content="匹配" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Center" Click="FetchScoreButton_Click"/>
+        </StackPanel>
+        <StackPanel x:Name="FitModelSP" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16" Visibility="Collapsed">
+            <TextBlock Text="3. 拟合模型" HorizontalAlignment="Center" Style="{StaticResource SubtitleTextBlockStyle}"/>
+            <StackPanel Spacing="8">
+                    <TextBlock Text="最终预览"/>
+                <ListView x:Name="FinalFitListView"
+                                BorderThickness="1"
+                                BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
+                                MinHeight="200"
+                                MaxHeight="500"
+                          MinWidth="300"
+                                ItemsSource="{x:Bind RawStudents, Mode=TwoWay}"
+                                SelectionMode="Extended">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="class:RawStudent">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Ellipse x:Name="Ellipse"
+                                Grid.RowSpan="2"
+                                Width ="32"
+                                Height="32"
+                                Margin="6"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Fill="{ThemeResource SystemControlBackgroundBaseMediumBrush}"/>
+                                <TextBlock Grid.Column="1"
+                                        Text="{x:Bind Name}"
+                                        x:Phase="1"
+                                        Style="{ThemeResource BaseTextBlockStyle}"
+                                        Margin="12,6,0,0"/>
+                                <TextBlock Grid.Column="1"
+                                        Grid.Row="1"
+                                        Text="{x:Bind Score}"
+                                        x:Phase="2"
+                                        Style="{ThemeResource BodyTextBlockStyle}"
+                                        Margin="12,0,0,6"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+            <Button x:Name="FitModelButton" Content="开始拟合" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Center" Click="FitModelButton_Click"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="64">
+                <Button x:Name="PrevButton" HorizontalAlignment="Left" Content="&lt; 上一步" Click="PrevButton_Click"/>
+                <Button x:Name="NextButton" HorizontalAlignment="Right" Style="{StaticResource AccentButtonStyle}" Content="下一步 >" IsEnabled="False" Click="NextButton_Click"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>
