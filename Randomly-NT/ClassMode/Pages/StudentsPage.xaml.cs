@@ -101,7 +101,7 @@ namespace Randomly_NT.ClassMode.Pages
                 ImportRSDButton.IsEnabled = false;
 
                 var openPicker = new Windows.Storage.Pickers.FileOpenPicker();
-                var window = App.MainWindow;
+                var window = classEditorWindow;
                 var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
                 WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hWnd);
 

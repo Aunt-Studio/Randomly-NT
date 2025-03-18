@@ -57,7 +57,7 @@
                                 BorderThickness="1"
                                 BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
                                 MinHeight="200"
-                                MaxHeight="500"
+                                MaxHeight="400"
                           MinWidth="300"
                                 ItemsSource="{x:Bind RawStudents, Mode=TwoWay}"
                                 SelectionMode="Extended">
@@ -97,7 +97,7 @@
                 </ListView>
             </StackPanel>
             <Button x:Name="FitModelButton" Content="开始拟合" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Center" Click="FitModelButton_Click"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="64">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="64">
                 <Button x:Name="PrevButton" HorizontalAlignment="Left" Content="&lt; 上一步" Click="PrevButton_Click"/>
                 <Button x:Name="NextButton" HorizontalAlignment="Right" Style="{StaticResource AccentButtonStyle}" Content="下一步 >" IsEnabled="False" Click="NextButton_Click"/>
             </StackPanel>
