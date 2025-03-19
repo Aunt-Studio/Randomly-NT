@@ -10,20 +10,15 @@
     NavigationCacheMode="Enabled">
 
     <Grid>
+        <StackPanel x:Name="infoBarStack" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
         <StackPanel Margin="36, 48">
             <TextBlock Text="Class Mode" Style="{StaticResource TitleTextBlockStyle}"/>
             <TextBlock Text="| 机器学习赋能, 随机抽取学生回答课堂问题." Style="{StaticResource BodyStrongTextBlockStyle}"/>
         </StackPanel>
         <StackPanel x:Name="WelcomeSP" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="24">
-            <Button Content="导入课程文件" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Center" Click="ImportButton_Click"/>
+            <Button x:Name="ImportButton" Content="打开课程文件" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Center" Click="ImportButton_Click"/>
             <Button x:Name="OpenEditorButton" Content="打开编辑器" HorizontalAlignment="Center" Click="OpenEditorButton_Click"/>
             <Button Content="查看文档" HorizontalAlignment="Center"/>
-        </StackPanel>
-        <StackPanel x:Name="PrepareSP" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="24" Visibility="Collapsed">
-            <TextBlock x:Name="ClassInfoTB" HorizontalAlignment="Center"/>
-            <Button Content="开始上课" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Center"/>
-            <Button Content="重新选择课程文件" HorizontalAlignment="Center" Click="ImportButton_Click"/>
-            <Button Content="编辑课程文件" HorizontalAlignment="Center" Click="OpenEditorButton_Click"/>
         </StackPanel>
         <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" Text="实验性功能，不建议过度依赖。更多信息请参见文档。" Style="{StaticResource CaptionTextBlockStyle}" Margin="0,24" Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
     </Grid>

@@ -27,7 +27,7 @@
                 <TextBlock HorizontalAlignment="Center" HorizontalTextAlignment="Center">
                     已有课堂文件?
                 </TextBlock>
-                <Button Content="编辑课堂文件" HorizontalAlignment="Center"/>
+                <Button Content="编辑课堂文件" HorizontalAlignment="Center" IsEnabled="False"/>
             </StackPanel>
         </StackPanel>
         

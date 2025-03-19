@@ -32,8 +32,16 @@ namespace Randomly_NT.ClassMode
         public string Title { get; set; }
         public string? Description { get; set; }
     }
+    public class ClassMetadata
+    {
+        public string? ClassName { get; set; }
+        public string? Teacher { get; set; }
+        public string? Course { get; set; }
+
+
+    }
     /// <summary>
-    /// 一般只在最终封装时实例化
+    /// 一般只在最终封装和解析 json 时实例化
     /// </summary>
     public class SingleClass
     {
@@ -42,6 +50,9 @@ namespace Randomly_NT.ClassMode
         public List<Student> Students { get; set; } = new();
     }
     #region 课堂抽取部分实现
+    /// <summary>
+    /// 单个课堂的所有抽取操作都应当从这个类的实例中进行
+    /// </summary>
     public class StudentSelector
     {
         // 定义权重矩阵，调整这个矩阵以自定义抽取概率

@@ -8,8 +8,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Title="Class Mode">
-
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+    
     <Grid>
-
+        <NavigationView x:Name="mainNv" PaneDisplayMode="Left"  IsSettingsVisible="False" Loaded="NavView_Loaded" SelectionChanged="NavView_SelectionChanged">
+            <Frame x:Name="contentFrame"/>
+        </NavigationView>
     </Grid>
 </Window>

@@ -81,14 +81,7 @@ namespace Randomly_NT.ClassMode
         }
     }
 
-    public class ClassMetadata
-    {
-        public string? ClassName { get; set; }
-        public string? Teacher { get; set; }
-        public string? Course { get; set; }
 
-        
-    }
     public class QuestionItem : INotifyPropertyChanged
     {
         private string? question;

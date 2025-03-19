@@ -15,6 +15,8 @@
   <ItemGroup>
     <None Remove="ClassEditor.xaml" />
     <None Remove="ClassMode.xaml" />
+    <None Remove="ClassMode\Pages\ClassQuestionPage.xaml" />
+    <None Remove="ClassMode\Pages\ClassWelcomePage.xaml" />
     <None Remove="ClassMode\Pages\QuestionsPage.xaml" />
     <None Remove="ClassMode\Pages\ReleasePage.xaml" />
     <None Remove="ClassMode\Pages\StudentsPage.xaml" />
@@ -53,6 +55,16 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.250108002" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="ClassMode\Pages\ClassWelcomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="ClassMode\Pages\ClassQuestionPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="ClassMode\Pages\ReleasePage.xaml">
