@@ -18,7 +18,6 @@
         <StackPanel x:Name="WelcomeSP" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="24">
             <Button x:Name="ImportButton" Content="打开课程文件" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Center" Click="ImportButton_Click"/>
             <Button x:Name="OpenEditorButton" Content="打开编辑器" HorizontalAlignment="Center" Click="OpenEditorButton_Click"/>
-            <Button Content="查看文档" HorizontalAlignment="Center"/>
         </StackPanel>
         <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" Text="实验性功能，不建议过度依赖。更多信息请参见文档。" Style="{StaticResource CaptionTextBlockStyle}" Margin="0,24" Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
     </Grid>
