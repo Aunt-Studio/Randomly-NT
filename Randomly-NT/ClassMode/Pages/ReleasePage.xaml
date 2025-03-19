@@ -7,9 +7,18 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    NavigationCacheMode="Enabled">
 
     <Grid>
-
+        <StackPanel x:Name="infoBarStack" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
+        <StackPanel Margin="36, 48">
+            <TextBlock Text="Release" Style="{StaticResource TitleTextBlockStyle}"/>
+            <TextBlock Text="| 发布、保存课堂数据." Style="{StaticResource BodyStrongTextBlockStyle}"/>
+        </StackPanel>
+        <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock x:Name="MetaDataTB" HorizontalAlignment="Center" HorizontalTextAlignment="Center"/>
+            <Button x:Name="OutputButton" HorizontalAlignment="Center" Content="导出课堂数据到文件" Style="{StaticResource AccentButtonStyle}" Click="Output_Click"/>
+        </StackPanel>
+        
     </Grid>
 </Page>

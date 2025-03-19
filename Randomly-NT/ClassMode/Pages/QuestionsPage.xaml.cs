@@ -57,6 +57,7 @@ namespace Randomly_NT.ClassMode.Pages
             if (!string.IsNullOrWhiteSpace(QuestionTitle.Text))
             {
                 QuestionItem.Question = QuestionTitle.Text;
+                QuestionItem.Difficulty = (Difficulty)DifficultyRB.SelectedIndex;
                 if (!string.IsNullOrWhiteSpace(QuestionDesc.Text))
                 {
                     QuestionItem.Description = QuestionDesc.Text;
@@ -93,8 +94,10 @@ namespace Randomly_NT.ClassMode.Pages
             ConfirmEditButton.Visibility = Visibility.Collapsed;
             QuestionItem.Question = QuestionTitle.Text;
             QuestionItem.Description = QuestionDesc.Text;
+            QuestionItem.Difficulty = (Difficulty)DifficultyRB.SelectedIndex;
             QuestionTitle.Text = "";
             QuestionDesc.Text = "";
+            DifficultyRB.SelectedIndex = 3;
             classEditorWindow.QuestionItems = QuestionItems.ToList();
         }
 
@@ -107,6 +110,7 @@ namespace Randomly_NT.ClassMode.Pages
         {
             classEditorWindow?.NavTo(3);
         }
+
     }
 
 }

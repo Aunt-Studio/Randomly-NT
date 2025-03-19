@@ -35,9 +35,9 @@ namespace Randomly_NT.ClassMode.Pages
             if (e.Parameter is ClassEditor classEditorWindow)
             {
                 this.classEditorWindow = classEditorWindow;
-                ClassNameTB.Text = this.classEditorWindow?.ClassData.ClassName;
-                TeacherNameTB.Text = this.classEditorWindow?.ClassData.Teacher;
-                CourseNameTB.Text = this.classEditorWindow?.ClassData.Course;
+                ClassNameTB.Text = this.classEditorWindow?.ClassMetadata.ClassName;
+                TeacherNameTB.Text = this.classEditorWindow?.ClassMetadata.Teacher;
+                CourseNameTB.Text = this.classEditorWindow?.ClassMetadata.Course;
             }
         }
         private void ClassNameChanged(object sender, RoutedEventArgs e)
@@ -48,7 +48,7 @@ namespace Randomly_NT.ClassMode.Pages
                 {
                     NextButton.IsEnabled = true;
                     if (classEditorWindow != null)
-                        classEditorWindow.ClassData.ClassName = textBox.Text;
+                        classEditorWindow.ClassMetadata.ClassName = textBox.Text;
                 }
             }
         }
@@ -59,7 +59,7 @@ namespace Randomly_NT.ClassMode.Pages
                 if (!string.IsNullOrWhiteSpace(textBox.Text))
                 {
                     if (classEditorWindow != null)
-                        classEditorWindow.ClassData.Teacher = textBox.Text;
+                        classEditorWindow.ClassMetadata.Teacher = textBox.Text;
                 }
             }
         }
@@ -70,7 +70,7 @@ namespace Randomly_NT.ClassMode.Pages
                 if (!string.IsNullOrWhiteSpace(textBox.Text))
                 {
                     if (classEditorWindow != null)
-                        classEditorWindow.ClassData.Course = textBox.Text;
+                        classEditorWindow.ClassMetadata.Course = textBox.Text;
                 }
             }
         }

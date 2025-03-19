@@ -59,20 +59,30 @@
                                 </StackPanel>
                             </Button.Content>
                         </Button>
+                        <Button x:Name="ConfirmEditButton" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Right" Visibility="Collapsed" Click="ConfirmEditButton_Click">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xEB7E;"/>
+                                    <TextBlock Text="修改"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
 
                     </StackPanel>
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Spacing="16">
                     <TextBox x:Name="QuestionTitle" Header="问题标题" HorizontalAlignment="Stretch" Width="800"/>
                     <TextBox x:Name="QuestionDesc" Header="问题描述 (可选)" HorizontalAlignment="Stretch" Width="800" AcceptsReturn="True" MinHeight="100"/>
-                    <Button x:Name="ConfirmEditButton" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Right" Visibility="Collapsed" Click="ConfirmEditButton_Click">
-                        <Button.Content>
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <FontIcon Glyph="&#xEB7E;"/>
-                                <TextBlock Text="修改"/>
-                            </StackPanel>
-                        </Button.Content>
-                    </Button>
+                    <RadioButtons x:Name="DifficultyRB"
+                                  Header="难度"
+                                  SelectedIndex="3"
+                                  >
+                        <x:String>简单</x:String>
+                        <x:String>中等</x:String>
+                        <x:String>难</x:String>
+                        <x:String>未指定</x:String>
+                    </RadioButtons>
+
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="64">

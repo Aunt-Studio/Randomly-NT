@@ -32,10 +32,19 @@ namespace Randomly_NT.ClassMode
         public string Title { get; set; }
         public string? Description { get; set; }
     }
+    /// <summary>
+    /// 一般只在最终封装时实例化
+    /// </summary>
+    public class SingleClass
+    {
+        public ClassMetadata ClassMetadata { get; set; } = new();
+        public List<Question> Questions { get; set; } = new();
+        public List<Student> Students { get; set; } = new();
+    }
     #region 课堂抽取部分实现
     public class StudentSelector
     {
-        // 定义权重矩阵
+        // 定义权重矩阵，调整这个矩阵以自定义抽取概率
         public static readonly float[,] _weights =
         {
             //Lv0    Lv1   Lv2

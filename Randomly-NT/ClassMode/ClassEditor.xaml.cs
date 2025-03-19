@@ -26,14 +26,14 @@ namespace Randomly_NT.ClassMode
     /// </summary>
     public sealed partial class ClassEditor : Window
     {
-        public ClassData ClassData { get; set; }
+        public ClassMetadata ClassMetadata { get; set; }
         public List<QuestionItem> QuestionItems { get; set; } = new();
         public List<Student> Students { get; set; } = new();
         public ClassEditor()
         {
             this.InitializeComponent();
 
-            ClassData = new() {
+            ClassMetadata = new() {
                 ClassName = ""
             };
         }
@@ -74,14 +74,14 @@ namespace Randomly_NT.ClassMode
         }
         public void NewClassData()
         {
-            ClassData = new()
+            ClassMetadata = new()
             {
                 ClassName = ""
             };
         }
     }
 
-    public class ClassData
+    public class ClassMetadata
     {
         public string? ClassName { get; set; }
         public string? Teacher { get; set; }
@@ -93,6 +93,7 @@ namespace Randomly_NT.ClassMode
     {
         private string? question;
         private string? description;
+        private Difficulty difficulty;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public string? Question
@@ -116,6 +117,18 @@ namespace Randomly_NT.ClassMode
                 {
                     description = value;
                     PropertyChanged?.Invoke(this, new(nameof(Description)));
+                }
+            }
+        }
+        public Difficulty Difficulty
+        {
+            get => difficulty;
+            set
+            {
+                if (difficulty != value)
+                {
+                    difficulty = value;
+                    PropertyChanged?.Invoke(this, new(nameof(Difficulty)));
                 }
             }
         }
