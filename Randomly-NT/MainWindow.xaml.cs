@@ -23,7 +23,6 @@ namespace Randomly_NT
         {
             this.InitializeComponent();
             ResizeWindow();
-            CenterWindow();
 
         }
 
@@ -31,7 +30,43 @@ namespace Randomly_NT
 
         private void ResizeWindow()
         {
-            this.AppWindow.Resize(new Windows.Graphics.SizeInt32(750, 950));
+            // 获取窗口句柄和AppWindow
+            IntPtr hwnd = WindowNative.GetWindowHandle(this);
+            WindowId windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
+
+            // 获取当前显示区域信息
+            DisplayArea displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);
+            var workArea = displayArea.WorkArea;
+
+            // 目标尺寸和比例
+            const double targetWidth = 750;
+            const double targetHeight = 950;
+            double targetRatio = targetWidth / targetHeight;
+
+            // 计算最大允许尺寸（占工作区90%）
+            double maxWidth = workArea.Width * 0.9;
+            double maxHeight = workArea.Height * 0.9;
+
+            // 计算最佳尺寸（保持宽高比）
+            double actualWidth = maxWidth;
+            double actualHeight = actualWidth / targetRatio;
+
+            if (actualHeight > maxHeight)
+            {
+                actualHeight = maxHeight;
+                actualWidth = actualHeight * targetRatio;
+            }
+
+            // 设置窗口尺寸
+            appWindow.Resize(new Windows.Graphics.SizeInt32(
+                (int)actualWidth,
+                (int)actualHeight));
+
+            // 居中窗口
+            appWindow.Move(new Windows.Graphics.PointInt32(
+                workArea.X + (int)((workArea.Width - actualWidth) / 2),
+                workArea.Y + (int)((workArea.Height - actualHeight) / 2)));
         }
 
         private void NavView_SelectionChanged(NavigationView sender,
@@ -72,18 +107,7 @@ namespace Randomly_NT
             // here to load the home page.
             NavView_Navigate(typeof(RandomNumberPage), new EntranceNavigationTransitionInfo());
         }
-        private void CenterWindow()
-        {
-            IntPtr hWnd = WindowNative.GetWindowHandle(this);
-            WindowId windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
-            DisplayArea displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);
 
-            var size = this.AppWindow.Size;
-            int x = (displayArea.WorkArea.Width - size.Width) / 2 + displayArea.WorkArea.X;
-            int y = (displayArea.WorkArea.Height - size.Height) / 2 + displayArea.WorkArea.Y;
-
-            this.AppWindow.Move(new Windows.Graphics.PointInt32(x, y));
-        }
 
         public void OnUpdateAvailable(object sender, NewVersionAvailableEventArgs e)
         {
