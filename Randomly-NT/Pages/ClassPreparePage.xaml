@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Randomly_NT.ClassPreparePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Randomly_NT"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    NavigationCacheMode="Enabled">
+
+    <Grid>
+        <StackPanel x:Name="infoBarStack" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+        <StackPanel Margin="36, 48">
+            <TextBlock Text="Class Mode" Style="{StaticResource TitleTextBlockStyle}"/>
+            <TextBlock Text="| 机器学习赋能, 随机抽取学生回答课堂问题." Style="{StaticResource BodyStrongTextBlockStyle}"/>
+        </StackPanel>
+        <StackPanel x:Name="WelcomeSP" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="24">
+            <Button x:Name="ImportButton" Content="打开课程文件" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Center" Click="ImportButton_Click"/>
+            <Button x:Name="OpenEditorButton" Content="打开编辑器" HorizontalAlignment="Center" Click="OpenEditorButton_Click"/>
+            <Button Content="查看文档" HorizontalAlignment="Center"/>
+        </StackPanel>
+        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" Text="实验性功能，不建议过度依赖。更多信息请参见文档。" Style="{StaticResource CaptionTextBlockStyle}" Margin="0,24" Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+    </Grid>
+</Page>

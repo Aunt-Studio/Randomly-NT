@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Randomly_NT.ClassMode.Pages.QuestionsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Randomly_NT.ClassMode.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:classmode="using:Randomly_NT.ClassMode"
+    mc:Ignorable="d"
+    NavigationCacheMode="Enabled">
+    <Page.Resources>
+        <DataTemplate x:Key="QuestionListViewTemplate" x:DataType="classmode:QuestionItem">
+            <TextBlock Text="{x:Bind Question, Mode=OneWay}" x:Phase="1" Margin="0,5,0,5"/>
+        </DataTemplate>
+    </Page.Resources>
+    <Grid>
+        <StackPanel Margin="36, 48" Spacing="36">
+            <StackPanel>
+                <TextBlock Text="Set Questions" Style="{StaticResource TitleTextBlockStyle}"/>
+                <TextBlock Text="| 设定课堂问题." Style="{StaticResource BodyStrongTextBlockStyle}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="64">
+                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Spacing="8">
+                    <!--动画设置-->
+                    
+                    <StackPanel.ChildrenTransitions>
+                        <EntranceThemeTransition FromVerticalOffset="50" />
+                        <RepositionThemeTransition IsStaggeringEnabled="False" />
+                    </StackPanel.ChildrenTransitions>
+                    <TextBlock Text="问题列表"/>
+                    <ListView
+                    x:Name="QuestionsListView"
+                    SelectionChanged="QuestionsListView_SelectionChanged"
+                    BorderThickness="1"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
+                    MinHeight="200"
+                    MaxHeight="350"
+                    Width="400"
+                    ItemsSource="{x:Bind QuestionItems, Mode=TwoWay}"
+                    ItemTemplate="{StaticResource QuestionListViewTemplate}"
+                    SelectionMode="Single"
+                    />
+                    <StackPanel Orientation="Horizontal" Spacing="24" HorizontalAlignment="Center">
+                        <Button Click="AddButton_Click">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xE710;"/>
+                                    <TextBlock Text="插入问题"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+
+                        <Button x:Name="DeleteQuestion" Click="DeleteButton_Click" >
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xE74D;"/>
+                                    <TextBlock Text="删除问题"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button x:Name="ConfirmEditButton" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Right" Visibility="Collapsed" Click="ConfirmEditButton_Click">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xEB7E;"/>
+                                    <TextBlock Text="修改"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Spacing="16">
+                    <TextBox x:Name="QuestionTitle" Header="问题标题" HorizontalAlignment="Stretch" Width="800"/>
+                    <TextBox x:Name="QuestionDesc" Header="问题描述 (可选)" HorizontalAlignment="Stretch" Width="800" AcceptsReturn="True" MinHeight="100"/>
+                    <RadioButtons x:Name="DifficultyRB"
+                                  Header="难度"
+                                  SelectedIndex="3"
+                                  >
+                        <x:String>简单</x:String>
+                        <x:String>中等</x:String>
+                        <x:String>难</x:String>
+                        <x:String>未指定</x:String>
+                    </RadioButtons>
+
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="64">
+                <Button x:Name="PrevButton" HorizontalAlignment="Left" Content="&lt; 上一步" Click="PrevButton_Click"/>
+                <Button x:Name="NextButton" HorizontalAlignment="Right" Style="{StaticResource AccentButtonStyle}" Content="下一步 >" IsEnabled="False" Click="NextButton_Click"/>
+            </StackPanel>
+            
+        </StackPanel>
+
+    </Grid>
+</Page>

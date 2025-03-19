@@ -20,10 +20,10 @@
                 VerticalScrollBarVisibility="Auto"
                 VerticalScrollMode="Enabled">
             <StackPanel Margin="36, 48" Spacing="36">
-            <StackPanel>
-                <TextBlock Text="Settings" Style="{StaticResource TitleTextBlockStyle}"/>
-                <TextBlock Text="| 设置参数、和关于 Randomly." Style="{StaticResource BodyStrongTextBlockStyle}"/>
-            </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Settings" Style="{StaticResource TitleTextBlockStyle}"/>
+                    <TextBlock Text="| 设置参数、和关于 Randomly." Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                </StackPanel>
 
                 <StackPanel Spacing="16">
                     <!--#region 动画设置-->
