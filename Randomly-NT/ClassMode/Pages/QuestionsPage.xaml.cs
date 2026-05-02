@@ -42,9 +42,9 @@ namespace Randomly_NT.ClassMode.Pages
         }
         private void QuestionsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (QuestionsListView.SelectedItem is not null)
+            if (QuestionsListView.SelectedItem is QuestionItem selectedItem)
             {
-                QuestionItem = QuestionsListView.SelectedItem as QuestionItem;
+                QuestionItem = selectedItem;
                 QuestionTitle.Text = QuestionItem.Question;
                 QuestionDesc.Text = QuestionItem.Description;
                 ConfirmEditButton.Visibility = Visibility.Visible;
@@ -72,7 +72,7 @@ namespace Randomly_NT.ClassMode.Pages
                 }
             }
 
-            classEditorWindow.QuestionItems = QuestionItems.ToList();
+            SyncQuestionItemsToEditor();
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -85,7 +85,7 @@ namespace Randomly_NT.ClassMode.Pages
                     NextButton.IsEnabled = false;
                 }
             }
-            classEditorWindow.QuestionItems = QuestionItems.ToList();
+            SyncQuestionItemsToEditor();
         }
 
 
@@ -98,7 +98,7 @@ namespace Randomly_NT.ClassMode.Pages
             QuestionTitle.Text = "";
             QuestionDesc.Text = "";
             DifficultyRB.SelectedIndex = 3;
-            classEditorWindow.QuestionItems = QuestionItems.ToList();
+            SyncQuestionItemsToEditor();
         }
 
         private void PrevButton_Click(object sender, RoutedEventArgs e)
@@ -109,6 +109,14 @@ namespace Randomly_NT.ClassMode.Pages
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
             classEditorWindow?.NavTo(3);
+        }
+
+        private void SyncQuestionItemsToEditor()
+        {
+            if (classEditorWindow is not null)
+            {
+                classEditorWindow.QuestionItems = QuestionItems.ToList();
+            }
         }
 
     }

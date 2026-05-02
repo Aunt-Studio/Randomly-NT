@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0-windows10.0.22000.0</TargetFramework>
@@ -147,14 +147,14 @@
   <!-- Publish Properties -->
   <PropertyGroup>
     <PublishReadyToRun Condition="'$(Configuration)' == 'Debug'">False</PublishReadyToRun>
-    <PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
+    <PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">False</PublishReadyToRun>
     <!--Notice: 使用代码修剪将导致设置页组件异常-->
     <PublishTrimmed>False</PublishTrimmed>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefaultLanguage>zh-cn</DefaultLanguage>
-    <PackageCertificateThumbprint>ACA97AC4C44E2ACB2D2AAD566BF118133CED0328</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>6A2349440828C530AD84B0E2D17C18BDE82DBD59</PackageCertificateThumbprint>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-    <Version>2.1.0</Version>
+    <Version>2.2.0</Version>
     <ApplicationIcon>Assets/Win32logo.ico</ApplicationIcon>
   </PropertyGroup>
 </Project>

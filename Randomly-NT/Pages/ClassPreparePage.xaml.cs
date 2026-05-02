@@ -28,7 +28,6 @@ namespace Randomly_NT
     public sealed partial class ClassPreparePage : Page
     {
         public string ClassFilePath { get; set; } = string.Empty;
-        private StudentSelector? selector = null;
         public ClassPreparePage()
         {
             this.InitializeComponent();
@@ -47,14 +46,14 @@ namespace Randomly_NT
                 openPicker.ViewMode = PickerViewMode.Thumbnail;
                 openPicker.FileTypeFilter.Clear();
                 openPicker.FileTypeFilter.Add(".rcd");
-                openPicker.CommitButtonText = "Ñ¡Ôñ Randomly class data (*.rcd) ÎÄ¼ş";
+                openPicker.CommitButtonText = "é€‰æ‹© Randomly class data (*.rcd) æ–‡ä»¶";
                 openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
 
                 var file = await openPicker.PickSingleFileAsync();
                 if (file != null)
                 {
                     ClassFilePath = file.Path;
-                    // ½âÎöÔªÊı¾İ
+                    // è§£æå…ƒæ•°æ®
                     string jsonStr = File.ReadAllText(ClassFilePath);
                     SingleClass? singleClass = JsonConvert.DeserializeObject<SingleClass>(jsonStr);
                     if (singleClass is not null)
@@ -64,13 +63,13 @@ namespace Randomly_NT
                     }
                     else
                     {
-                        ShowErrorBar("ÎŞ·¨½âÎö¿Î³ÌÎÄ¼ş¡£ÇëÈ·±£ÎÄ¼şÍêÕû¡¢ÓĞĞ§¡£");
+                        ShowErrorBar("æ— æ³•è§£æè¯¾ç¨‹æ–‡ä»¶ã€‚è¯·ç¡®ä¿æ–‡ä»¶å®Œæ•´ã€æœ‰æ•ˆã€‚");
                     }
                 }
             }
             catch (Exception ex)
             {
-                ShowErrorBar($"ÔØÈëÎÄ¼şÊ±³öÏÖÒì³£:\n{ex.ToString()}");
+                ShowErrorBar($"è½½å…¥æ–‡ä»¶æ—¶å‡ºç°å¼‚å¸¸:\n{ex.ToString()}");
             }
             finally
             {

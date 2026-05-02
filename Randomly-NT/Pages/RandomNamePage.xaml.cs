@@ -64,7 +64,7 @@ namespace Randomly_NT
                 openPicker.ViewMode = PickerViewMode.Thumbnail;
                 openPicker.FileTypeFilter.Clear();
                 openPicker.FileTypeFilter.Add(".rsd");
-                openPicker.CommitButtonText = "Ñ¡Ôñ Randomly students data (*.rsd) ÎÄ¼ş";
+                openPicker.CommitButtonText = "é€‰æ‹© Randomly students data (*.rsd) æ–‡ä»¶";
                 openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
 
                 var file = await openPicker.PickSingleFileAsync();
@@ -77,7 +77,7 @@ namespace Randomly_NT
             }
             catch (Exception ex)
             {
-                ShowErrorBar($"ÔØÈëÎÄ¼şÊ±³öÏÖÒì³£:\n{ex.ToString()}");
+                ShowErrorBar($"è½½å…¥æ–‡ä»¶æ—¶å‡ºç°å¼‚å¸¸:\n{ex.ToString()}");
             }
             finally
             {
@@ -95,7 +95,7 @@ namespace Randomly_NT
                 var fileVersion = studentsDataJObject["version"]?.ToString() ?? "null";
                 if (fileVersion == "1.0")
                 {
-                    if (studentsDataJObject["students"] is JArray studentNames) // Æ¥Åä studentsDataJObject Êı×é
+                    if (studentsDataJObject["students"] is JArray studentNames) // åŒ¹é… studentsDataJObject æ•°ç»„
                     {
                         OriginalNames.Clear();
                         foreach (var student in studentNames)
@@ -107,7 +107,7 @@ namespace Randomly_NT
                 }
                 else
                 {
-                    throw new InvalidDataException($"ÔØÈëµÄÎÄ¼ş°æ±¾({fileVersion})²»ÊÜÖ§³Ö, Ô¤ÆÚÎÄ¼ş°æ±¾Îª\"1.0\"¡£");
+                    throw new InvalidDataException($"è½½å…¥çš„æ–‡ä»¶ç‰ˆæœ¬({fileVersion})ä¸å—æ”¯æŒ, é¢„æœŸæ–‡ä»¶ç‰ˆæœ¬ä¸º\"1.0\"ã€‚");
                 }
             }
             catch
@@ -123,7 +123,7 @@ namespace Randomly_NT
                 var fileVersion = studentsDataJObject["version"]?.ToString() ?? "null";
                 if (fileVersion == "1.0")
                 {
-                    if (studentsDataJObject["students"] is JArray studentNames) // Æ¥Åä studentsDataJObject Êı×é
+                    if (studentsDataJObject["students"] is JArray studentNames) // åŒ¹é… studentsDataJObject æ•°ç»„
                     {
                         OriginalNames.Clear();
                         foreach (var student in studentNames)
@@ -135,7 +135,7 @@ namespace Randomly_NT
                 }
                 else
                 {
-                    throw new InvalidDataException($"ÔØÈëµÄÎÄ¼ş°æ±¾({fileVersion})²»ÊÜÖ§³Ö, Ô¤ÆÚÎÄ¼ş°æ±¾Îª\"1.0\"¡£");
+                    throw new InvalidDataException($"è½½å…¥çš„æ–‡ä»¶ç‰ˆæœ¬({fileVersion})ä¸å—æ”¯æŒ, é¢„æœŸæ–‡ä»¶ç‰ˆæœ¬ä¸º\"1.0\"ã€‚");
                 }
             }
             catch
@@ -148,7 +148,7 @@ namespace Randomly_NT
             try
             {
                 StudentsDataEditor studentsDataEditor;
-                // ÅĞ¶¨ÊÇ·ñÒÑÔÚµ±Ç°Ò³Ãæ´ò¿ªÊı¾İ
+                // åˆ¤å®šæ˜¯å¦å·²åœ¨å½“å‰é¡µé¢æ‰“å¼€æ•°æ®
                 if (string.IsNullOrEmpty(STDFilePath))
                 {
                     studentsDataEditor = new StudentsDataEditor();
@@ -161,7 +161,7 @@ namespace Randomly_NT
             }
             catch (Exception ex)
             {
-                ShowErrorBar($"Æô¶¯±à¼­Æ÷Ê±³öÏÖÒì³£:\n{ex.ToString()}");
+                ShowErrorBar($"å¯åŠ¨ç¼–è¾‘å™¨æ—¶å‡ºç°å¼‚å¸¸:\n{ex.ToString()}");
             }
         }
 
@@ -170,30 +170,30 @@ namespace Randomly_NT
         private async void DrawButton_Click(object sender, RoutedEventArgs e)
         {
             bool isSuccess = false;
-            // ½ûÖ¹°´Å¥ÔÙ´Î´¥·¢
+            // ç¦æ­¢æŒ‰é’®å†æ¬¡è§¦å‘
             DrawButton.IsEnabled = false;
             DrawInSelectionButton.IsEnabled = false;
-            // ÏÔÊ¾½á¹û ListView
+            // æ˜¾ç¤ºç»“æœ ListView
             DrawResultSP.Visibility = Visibility.Visible;
-            // »ñÈ¡Ëæ»úÊı·¶Î§
+            // è·å–éšæœºæ•°èŒƒå›´
             int min = 1;
             int max = OriginalNames.Count;
-            // ³õÊ¼»¯½ø¶ÈÌõ
+            // åˆå§‹åŒ–è¿›åº¦æ¡
             IndeterminateProgressBar.Visibility = Visibility.Visible;
             IndeterminateProgressBar.ShowPaused = false;
             IndeterminateProgressBar.ShowError = false;
-            // Çå¿ÕÖ®Ç°µÄ½á¹û
+            // æ¸…ç©ºä¹‹å‰çš„ç»“æœ
             DrawingResultNames.Clear();
             numberResult.Clear();
-            // ¼ì²éÊıÖµºÏ·¨ĞÔ²¢×ª»»Îª int
+            // æ£€æŸ¥æ•°å€¼åˆæ³•æ€§å¹¶è½¬æ¢ä¸º int
             if (int.TryParse(DrawNumber.Text, out int count))
             {
                 try
                 {
                     if (max - min + 1 < count)
                     {
-                        // ÊıÖµ·¶Î§²»×ã£¬ÏÔÊ¾´íÎóĞÅÏ¢
-                        ShowErrorBar($"µ±Ç°ĞÕÃû×ÜÊı({max})²»×ãÒÔ³éÈ¡Ä¿±ê³éÈ¡Êı({count})¡£\nÇë¼õÉÙ³éÈ¡Êı¡£");
+                        // æ•°å€¼èŒƒå›´ä¸è¶³ï¼Œæ˜¾ç¤ºé”™è¯¯ä¿¡æ¯
+                        ShowErrorBar($"å½“å‰å§“åæ€»æ•°({max})ä¸è¶³ä»¥æŠ½å–ç›®æ ‡æŠ½å–æ•°({count})ã€‚\nè¯·å‡å°‘æŠ½å–æ•°ã€‚");
                         DrawResultSP.Visibility = Visibility.Collapsed;
                     }
                     else
@@ -212,11 +212,11 @@ namespace Randomly_NT
                     {
                         if (ex is HttpRequestException hrEx)
                         {
-                            ShowErrorBar($"ÔÚ³¢ÊÔ·¢ËÍÇëÇó°üÊ±³öÏÖÒì³£:\n{hrEx.Message}\nÇë¼ì²éÍøÂçÁ¬½Ó²¢ÉÔºóÔÙÊÔ¡£\nÎŞÍø×´Ì¬ÏÂÇëÔÚÉèÖÃÖĞ½«Ëæ»ú»¯Ö¸Êı½µÖÁ3¼°ÒÔÏÂÒÔÊ¹³ÌĞò²»´Ó random.org »ñµÃìØÔ´¡£");
+                            ShowErrorBar($"åœ¨å°è¯•å‘é€è¯·æ±‚åŒ…æ—¶å‡ºç°å¼‚å¸¸:\n{hrEx.Message}\nè¯·æ£€æŸ¥ç½‘ç»œè¿æ¥å¹¶ç¨åå†è¯•ã€‚\næ— ç½‘çŠ¶æ€ä¸‹è¯·åœ¨è®¾ç½®ä¸­å°†éšæœºåŒ–æŒ‡æ•°é™è‡³3åŠä»¥ä¸‹ä»¥ä½¿ç¨‹åºä¸ä» random.org è·å¾—ç†µæºã€‚");
                         }
                         else
                         {
-                            ShowErrorBar("·¢ÉúÎ´ÖªµÄÒì³£:\n" + ex.ToString());
+                            ShowErrorBar("å‘ç”ŸæœªçŸ¥çš„å¼‚å¸¸:\n" + ex.ToString());
                         }
                     }
                 }
@@ -224,19 +224,19 @@ namespace Randomly_NT
                 {
                     isSuccess = false;
                     Debug.WriteLine("Ex:" + ex.ToString());
-                    ShowErrorBar("·¢ÉúÎ´ÖªµÄÒì³£:\n" + ex.ToString());
+                    ShowErrorBar("å‘ç”ŸæœªçŸ¥çš„å¼‚å¸¸:\n" + ex.ToString());
                 }
             }
             else
             {
-                // ÊıÖµ²»ºÏ·¨£¬ÏÔÊ¾´íÎóĞÅÏ¢
-                ShowErrorBar("ÎŞ·¨½«³éÈ¡ÊıÊıÖµ×ª»»ÎªÕûÊı (¿ÉÄÜÖµ³¬³ö int Êı¾İ·¶Î§?)£¬Çë¼ì²éÊäÈëºóÖØÊÔ¡£");
+                // æ•°å€¼ä¸åˆæ³•ï¼Œæ˜¾ç¤ºé”™è¯¯ä¿¡æ¯
+                ShowErrorBar("æ— æ³•å°†æŠ½å–æ•°æ•°å€¼è½¬æ¢ä¸ºæ•´æ•° (å¯èƒ½å€¼è¶…å‡º int æ•°æ®èŒƒå›´?)ï¼Œè¯·æ£€æŸ¥è¾“å…¥åé‡è¯•ã€‚");
             }
-            // »Ö¸´°´Å¥×´Ì¬
+            // æ¢å¤æŒ‰é’®çŠ¶æ€
             DrawButton.IsEnabled = true;
             DrawInSelectionButton.IsEnabled = true;
 
-            // ½ø¶ÈÌõÏÔÊ¾×´Ì¬
+            // è¿›åº¦æ¡æ˜¾ç¤ºçŠ¶æ€
             if (!isSuccess)
             {
                 IndeterminateProgressBar.ShowError = true;
@@ -355,32 +355,32 @@ namespace Randomly_NT
         {
 
             bool isSuccess = false;
-            // ½ûÖ¹°´Å¥ÔÙ´Î´¥·¢
+            // ç¦æ­¢æŒ‰é’®å†æ¬¡è§¦å‘
             DrawButton.IsEnabled = false;
             DrawInSelectionButton.IsEnabled = false;
-            // ÏÔÊ¾½á¹û ListView
+            // æ˜¾ç¤ºç»“æœ ListView
             DrawResultSP.Visibility = Visibility.Visible;
-            // Éè¶¨³éÈ¡·¶Î§
+            // è®¾å®šæŠ½å–èŒƒå›´
             List<string> names = OriginalNamesListView.SelectedItems.Cast<string>().ToList();
-            // »ñÈ¡Ëæ»úÊı·¶Î§
+            // è·å–éšæœºæ•°èŒƒå›´
             int min = 1;
             int max = names.Count;
-            // ³õÊ¼»¯½ø¶ÈÌõ
+            // åˆå§‹åŒ–è¿›åº¦æ¡
             IndeterminateProgressBar.Visibility = Visibility.Visible;
             IndeterminateProgressBar.ShowPaused = false;
             IndeterminateProgressBar.ShowError = false;
-            // Çå¿ÕÖ®Ç°µÄ½á¹û
+            // æ¸…ç©ºä¹‹å‰çš„ç»“æœ
             DrawingResultNames.Clear();
             numberResult.Clear();
-            // ¼ì²éÊıÖµºÏ·¨ĞÔ²¢×ª»»Îª int
+            // æ£€æŸ¥æ•°å€¼åˆæ³•æ€§å¹¶è½¬æ¢ä¸º int
             if (int.TryParse(DrawNumber.Text, out int count))
             {
                 try
                 {
                     if (max - min + 1 < count)
                     {
-                        // ÊıÖµ·¶Î§²»×ã£¬ÏÔÊ¾´íÎóĞÅÏ¢
-                        ShowErrorBar($"µ±Ç°ÒÑÑ¡ÔñĞÕÃû×ÜÊı({max})²»×ãÒÔ³éÈ¡Ä¿±ê³éÈ¡Êı({count})¡£\nÇë¼õÉÙ³éÈ¡Êı»òÔö¼ÓÑ¡ÔñÊı¡£");
+                        // æ•°å€¼èŒƒå›´ä¸è¶³ï¼Œæ˜¾ç¤ºé”™è¯¯ä¿¡æ¯
+                        ShowErrorBar($"å½“å‰å·²é€‰æ‹©å§“åæ€»æ•°({max})ä¸è¶³ä»¥æŠ½å–ç›®æ ‡æŠ½å–æ•°({count})ã€‚\nè¯·å‡å°‘æŠ½å–æ•°æˆ–å¢åŠ é€‰æ‹©æ•°ã€‚");
                         DrawResultSP.Visibility = Visibility.Collapsed;
                     }
                     else
@@ -399,11 +399,11 @@ namespace Randomly_NT
                     {
                         if (ex is HttpRequestException hrEx)
                         {
-                            ShowErrorBar($"ÔÚ³¢ÊÔ·¢ËÍÇëÇó°üÊ±³öÏÖÒì³£:\n{hrEx.Message}\nÇë¼ì²éÍøÂçÁ¬½Ó²¢ÉÔºóÔÙÊÔ¡£\nÎŞÍø×´Ì¬ÏÂÇëÔÚÉèÖÃÖĞ½«Ëæ»ú»¯Ö¸Êı½µÖÁ3¼°ÒÔÏÂÒÔÊ¹³ÌĞò²»´Ó random.org »ñµÃìØÔ´¡£");
+                            ShowErrorBar($"åœ¨å°è¯•å‘é€è¯·æ±‚åŒ…æ—¶å‡ºç°å¼‚å¸¸:\n{hrEx.Message}\nè¯·æ£€æŸ¥ç½‘ç»œè¿æ¥å¹¶ç¨åå†è¯•ã€‚\næ— ç½‘çŠ¶æ€ä¸‹è¯·åœ¨è®¾ç½®ä¸­å°†éšæœºåŒ–æŒ‡æ•°é™è‡³3åŠä»¥ä¸‹ä»¥ä½¿ç¨‹åºä¸ä» random.org è·å¾—ç†µæºã€‚");
                         }
                         else
                         {
-                            ShowErrorBar("·¢ÉúÎ´ÖªµÄÒì³£:\n" + ex.ToString());
+                            ShowErrorBar("å‘ç”ŸæœªçŸ¥çš„å¼‚å¸¸:\n" + ex.ToString());
                         }
                     }
                 }
@@ -411,19 +411,19 @@ namespace Randomly_NT
                 {
                     isSuccess = false;
                     Debug.WriteLine("Ex:" + ex.ToString());
-                    ShowErrorBar("·¢ÉúÎ´ÖªµÄÒì³£:\n" + ex.ToString());
+                    ShowErrorBar("å‘ç”ŸæœªçŸ¥çš„å¼‚å¸¸:\n" + ex.ToString());
                 }
             }
             else
             {
-                // ÊıÖµ²»ºÏ·¨£¬ÏÔÊ¾´íÎóĞÅÏ¢
-                ShowErrorBar("ÎŞ·¨½«³éÈ¡ÊıÊıÖµ×ª»»ÎªÕûÊı (¿ÉÄÜÖµ³¬³ö int Êı¾İ·¶Î§?)£¬Çë¼ì²éÊäÈëºóÖØÊÔ¡£");
+                // æ•°å€¼ä¸åˆæ³•ï¼Œæ˜¾ç¤ºé”™è¯¯ä¿¡æ¯
+                ShowErrorBar("æ— æ³•å°†æŠ½å–æ•°æ•°å€¼è½¬æ¢ä¸ºæ•´æ•° (å¯èƒ½å€¼è¶…å‡º int æ•°æ®èŒƒå›´?)ï¼Œè¯·æ£€æŸ¥è¾“å…¥åé‡è¯•ã€‚");
             }
-            // »Ö¸´°´Å¥×´Ì¬
+            // æ¢å¤æŒ‰é’®çŠ¶æ€
             DrawButton.IsEnabled = true;
             DrawInSelectionButton.IsEnabled = true;
 
-            // ½ø¶ÈÌõÏÔÊ¾×´Ì¬
+            // è¿›åº¦æ¡æ˜¾ç¤ºçŠ¶æ€
             if (!isSuccess)
             {
                 IndeterminateProgressBar.ShowError = true;

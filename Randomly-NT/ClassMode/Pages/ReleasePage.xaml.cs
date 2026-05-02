@@ -28,7 +28,6 @@ namespace Randomly_NT.ClassMode.Pages
     public sealed partial class ReleasePage : Page
     {
         private ClassEditor? classEditorWindow;
-        private bool isReady = true;
         public ReleasePage()
         {
             this.InitializeComponent();
@@ -42,16 +41,15 @@ namespace Randomly_NT.ClassMode.Pages
                 this.classEditorWindow = classEditorWindow;
                 if (string.IsNullOrWhiteSpace(classEditorWindow.ClassMetadata.ClassName) || classEditorWindow.QuestionItems.Count == 0 || classEditorWindow.Students.Count == 0)
                 {
-                    isReady = false;
                     OutputButton.IsEnabled = false;
-                    ShowErrorBar("ÇëÏÈÍê³ÉËùÓĞÏÈÇ°²½Öè¡£");
+                    ShowErrorBar("è¯·å…ˆå®Œæˆæ‰€æœ‰å…ˆå‰æ­¥éª¤ã€‚");
                 }
                 else
                 {
                     string metaDisplayText = $"""
-                        ¿Î³ÌÃû³Æ: {classEditorWindow.ClassMetadata.ClassName}
-                        ÎÊÌâÊıÁ¿: {classEditorWindow.QuestionItems.Count}
-                        Ñ§ÉúÊıÁ¿: {classEditorWindow.Students.Count}
+                        è¯¾ç¨‹åç§°: {classEditorWindow.ClassMetadata.ClassName}
+                        é—®é¢˜æ•°é‡: {classEditorWindow.QuestionItems.Count}
+                        å­¦ç”Ÿæ•°é‡: {classEditorWindow.Students.Count}
                         """;
                     MetaDataTB.Text = metaDisplayText;
                     OutputButton.IsEnabled = true;
@@ -61,11 +59,16 @@ namespace Randomly_NT.ClassMode.Pages
         }
         private async void Output_Click(object sender, RoutedEventArgs e)
         {
+            if (classEditorWindow is null)
+            {
+                ShowErrorBar("å½“å‰æœªå…³è”è¯¾å ‚ç¼–è¾‘çª—å£ï¼Œæ— æ³•å¯¼å‡ºæ–‡ä»¶ã€‚");
+                return;
+            }
+
             try
             {
                 var savePicker = new Windows.Storage.Pickers.FileSavePicker();
-                var window = classEditorWindow;
-                var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+                var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(classEditorWindow);
                 WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hWnd);
 
                 savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
@@ -83,13 +86,13 @@ namespace Randomly_NT.ClassMode.Pages
                     FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(file);
                     if (status == FileUpdateStatus.Complete)
                     {
-                        ShowSuccessBar($"ÎÄ¼şÒÑÓÚ{DateTime.Now}±£´æ");
+                        ShowSuccessBar($"æ–‡ä»¶å·²äº{DateTime.Now}ä¿å­˜");
                     }
                 }
             }
             catch (Exception ex)
             {
-                ShowErrorBar("±£´æÎÄ¼şÊ±·¢Éú´íÎó: " + ex.ToString());
+                ShowErrorBar("ä¿å­˜æ–‡ä»¶æ—¶å‘ç”Ÿé”™è¯¯: " + ex.ToString());
             }
         }
         private void ShowErrorBar(string message)
@@ -122,23 +125,28 @@ namespace Randomly_NT.ClassMode.Pages
         }
         private void SaveFile(string path)
         {
-            // ½«QuestionItem ×ª»»Îª Question
+            if (classEditorWindow is null)
+            {
+                throw new InvalidOperationException("å½“å‰æœªå…³è”è¯¾å ‚ç¼–è¾‘çª—å£ï¼Œæ— æ³•ä¿å­˜æ–‡ä»¶ã€‚");
+            }
+
+            // å°†QuestionItem è½¬æ¢ä¸º Question
             List<Question> questions = new();
-            foreach (var item in classEditorWindow!.QuestionItems)
+            foreach (var item in classEditorWindow.QuestionItems)
             {
                 questions.Add(new Question()
                 {
                     Difficulty = item.Difficulty,
-                    Title = item.Question!,
+                    Title = item.Question ?? string.Empty,
                     Description = item.Description
                 });
             }
-            // ·â×°¿ÎÌÃ
+            // å°è£…è¯¾å ‚
             SingleClass singleClass = new()
             {
-                ClassMetadata = classEditorWindow!.ClassMetadata,
+                ClassMetadata = classEditorWindow.ClassMetadata,
                 Questions = questions,
-                Students = classEditorWindow!.Students
+                Students = classEditorWindow.Students
             };
             string json = JsonConvert.SerializeObject(singleClass);
             File.WriteAllText(path, json, System.Text.Encoding.UTF8);

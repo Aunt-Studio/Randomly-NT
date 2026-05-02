@@ -29,9 +29,9 @@ namespace Randomly_NT.ClassMode.Pages
     {
 
         private ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-        private ClassMode classModeWindow;
-        public Question Question { get; private set; }
-        public List<Student> Students { get; private set; }
+        private ClassMode? classModeWindow;
+        public Question Question { get; private set; } = new();
+        public List<Student> Students { get; private set; } = [];
         private int currentIndex;
         public ClassQuestionPage()
         {
@@ -63,10 +63,15 @@ namespace Randomly_NT.ClassMode.Pages
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
             
-            classModeWindow.NavToQuestion(currentIndex + 1);
+            classModeWindow?.NavToQuestion(currentIndex + 1);
         }
         private void PrevButton_Click(object sender, RoutedEventArgs e)
         {
+            if (classModeWindow is null)
+            {
+                return;
+            }
+
             int currentIndex = classModeWindow.Questions.IndexOf(Question) + 1;
             classModeWindow.NavToQuestion(currentIndex - 1);
         }
@@ -74,14 +79,14 @@ namespace Randomly_NT.ClassMode.Pages
         private async void StartDrawButton_Click(object sender, RoutedEventArgs e)
         {
             StartDrawButton.IsEnabled = false;
-            // ³õÊ¼»¯½ø¶ÈÌõ
+            // åˆå§‹åŒ–è¿›åº¦æ¡
             IndeterminateProgressBar.Visibility = Visibility.Visible;
             IndeterminateProgressBar.ShowPaused = false;
             IndeterminateProgressBar.ShowError = false;
             try
             {
                 Student resultStudent = await DrawStudent();
-                DrawResultTB.Text = $"ÓĞÇë {resultStudent.Name} Í¬Ñ§»Ø´ğ~";
+                DrawResultTB.Text = $"æœ‰è¯· {resultStudent.Name} åŒå­¦å›ç­”~";
                 IndeterminateProgressBar.Visibility = Visibility.Collapsed;
             }
             catch (AggregateException ae)
@@ -91,19 +96,19 @@ namespace Randomly_NT.ClassMode.Pages
                 {
                     if (ex is HttpRequestException hrEx)
                     {
-                        ShowErrorBar($"ÔÚ³¢ÊÔ·¢ËÍÇëÇó°üÊ±³öÏÖÒì³£:\n{hrEx.Message}\nÇë¼ì²éÍøÂçÁ¬½Ó²¢ÉÔºóÔÙÊÔ¡£\nÎŞÍø×´Ì¬ÏÂÇëÔÚÉèÖÃÖĞ½«Ëæ»ú»¯Ö¸Êı½µÖÁ3¼°ÒÔÏÂ£¬²¢ÖØĞÂÆô¶¯±¾¿ÎÌÃ£¬ÒÔÊ¹³ÌĞò²»´Ó random.org »ñµÃìØÔ´¡£");
+                        ShowErrorBar($"åœ¨å°è¯•å‘é€è¯·æ±‚åŒ…æ—¶å‡ºç°å¼‚å¸¸:\n{hrEx.Message}\nè¯·æ£€æŸ¥ç½‘ç»œè¿æ¥å¹¶ç¨åå†è¯•ã€‚\næ— ç½‘çŠ¶æ€ä¸‹è¯·åœ¨è®¾ç½®ä¸­å°†éšæœºåŒ–æŒ‡æ•°é™è‡³3åŠä»¥ä¸‹ï¼Œå¹¶é‡æ–°å¯åŠ¨æœ¬è¯¾å ‚ï¼Œä»¥ä½¿ç¨‹åºä¸ä» random.org è·å¾—ç†µæºã€‚");
                         IndeterminateProgressBar.ShowError = true;
                     }
                     else
                     {
-                        ShowErrorBar("·¢ÉúÎ´ÖªµÄÒì³£:\n" + ex.ToString());
+                        ShowErrorBar("å‘ç”ŸæœªçŸ¥çš„å¼‚å¸¸:\n" + ex.ToString());
                         IndeterminateProgressBar.ShowError = true;
                     }
                 }
             }
             catch (Exception ex)
             {
-                ShowErrorBar("·¢ÉúÎ´ÖªµÄÒì³£:\n" + ex.ToString());
+                ShowErrorBar("å‘ç”ŸæœªçŸ¥çš„å¼‚å¸¸:\n" + ex.ToString());
                 IndeterminateProgressBar.ShowError = true;
             }
             finally
@@ -132,6 +137,11 @@ namespace Randomly_NT.ClassMode.Pages
 
         private async Task<Student> DrawStudent()
         {
+            if (classModeWindow is null)
+            {
+                throw new InvalidOperationException("ClassQuestionPage å°šæœªå®Œæˆå¯¼èˆªåˆå§‹åŒ–ã€‚");
+            }
+
             try
             {
                 Student student = new();

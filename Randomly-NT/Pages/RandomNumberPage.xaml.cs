@@ -55,19 +55,19 @@ namespace Randomly_NT
         }
         private async void StartDrawButton_Click(object sender, RoutedEventArgs e)
         {
-            // Õâ¸ö flag Ö»ÄÜ×÷Îª²Î¿¼£¬Êµ¼ÊÉÏÖ»¿ØÖÆ½ø¶ÈÌõÊÇ·ñÏÔÊ¾´íÎó
+            // è¿™ä¸ª flag åªèƒ½ä½œä¸ºå‚è€ƒï¼Œå®žé™…ä¸ŠåªæŽ§åˆ¶è¿›åº¦æ¡æ˜¯å¦æ˜¾ç¤ºé”™è¯¯
             bool isSuccess = false;
-            // ½ûÖ¹°´Å¥ÔÙ´Î´¥·¢
+            // ç¦æ­¢æŒ‰é’®å†æ¬¡è§¦å‘
             StartDrawButton.IsEnabled = false;
-            // ÏÔÊ¾½á¹û ListView
+            // æ˜¾ç¤ºç»“æžœ ListView
             DrawResultListView.Visibility = Visibility.Visible;
-            // ³õÊ¼»¯½ø¶ÈÌõ
+            // åˆå§‹åŒ–è¿›åº¦æ¡
             IndeterminateProgressBar.Visibility = Visibility.Visible;
             IndeterminateProgressBar.ShowPaused = false;
             IndeterminateProgressBar.ShowError = false;
-            // Çå¿ÕÖ®Ç°µÄ½á¹û
+            // æ¸…ç©ºä¹‹å‰çš„ç»“æžœ
             numberResult.Clear();
-            // ¼ì²éÊýÖµºÏ·¨ÐÔ²¢×ª»»Îª int
+            // æ£€æŸ¥æ•°å€¼åˆæ³•æ€§å¹¶è½¬æ¢ä¸º int
             if (int.TryParse(MinNumber.Text, out int min)
                 && int.TryParse(MaxNumber.Text, out int max)
                 && int.TryParse(Number.Text, out int count))
@@ -78,23 +78,23 @@ namespace Randomly_NT
                     {
                         if (count > 1000)
                         {
-                            // ÊýÖµ¹ý´ó£¬ÏÔÊ¾¾¯¸æÐÅÏ¢
-                            if (count > 50000) ShowWarningBar("Éú³ÉµÄËæ»úÊý¹ý¶à£¬½«ÆôÓÃ·ÖÅú´¦Àí£¬µ«ÈÔ¿ÉÄÜµ¼ÖÂUIÏß³Ì¿¨¶Ù¡£\n¿ÉÄÜµÄ½á¹û¿òÒç³öÏµ WinUI ×é¼þÒÑÖªÎÊÌâ¡£");
-                            else ShowWarningBar("Éú³ÉµÄËæ»úÊý¹ý¶à£¬½«ÆôÓÃ·ÖÅú´¦Àí£¬µ«ÈÔ¿ÉÄÜµ¼ÖÂUIÏß³Ì¿¨¶Ù¡£");
+                            // æ•°å€¼è¿‡å¤§ï¼Œæ˜¾ç¤ºè­¦å‘Šä¿¡æ¯
+                            if (count > 50000) ShowWarningBar("ç”Ÿæˆçš„éšæœºæ•°è¿‡å¤šï¼Œå°†å¯ç”¨åˆ†æ‰¹å¤„ç†ï¼Œä½†ä»å¯èƒ½å¯¼è‡´UIçº¿ç¨‹å¡é¡¿ã€‚\nå¯èƒ½çš„ç»“æžœæ¡†æº¢å‡ºç³» WinUI ç»„ä»¶å·²çŸ¥é—®é¢˜ã€‚");
+                            else ShowWarningBar("ç”Ÿæˆçš„éšæœºæ•°è¿‡å¤šï¼Œå°†å¯ç”¨åˆ†æ‰¹å¤„ç†ï¼Œä½†ä»å¯èƒ½å¯¼è‡´UIçº¿ç¨‹å¡é¡¿ã€‚");
                         }
                         if (avoidRepeat)
                         {
                             if (max - min + 1 < count)
                             {
-                                // ÊýÖµ·¶Î§²»×ã£¬ÏÔÊ¾´íÎóÐÅÏ¢
-                                ShowErrorBar("ÄúÒÑÆôÓÃ±ÜÃâÖØ¸´£¬×î´óÖµÓë×îÐ¡ÖµÖ®¼äµÄÊýÖµ·¶Î§²»×ãÒÔÉú³ÉÖ¸¶¨ÊýÁ¿µÄËæ»úÊý£¬\nÇë¼ì²éÊäÈëºóÖØÊÔ¡£");
+                                // æ•°å€¼èŒƒå›´ä¸è¶³ï¼Œæ˜¾ç¤ºé”™è¯¯ä¿¡æ¯
+                                ShowErrorBar("æ‚¨å·²å¯ç”¨é¿å…é‡å¤ï¼Œæœ€å¤§å€¼ä¸Žæœ€å°å€¼ä¹‹é—´çš„æ•°å€¼èŒƒå›´ä¸è¶³ä»¥ç”ŸæˆæŒ‡å®šæ•°é‡çš„éšæœºæ•°ï¼Œ\nè¯·æ£€æŸ¥è¾“å…¥åŽé‡è¯•ã€‚");
                                 DrawResultListView.Visibility = Visibility.Collapsed;
                             }
                             else
                             {
-                                // ±£´æ²ÎÊý
+                                // ä¿å­˜å‚æ•°
                                 SaveRandomNumberSettings(min, max, count);
-                                // Éú³ÉËæ»úÊý
+                                // ç”Ÿæˆéšæœºæ•°
                                 await StartDrawUniqueRandom(min, max, count, numberResult);
                                 isSuccess = true;
                             }
@@ -102,9 +102,9 @@ namespace Randomly_NT
                         }
                         else
                         {
-                            // ±£´æ²ÎÊý
+                            // ä¿å­˜å‚æ•°
                             SaveRandomNumberSettings(min, max, count);
-                            // Éú³ÉËæ»úÊý
+                            // ç”Ÿæˆéšæœºæ•°
                             await StartDrawRandom(min, max, count, numberResult);
                             isSuccess = true;
                         }
@@ -118,11 +118,11 @@ namespace Randomly_NT
                         {
                             if (ex is HttpRequestException hrEx)
                             {
-                                ShowErrorBar($"ÔÚ³¢ÊÔ·¢ËÍÇëÇó°üÊ±³öÏÖÒì³£:\n{hrEx.Message}\nÇë¼ì²éÍøÂçÁ¬½Ó²¢ÉÔºóÔÙÊÔ¡£\nÎÞÍø×´Ì¬ÏÂÇëÔÚÉèÖÃÖÐ½«Ëæ»ú»¯Ö¸Êý½µÖÁ3¼°ÒÔÏÂÒÔÊ¹³ÌÐò²»´Ó random.org »ñµÃìØÔ´¡£");
+                                ShowErrorBar($"åœ¨å°è¯•å‘é€è¯·æ±‚åŒ…æ—¶å‡ºçŽ°å¼‚å¸¸:\n{hrEx.Message}\nè¯·æ£€æŸ¥ç½‘ç»œè¿žæŽ¥å¹¶ç¨åŽå†è¯•ã€‚\næ— ç½‘çŠ¶æ€ä¸‹è¯·åœ¨è®¾ç½®ä¸­å°†éšæœºåŒ–æŒ‡æ•°é™è‡³3åŠä»¥ä¸‹ä»¥ä½¿ç¨‹åºä¸ä»Ž random.org èŽ·å¾—ç†µæºã€‚");
                             }
                             else
                             {
-                                ShowErrorBar("·¢ÉúÎ´ÖªµÄÒì³£:\n" + ex.ToString());
+                                ShowErrorBar("å‘ç”ŸæœªçŸ¥çš„å¼‚å¸¸:\n" + ex.ToString());
                             }
                         }
                     }
@@ -130,20 +130,20 @@ namespace Randomly_NT
                     {
                         isSuccess = false;
                         Debug.WriteLine("Ex:" + ex.ToString());
-                        ShowErrorBar("·¢ÉúÎ´ÖªµÄÒì³£:\n" + ex.ToString());
+                        ShowErrorBar("å‘ç”ŸæœªçŸ¥çš„å¼‚å¸¸:\n" + ex.ToString());
                     }
 
                 }
                 else
                 {
-                    // ×îÐ¡Öµ´óÓÚ×î´óÖµ£¬ÏÔÊ¾´íÎóÐÅÏ¢
-                    ShowErrorBar("×îÐ¡Öµ²»ÄÜ´óÓÚ×î´óÖµ£¬Çë¼ì²éÊäÈëºóÖØÊÔ¡£");
+                    // æœ€å°å€¼å¤§äºŽæœ€å¤§å€¼ï¼Œæ˜¾ç¤ºé”™è¯¯ä¿¡æ¯
+                    ShowErrorBar("æœ€å°å€¼ä¸èƒ½å¤§äºŽæœ€å¤§å€¼ï¼Œè¯·æ£€æŸ¥è¾“å…¥åŽé‡è¯•ã€‚");
                 }
             }
             else
             {
-                // ÊýÖµ²»ºÏ·¨£¬ÏÔÊ¾´íÎóÐÅÏ¢
-                ShowErrorBar("ÎÞ·¨½«ÊäÈëµÄÊýÖµ×ª»»ÎªÕûÊý (¿ÉÄÜÄ³¸öÖµ³¬³ö int Êý¾Ý·¶Î§?)£¬Çë¼ì²éÊäÈëºóÖØÊÔ¡£");
+                // æ•°å€¼ä¸åˆæ³•ï¼Œæ˜¾ç¤ºé”™è¯¯ä¿¡æ¯
+                ShowErrorBar("æ— æ³•å°†è¾“å…¥çš„æ•°å€¼è½¬æ¢ä¸ºæ•´æ•° (å¯èƒ½æŸä¸ªå€¼è¶…å‡º int æ•°æ®èŒƒå›´?)ï¼Œè¯·æ£€æŸ¥è¾“å…¥åŽé‡è¯•ã€‚");
             }
             StartDrawButton.IsEnabled = true;
             if (!isSuccess)
@@ -226,7 +226,7 @@ namespace Randomly_NT
             catch (Exception ex)
             {
                 Debug.WriteLine("Ex:" + ex.ToString());
-                ShowErrorBar("·¢ÉúÎ´ÖªµÄÒì³£:\n" + ex.ToString());
+                ShowErrorBar("å‘ç”ŸæœªçŸ¥çš„å¼‚å¸¸:\n" + ex.ToString());
             }
 
         }
@@ -262,15 +262,15 @@ namespace Randomly_NT
 
         private void ResetResultsButton_Click(object sender, RoutedEventArgs e)
         {
-            // Çå¿Õ½á¹û
+            // æ¸…ç©ºç»“æžœ
             numberResult.Clear();
-            // Òþ²Ø½á¹û ListView
+            // éšè—ç»“æžœ ListView
             DrawResultListView.Visibility = Visibility.Collapsed;
         }
 
         private void DisableRepeatSwitch_Click(object sender, RoutedEventArgs e)
         {
-            // ÕâÀï×ö³ÉÊý¾Ý°ó¶¨»á²»»á¸üºÃ£¿µ«ÎÒ½ñÌìÀÁµÃÐ´ÁË
+            // è¿™é‡Œåšæˆæ•°æ®ç»‘å®šä¼šä¸ä¼šæ›´å¥½ï¼Ÿä½†æˆ‘ä»Šå¤©æ‡’å¾—å†™äº†
             avoidRepeat = DisableRepeatSwitch.IsChecked ?? false;
         }
 
@@ -281,13 +281,13 @@ namespace Randomly_NT
             var compositor = visual.Compositor;
 
             ElementCompositionPreview.SetIsTranslationEnabled(TitleSP, true);
-            visual.Properties.InsertVector3("Translation", new Vector3(36, -100, 0)); // ³õÊ¼Î»ÖÃ
+            visual.Properties.InsertVector3("Translation", new Vector3(36, -100, 0)); // åˆå§‹ä½ç½®
 
             var easingFunc = compositor.CreateCubicBezierEasingFunction(
-                new Vector2(0.1f, 0.8f), new Vector2(0.2f, 1.0f));  // »º¶¯º¯Êý
+                new Vector2(0.1f, 0.8f), new Vector2(0.2f, 1.0f));  // ç¼“åŠ¨å‡½æ•°
             var animation = compositor.CreateVector3KeyFrameAnimation();
-            animation.InsertKeyFrame(1.0f, new Vector3(36, 48, 0), easingFunc); // Ä¿±êÎ»ÖÃ
-            animation.Duration = TimeSpan.FromMilliseconds(600); // ¶¯»­Ê±³¤
+            animation.InsertKeyFrame(1.0f, new Vector3(36, 48, 0), easingFunc); // ç›®æ ‡ä½ç½®
+            animation.Duration = TimeSpan.FromMilliseconds(600); // åŠ¨ç”»æ—¶é•¿
 
             visual.StartAnimation("Translation", animation);
         }
