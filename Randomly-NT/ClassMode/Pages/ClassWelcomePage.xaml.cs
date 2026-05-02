@@ -37,7 +37,7 @@ namespace Randomly_NT.ClassMode.Pages
             {
                 this.classModeWindow = classModeWindow;
                 this.ClassWelcomeTB.Text = $"{classModeWindow.ClassMetadata.ClassName}";
-                this.ClassDescTB.Text = $"欢迎来到{classModeWindow.ClassMetadata.Teacher}老师的{classModeWindow.ClassMetadata.Course}课堂!";
+                this.ClassDescTB.Text = $"娆㈣繋鏉ュ埌{classModeWindow.ClassMetadata.Teacher}鑰佸笀鐨剓classModeWindow.ClassMetadata.Course}璇惧爞!";
             }
         }
 

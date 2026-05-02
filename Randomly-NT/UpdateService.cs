@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
@@ -56,26 +56,19 @@ namespace Randomly_NT
                         string? assemblyVer = metaJson["assemblyVer"]?.ToString();
                         string? downloadUrl = metaJson["downloadUrl"]?.ToString();
                         string? hash = metaJson["hash"]?.ToString();
-                        string? hasScriptFlag = metaJson["hasScript"]?.ToString();
 
                         if (Version.TryParse(packageVer, out var remotePackageVer)
                             && Version.TryParse(assemblyVer, out var remoteAssemblyVer)
                             && downloadUrl is not null
-                            && hash is not null
-                            && hasScriptFlag is not null)
+                            && hash is not null)
                         {
                             VersionMeta remoteVersionMeta = new(remotePackageVer, remoteAssemblyVer);
                             // 比较版本号
                             if (IsNewVersionAvailable(remoteVersionMeta))
                             {
                                 HasNewVersion = true;
-                                bool hasScript = false;
-                                if (hasScriptFlag == "true")
-                                {
-                                    hasScript = true;
-                                }
                                 NewVersionMeta = new(remoteVersionMeta.PackageVersion, remoteVersionMeta.AssemblyVersion,
-                                                     downloadUrl, hash, hasScript);
+                                                     downloadUrl, hash);
                                 // 触发事件，更不更新前端自己看着办
                                 NewVersionAvailable?.Invoke(this, new(NewVersionMeta));
                             }
@@ -91,7 +84,7 @@ namespace Randomly_NT
                 {
                     _retryTimes++;
                     await Task.Delay(1000);
-                    CheckUpdateAsync();
+                    await CheckUpdateAsync();
                 }
             }
 
@@ -110,7 +103,7 @@ namespace Randomly_NT
             }
             else
             {
-                // 无法获取包版本号（程序可能已经被解包？），获取程序集版本号
+                // 无法获取包版本号（程序可能未打包？），获取程序集版本号
                 var assembly = Assembly.GetExecutingAssembly();
                 Version? assemblyVersion = assembly.GetName().Version;
                 if (assemblyVersion is not null)
@@ -163,7 +156,6 @@ namespace Randomly_NT
 
         private string DownloadUrl { get; set; }
         private string Hash { get; set; }
-        private bool HasScript { get; set; }
         public UpdateStatus Status { get; private set; } = UpdateStatus.None;
         /// <summary>
         /// 错误信息，只有当 Status 为 Error 时才非 null
@@ -178,11 +170,10 @@ namespace Randomly_NT
         /// </summary>
         public string? UpdatePkgPath { get; private set; }
         public event EventHandler<UpdateErrorEventArgs>? UpdateErrorOccurred;
-        public NewVersionMeta(Version packageVersion, Version assemblyVersion, string downloadUrl, string hash, bool hasScript) : base(packageVersion, assemblyVersion)
+        public NewVersionMeta(Version packageVersion, Version assemblyVersion, string downloadUrl, string hash) : base(packageVersion, assemblyVersion)
         {
             DownloadUrl = downloadUrl;
             Hash = hash;
-            HasScript = hasScript;
         }
 
         public async Task Download()
@@ -244,27 +235,36 @@ namespace Randomly_NT
                     }
                 }
                 // 下好了
-                if (!File.Exists(UpdatePkgPath))
+                var updatePkgPath = UpdatePkgPath;
+                if (string.IsNullOrWhiteSpace(updatePkgPath) || !File.Exists(updatePkgPath))
                 {
                     Status = UpdateStatus.Error;
                     throw new FileNotFoundException("找不到更新包文件。请重新下载更新包。");
                 }
                 // 解压
-                var path = Path.Combine(Path.GetDirectoryName(UpdatePkgPath) ?? Path.GetTempPath(), Path.GetFileNameWithoutExtension(UpdatePkgPath));
+                var path = Path.Combine(Path.GetDirectoryName(updatePkgPath) ?? Path.GetTempPath(), Path.GetFileNameWithoutExtension(updatePkgPath));
                 Directory.CreateDirectory(path);
                 // 覆盖已存在的文件
-                ZipFile.ExtractToDirectory(UpdatePkgPath, path, overwriteFiles: true);
+                ZipFile.ExtractToDirectory(updatePkgPath, path, overwriteFiles: true);
                 // 触发更新器安装更新
-                if (!File.Exists(Path.Combine(path, "Updater.exe")))
+                var updaterPath = Path.Combine(path, "Updater.exe");
+                if (!File.Exists(updaterPath))
                 {
                     throw new FileNotFoundException($"无法找到自动部署更新程序。请手动安装。\n已解压到目录{path}");
                 }
+
+                Status = UpdateStatus.Updating;
                 var psi = new ProcessStartInfo
                 {
-                    FileName = Path.Combine(path, "Updater.exe"),
-                    Arguments = "-AF",
+                    FileName = updaterPath,
+                    WorkingDirectory = path,
                     UseShellExecute = true
                 };
+
+                psi.ArgumentList.Add("auto");
+                psi.ArgumentList.Add("--working-directory");
+                psi.ArgumentList.Add(path);
+
                 Process.Start(psi);
                 Environment.Exit(2);
             }
@@ -396,6 +396,10 @@ namespace Randomly_NT
 
             var state = JsonConvert.DeserializeObject<DownloadState>(
                 await File.ReadAllTextAsync(stateFile));
+            if (state is null)
+            {
+                throw new InvalidDataException($"无法读取下载状态文件: {stateFile}");
+            }
             return (state.FileSize, state.DownloadedBytes);
         }
 
@@ -556,7 +560,7 @@ namespace Randomly_NT
                     {
                         var state = JsonConvert.DeserializeObject<DownloadState>(
                             File.ReadAllText(stateFile));
-                        if (state.DownloadedBytes == new FileInfo(file).Length)
+                        if (state is not null && state.DownloadedBytes == new FileInfo(file).Length)
                         {
                             continue; // 保留有效状态
                         }

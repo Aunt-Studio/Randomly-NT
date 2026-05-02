@@ -93,7 +93,7 @@ namespace Randomly_NT.ClassMode.Pages
             }
         }
 
-        #region ´Ó RSD µ¼ÈëÑ§Éú
+        #region ä» RSD å¯¼å…¥å­¦ç”Ÿ
         private async void ImportRSDButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -108,7 +108,7 @@ namespace Randomly_NT.ClassMode.Pages
                 openPicker.ViewMode = PickerViewMode.Thumbnail;
                 openPicker.FileTypeFilter.Clear();
                 openPicker.FileTypeFilter.Add(".rsd");
-                openPicker.CommitButtonText = "Ñ¡Ôñ Randomly students data (*.rsd) ÎÄ¼ş";
+                openPicker.CommitButtonText = "é€‰æ‹© Randomly students data (*.rsd) æ–‡ä»¶";
                 openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
 
                 var file = await openPicker.PickSingleFileAsync();
@@ -125,7 +125,7 @@ namespace Randomly_NT.ClassMode.Pages
             }
             catch (Exception ex)
             {
-                ShowErrorBar($"ÔØÈëÎÄ¼şÊ±³öÏÖÒì³£:\n{ex.ToString()}");
+                ShowErrorBar($"è½½å…¥æ–‡ä»¶æ—¶å‡ºç°å¼‚å¸¸:\n{ex.ToString()}");
             }
             finally
             {
@@ -140,7 +140,7 @@ namespace Randomly_NT.ClassMode.Pages
                 var fileVersion = studentsDataJObject["version"]?.ToString() ?? "null";
                 if (fileVersion == "1.0")
                 {
-                    if (studentsDataJObject["students"] is JArray studentNames) // Æ¥Åä studentsDataJObject Êı×é
+                    if (studentsDataJObject["students"] is JArray studentNames) // åŒ¹é… studentsDataJObject æ•°ç»„
                     {
                         OriginalNames.Clear();
                         foreach (var student in studentNames)
@@ -152,7 +152,7 @@ namespace Randomly_NT.ClassMode.Pages
                 }
                 else
                 {
-                    throw new InvalidDataException($"ÔØÈëµÄÎÄ¼ş°æ±¾({fileVersion})²»ÊÜÖ§³Ö, Ô¤ÆÚÎÄ¼ş°æ±¾Îª\"1.0\"¡£");
+                    throw new InvalidDataException($"è½½å…¥çš„æ–‡ä»¶ç‰ˆæœ¬({fileVersion})ä¸å—æ”¯æŒ, é¢„æœŸæ–‡ä»¶ç‰ˆæœ¬ä¸º\"1.0\"ã€‚");
                 }
             }
             catch
@@ -178,7 +178,7 @@ namespace Randomly_NT.ClassMode.Pages
 
         private void ImportFormTextButton_Click(object sender, RoutedEventArgs e)
         {
-            // ÒÔ»»ĞĞ·û·Ö¸îÑ§Éú
+            // ä»¥æ¢è¡Œç¬¦åˆ†å‰²å­¦ç”Ÿ
             OriginalNames = new ObservableCollection<string>(StudentListTextBox.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
             if (OriginalNames.Count > 0)
             {
@@ -205,7 +205,7 @@ namespace Randomly_NT.ClassMode.Pages
                     }
                     else
                     {
-                        ShowErrorBar($"µÚ {i + 1} ĞĞ³É¼¨\"{OriginalScores[i]}\"ÎŞ·¨±»×ª»»Îª¸¡µãÊıÀàĞÍ¡£Çë¼ì²é¡£");
+                        ShowErrorBar($"ç¬¬ {i + 1} è¡Œæˆç»©\"{OriginalScores[i]}\"æ— æ³•è¢«è½¬æ¢ä¸ºæµ®ç‚¹æ•°ç±»å‹ã€‚è¯·æ£€æŸ¥ã€‚");
                     }
                     ScoreSP.Visibility = Visibility.Collapsed;
                     FitModelSP.Visibility = Visibility.Visible;
@@ -214,12 +214,18 @@ namespace Randomly_NT.ClassMode.Pages
             }
             else
             {
-                ShowErrorBar($"³É¼¨ÁĞ±íÊıÄ¿{OriginalScores.Count} Óë Ñ§ÉúÁĞ±íÊıÄ¿{OriginalNames.Count}²»Æ¥Åä¡£");
+                ShowErrorBar($"æˆç»©åˆ—è¡¨æ•°ç›®{OriginalScores.Count} ä¸ å­¦ç”Ÿåˆ—è¡¨æ•°ç›®{OriginalNames.Count}ä¸åŒ¹é…ã€‚");
             }
         }
 
         private void FitModelButton_Click(object sender, RoutedEventArgs e)
         {
+            if (classEditorWindow is null)
+            {
+                ShowErrorBar("å½“å‰æœªå…³è”è¯¾å ‚ç¼–è¾‘çª—å£ï¼Œæ— æ³•å†™å›å­¦ç”Ÿåˆ†å±‚ç»“æœã€‚");
+                return;
+            }
+
             FitModelButton.IsEnabled = false;
             IndeterminateProgressBar.Visibility = Visibility.Visible;
             IndeterminateProgressBar.ShowPaused = false;
@@ -228,13 +234,13 @@ namespace Randomly_NT.ClassMode.Pages
             {
                 StudentClusterService studentClusterService = new();
                 classEditorWindow.Students = studentClusterService.ClusterStudents(RawStudents.ToList());
-                ShowSuccessBar("Ä£ĞÍÄâºÏ³É¹¦¡£Çë½øÈëÏÂÒ»²½¡£");
+                ShowSuccessBar("æ¨¡å‹æ‹ŸåˆæˆåŠŸã€‚è¯·è¿›å…¥ä¸‹ä¸€æ­¥ã€‚");
                 NextButton.IsEnabled = true;
 
             }
             catch (Exception ex)
             {
-                ShowErrorBar($"ÄâºÏÄ£ĞÍÊ±³öÏÖÒì³£:\n{ex.ToString()}");
+                ShowErrorBar($"æ‹Ÿåˆæ¨¡å‹æ—¶å‡ºç°å¼‚å¸¸:\n{ex.ToString()}");
             }
 
             FitModelButton.IsEnabled = true;

@@ -57,8 +57,8 @@ namespace Randomly_NT
             }
             else
             {
-                studentDataItems.Add(new StudentDataItem { Name = "ÇëÔÚµ×²¿µ¼ÈëÒÑ±à¼­ºÃµÄÑ§ÉúÁĞ±íÎÄ¼ş" });
-                studentDataItems.Add(new StudentDataItem { Name = "»òÓÒ¼üÉ¾³ıÕâÁ½ĞĞ¿ªÊ¼ÊäÈëÄúµÄÑ§Éú" });
+                studentDataItems.Add(new StudentDataItem { Name = "è¯·åœ¨åº•éƒ¨å¯¼å…¥å·²ç¼–è¾‘å¥½çš„å­¦ç”Ÿåˆ—è¡¨æ–‡ä»¶" });
+                studentDataItems.Add(new StudentDataItem { Name = "æˆ–å³é”®åˆ é™¤è¿™ä¸¤è¡Œå¼€å§‹è¾“å…¥æ‚¨çš„å­¦ç”Ÿ" });
             }
         }
 
@@ -68,13 +68,13 @@ namespace Randomly_NT
             var compositor = visual.Compositor;
 
             ElementCompositionPreview.SetIsTranslationEnabled(TitleSP, true);
-            visual.Properties.InsertVector3("Translation", new Vector3(36, -100, 0)); // ³õÊ¼Î»ÖÃ
+            visual.Properties.InsertVector3("Translation", new Vector3(36, -100, 0)); // åˆå§‹ä½ç½®
 
             var easingFunc = compositor.CreateCubicBezierEasingFunction(
-                new Vector2(0.1f, 0.8f), new Vector2(0.2f, 1.0f));  // »º¶¯º¯Êı
+                new Vector2(0.1f, 0.8f), new Vector2(0.2f, 1.0f));  // ç¼“åŠ¨å‡½æ•°
             var animation = compositor.CreateVector3KeyFrameAnimation();
-            animation.InsertKeyFrame(1.0f, new Vector3(36, 48, 0), easingFunc); // Ä¿±êÎ»ÖÃ
-            animation.Duration = TimeSpan.FromMilliseconds(800); // ¶¯»­Ê±³¤
+            animation.InsertKeyFrame(1.0f, new Vector3(36, 48, 0), easingFunc); // ç›®æ ‡ä½ç½®
+            animation.Duration = TimeSpan.FromMilliseconds(800); // åŠ¨ç”»æ—¶é•¿
 
             visual.StartAnimation("Translation", animation);
         }
@@ -157,13 +157,13 @@ namespace Randomly_NT
                     if (status == FileUpdateStatus.Complete)
                     {
                         dataEditor!.Saved = true;
-                        ShowSuccessBar($"ÎÄ¼şÒÑÓÚ{DateTime.Now}±£´æ");
+                        ShowSuccessBar($"æ–‡ä»¶å·²äº{DateTime.Now}ä¿å­˜");
                     }
                 }
             }
             catch (Exception ex)
             {
-                ShowErrorBar("±£´æÎÄ¼şÊ±·¢Éú´íÎó: " + ex.ToString());
+                ShowErrorBar("ä¿å­˜æ–‡ä»¶æ—¶å‘ç”Ÿé”™è¯¯: " + ex.ToString());
             }
             finally
             {
@@ -184,7 +184,7 @@ namespace Randomly_NT
                 openPicker.ViewMode = PickerViewMode.Thumbnail;
                 openPicker.FileTypeFilter.Clear();
                 openPicker.FileTypeFilter.Add(".rsd");
-                openPicker.CommitButtonText = "Ñ¡Ôñ Randomly students data (*.rsd) ÎÄ¼ş";
+                openPicker.CommitButtonText = "é€‰æ‹© Randomly students data (*.rsd) æ–‡ä»¶";
                 openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
 
                 var file = await openPicker.PickSingleFileAsync();
@@ -195,7 +195,7 @@ namespace Randomly_NT
             }
             catch (Exception ex)
             {
-                ShowErrorBar($"ÔØÈëÎÄ¼şÊ±³öÏÖÒì³£:\n{ex.ToString()}");
+                ShowErrorBar($"è½½å…¥æ–‡ä»¶æ—¶å‡ºç°å¼‚å¸¸:\n{ex.ToString()}");
             }
             finally
             {
@@ -239,7 +239,7 @@ namespace Randomly_NT
                 var fileVersion = studentsDataJObject["version"]?.ToString() ?? "null";
                 if (fileVersion == "1.0")
                 {
-                    if (studentsDataJObject["students"] is JArray studentNames) // Æ¥Åä studentsDataJObject Êı×é
+                    if (studentsDataJObject["students"] is JArray studentNames) // åŒ¹é… studentsDataJObject æ•°ç»„
                     {
                         studentDataItems.Clear();
                         foreach (var student in studentNames)
@@ -250,7 +250,7 @@ namespace Randomly_NT
                 }
                 else
                 {
-                    throw new InvalidDataException($"ÔØÈëµÄÎÄ¼ş°æ±¾({fileVersion})²»ÊÜÖ§³Ö, Ô¤ÆÚÎÄ¼ş°æ±¾Îª\"1.0\"¡£");
+                    throw new InvalidDataException($"è½½å…¥çš„æ–‡ä»¶ç‰ˆæœ¬({fileVersion})ä¸å—æ”¯æŒ, é¢„æœŸæ–‡ä»¶ç‰ˆæœ¬ä¸º\"1.0\"ã€‚");
                 }
             }
             catch

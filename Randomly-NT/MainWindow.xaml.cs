@@ -30,25 +30,25 @@ namespace Randomly_NT
 
         private void ResizeWindow()
         {
-            // »ñÈ¡´°¿Ú¾ä±úºÍAppWindow
+            // è·å–çª—å£å¥æŸ„å’ŒAppWindow
             IntPtr hwnd = WindowNative.GetWindowHandle(this);
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
             AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
 
-            // »ñÈ¡µ±Ç°ÏÔÊ¾ÇøÓòĞÅÏ¢
+            // è·å–å½“å‰æ˜¾ç¤ºåŒºåŸŸä¿¡æ¯
             DisplayArea displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);
             var workArea = displayArea.WorkArea;
 
-            // Ä¿±ê³ß´çºÍ±ÈÀı
+            // ç›®æ ‡å°ºå¯¸å’Œæ¯”ä¾‹
             const double targetWidth = 750;
             const double targetHeight = 950;
             double targetRatio = targetWidth / targetHeight;
 
-            // ¼ÆËã×î´óÔÊĞí³ß´ç£¨Õ¼¹¤×÷Çø90%£©
+            // è®¡ç®—æœ€å¤§å…è®¸å°ºå¯¸ï¼ˆå å·¥ä½œåŒº90%ï¼‰
             double maxWidth = workArea.Width * 0.9;
             double maxHeight = workArea.Height * 0.9;
 
-            // ¼ÆËã×î¼Ñ³ß´ç£¨±£³Ö¿í¸ß±È£©
+            // è®¡ç®—æœ€ä½³å°ºå¯¸ï¼ˆä¿æŒå®½é«˜æ¯”ï¼‰
             double actualWidth = maxWidth;
             double actualHeight = actualWidth / targetRatio;
 
@@ -58,12 +58,12 @@ namespace Randomly_NT
                 actualWidth = actualHeight * targetRatio;
             }
 
-            // ÉèÖÃ´°¿Ú³ß´ç
+            // è®¾ç½®çª—å£å°ºå¯¸
             appWindow.Resize(new Windows.Graphics.SizeInt32(
                 (int)actualWidth,
                 (int)actualHeight));
 
-            // ¾ÓÖĞ´°¿Ú
+            // å±…ä¸­çª—å£
             appWindow.Move(new Windows.Graphics.PointInt32(
                 workArea.X + (int)((workArea.Width - actualWidth) / 2),
                 workArea.Y + (int)((workArea.Height - actualHeight) / 2)));

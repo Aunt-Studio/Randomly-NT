@@ -1,4 +1,4 @@
-﻿using Microsoft.ML;
+using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Trainers;
 using System;
@@ -15,7 +15,7 @@ namespace Randomly_NT.ClassMode
     public class Student
     {
         public string Id { get; } = Guid.NewGuid().ToString("N");
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public int Level { get; set; }
     }
 
@@ -29,7 +29,7 @@ namespace Randomly_NT.ClassMode
     public class Question
     {
         public Difficulty Difficulty { get; set; } = Difficulty.Unknown;
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         public string? Description { get; set; }
     }
     public class ClassMetadata
@@ -109,7 +109,7 @@ namespace Randomly_NT.ClassMode
     public class RawStudent
     {
         public string Id { get; set; } = Guid.NewGuid().ToString("N");
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public float Score { get; set; }
         public int Level { get; set; }
     }
@@ -202,7 +202,7 @@ namespace Randomly_NT.ClassMode
         public uint PredictedClusterId { get; set; }
 
         [ColumnName("Score")]
-        public float[] Distances { get; set; }
+        public float[] Distances { get; set; } = Array.Empty<float>();
     }
     #endregion
 

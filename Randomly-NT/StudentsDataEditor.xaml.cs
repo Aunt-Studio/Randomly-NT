@@ -41,15 +41,15 @@ namespace Randomly_NT
             }
             else
             {
-                args.Cancel = true; // ÏÈÈ¡Ïû¹Ø±Õ
+                args.Cancel = true; // å…ˆå–æ¶ˆå…³é—­
                 var currentPage = ContentFrame.Content as Page;
                 ContentDialog dialog = new ContentDialog
                 {
-                    Title = "Î´±£´æµÄÊı¾İ",
-                    Content = "Èç¹ûÄú²»±£´æ, ÕâĞ©Êı¾İ½«»á¶ªÊ§¡£",
-                    PrimaryButtonText = "·µ»Ø±£´æ",
-                    SecondaryButtonText = "²»±£´æÀë¿ª",
-                    CloseButtonText = "È¡Ïû",
+                    Title = "æœªä¿å­˜çš„æ•°æ®",
+                    Content = "å¦‚æœæ‚¨ä¸ä¿å­˜, è¿™äº›æ•°æ®å°†ä¼šä¸¢å¤±ã€‚",
+                    PrimaryButtonText = "è¿”å›ä¿å­˜",
+                    SecondaryButtonText = "ä¸ä¿å­˜ç¦»å¼€",
+                    CloseButtonText = "å–æ¶ˆ",
                     DefaultButton = ContentDialogButton.Primary,
                     XamlRoot = currentPage!.XamlRoot
                 };
@@ -57,7 +57,7 @@ namespace Randomly_NT
                 if (result == ContentDialogResult.Secondary)
                 {
                     this.Saved = true;
-                    this.Close();   // È»ºóÔÙÇ¿ĞĞ¹Ø±Õ¡£¡£
+                    this.Close();   // ç„¶åå†å¼ºè¡Œå…³é—­ã€‚ã€‚
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace Randomly_NT
 
         private void ContentFrame_Loaded(object sender, RoutedEventArgs e)
         {
-            ContentFrame.Navigate(typeof(StudentsDataEditorPage), this);    // ´«Èë this, Ê¹µÃ StudentsDataEditorPage ¿ÉÒÔ·ÃÎÊ±¾ÊµÀıÊôĞÔ
+            ContentFrame.Navigate(typeof(StudentsDataEditorPage), this);    // ä¼ å…¥ this, ä½¿å¾— StudentsDataEditorPage å¯ä»¥è®¿é—®æœ¬å®ä¾‹å±æ€§
         }
     }
 }

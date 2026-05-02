@@ -47,7 +47,7 @@ namespace Randomly_NT.ClassMode
             {
                 var navItem = new NavigationViewItem
                 {
-                    Content = $"ÎÊÌâ {i+1}",
+                    Content = $"é—®é¢˜ {i+1}",
                     Icon = new SymbolIcon(Symbol.Document),
                     Tag = typeof(ClassQuestionPage).FullName
                 };
@@ -87,7 +87,7 @@ namespace Randomly_NT.ClassMode
             }
         }
         /// <summary>
-        /// Í¨¹ýË÷Òýµ¼º½µ½ÎÊÌâ¡£½« <paramref name="index"/> ÉèÎª 0 ÒÔµ¼º½µ½»¶Ó­Ò³¡£
+        /// é€šè¿‡ç´¢å¼•å¯¼èˆªåˆ°é—®é¢˜ã€‚å°† <paramref name="index"/> è®¾ä¸º 0 ä»¥å¯¼èˆªåˆ°æ¬¢è¿Žé¡µã€‚
         /// </summary>
         /// <param name="index"></param>
         public void NavToQuestion(int index)

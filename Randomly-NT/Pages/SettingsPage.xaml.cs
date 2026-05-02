@@ -19,22 +19,22 @@ namespace Randomly_NT
     public sealed partial class SettingsPage : Page, INotifyPropertyChanged
     {
         /// <summary>
-        /// ±¾µØÉèÖÃÈİÆ÷
+        /// æœ¬åœ°è®¾ç½®å®¹å™¨
         /// </summary>
         private ApplicationDataContainer LocalSettings;
 
         /// <summary>
-        /// ÊôĞÔ¸ü¸ÄÊÂ¼ş»Øµ÷º¯Êı
+        /// å±æ€§æ›´æ”¹äº‹ä»¶å›è°ƒå‡½æ•°
         /// </summary>
         public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
-        /// ÓÃÒÔ UI Õ¹Ê¾µÄ³ÌĞò¼¯°æ±¾
+        /// ç”¨ä»¥ UI å±•ç¤ºçš„ç¨‹åºé›†ç‰ˆæœ¬
         /// </summary>
         public string Version { get; }
 
         /// <summary>
-        /// ÓÃÓÚ¸üĞÂÏÔÊ¾µÄµ±Ç°°æ±¾
+        /// ç”¨äºæ›´æ–°æ˜¾ç¤ºçš„å½“å‰ç‰ˆæœ¬
         /// </summary>
         public string CurrentVersion { get; }
 
@@ -53,12 +53,12 @@ namespace Randomly_NT
         }
 
         /// <summary>
-        /// Ëæ»úĞÔÖ¸Êı ×Ö¶Î
+        /// éšæœºæ€§æŒ‡æ•° å­—æ®µ
         /// </summary>
         private int _randomizeIndex = 0;
 
         /// <summary>
-        /// Ëæ»úĞÔÖ¸Êı ÊôĞÔ
+        /// éšæœºæ€§æŒ‡æ•° å±æ€§
         /// </summary>
         public int RandomizeIndex
         {
@@ -75,16 +75,16 @@ namespace Randomly_NT
         }
 
         /// <summary>
-        /// ¸üĞÂ·şÎñµ¥ÀıÊµÀı
+        /// æ›´æ–°æœåŠ¡å•ä¾‹å®ä¾‹
         /// </summary>
         private readonly UpdateService _updateServiceInstance;
 
         /// <summary>
-        /// Ëæ»úĞÔìØÔ´Ç°¶ËÕ¹Ê¾ÁĞ±í ×Ö¶Î
+        /// éšæœºæ€§ç†µæºå‰ç«¯å±•ç¤ºåˆ—è¡¨ å­—æ®µ
         /// </summary>
         private ObservableCollection<RandomEntropyItem> _entropyItems = new();
         /// <summary>
-        /// Ëæ»úĞÔìØÔ´Ç°¶ËÕ¹Ê¾ÁĞ±í ÊôĞÔ
+        /// éšæœºæ€§ç†µæºå‰ç«¯å±•ç¤ºåˆ—è¡¨ å±æ€§
         /// </summary>
         public ObservableCollection<RandomEntropyItem> EntropyItems
         {
@@ -96,40 +96,40 @@ namespace Randomly_NT
             }
         }
 
-        #region Ëæ»úĞÔìØÔ´Ç°¶ËÕ¹Ê¾ÁĞ±íÏî¶¨Òå
+        #region éšæœºæ€§ç†µæºå‰ç«¯å±•ç¤ºåˆ—è¡¨é¡¹å®šä¹‰
 
         private RandomEntropyItem clock = new()
         {
-            Name = "Ä¬ÈÏËæ»úÊıÖÖ×Ó",
-            Description = "ÏµÍ³ API Ìá¹©µÄÄ¬ÈÏËæ»úÊıÖÖ×Ó, ¼´ CPU Ê±ÖÓ¡£",
+            Name = "é»˜è®¤éšæœºæ•°ç§å­",
+            Description = "ç³»ç»Ÿ API æä¾›çš„é»˜è®¤éšæœºæ•°ç§å­, å³ CPU æ—¶é’Ÿã€‚",
             DocumentUrl = "https://docs.auntstudio.com/randomly-nt/concepts/entropy-sources#mo-ren-sui-ji-shu-zhong-zi"
         };
 
         private RandomEntropyItem runtime = new()
         {
-            Name = "ÔËĞĞÊ±»·¾³ÔëÉù",
-            Description = "¿ÉÄÜ°üº¬ÏµÍ³×´Ì¬ĞÅÏ¢£¬ÈçÄÚ´æÊ¹ÓÃÇé¿öµÈ¡£",
+            Name = "è¿è¡Œæ—¶ç¯å¢ƒå™ªå£°",
+            Description = "å¯èƒ½åŒ…å«ç³»ç»ŸçŠ¶æ€ä¿¡æ¯ï¼Œå¦‚å†…å­˜ä½¿ç”¨æƒ…å†µç­‰ã€‚",
             DocumentUrl = "https://docs.auntstudio.com/randomly-nt/concepts/entropy-sources#yun-xing-shi-huan-jing-zao-sheng"
         };
 
         private RandomEntropyItem mouse = new()
         {
-            Name = "Êó±êÖ¸Õë",
-            Description = "Êó±êÖ¸ÕëµÄÎ»ÖÃ¡£",
+            Name = "é¼ æ ‡æŒ‡é’ˆ",
+            Description = "é¼ æ ‡æŒ‡é’ˆçš„ä½ç½®ã€‚",
             DocumentUrl = "https://docs.auntstudio.com/randomly-nt/concepts/entropy-sources#shu-biao-zhi-zhen"
         };
 
         private RandomEntropyItem randomOrg = new()
         {
-            Name = "ÕæËæ»úÊı½Ó¿Ú (ĞèÒª·ÃÎÊÍøÂç)",
-            Description = "´Ó Random.org »ñÈ¡µÄÀûÓÃ´óÆøÔëÉùÉú³ÉµÄÕæËæ»úÊı¡£»ñÈ¡¸ÃìØ¿ÉÄÜ»á²úÉúÒ»¶¨µÄÊ±¼ä¿ªÏú¡£\nÓ¦ÓÃ¸ÃìØºó£¬Ëæ»úÊı½á¹û¿ÉÈÏÎªÊÇÕæËæ»ú¡£Æµ·±³éÈ¡¿ÉÄÜ»áµ¼ÖÂ Random.org ÏŞÖÆ¡£",
+            Name = "çœŸéšæœºæ•°æ¥å£ (éœ€è¦è®¿é—®ç½‘ç»œ)",
+            Description = "ä» Random.org è·å–çš„åˆ©ç”¨å¤§æ°”å™ªå£°ç”Ÿæˆçš„çœŸéšæœºæ•°ã€‚è·å–è¯¥ç†µå¯èƒ½ä¼šäº§ç”Ÿä¸€å®šçš„æ—¶é—´å¼€é”€ã€‚\nåº”ç”¨è¯¥ç†µåï¼Œéšæœºæ•°ç»“æœå¯è®¤ä¸ºæ˜¯çœŸéšæœºã€‚é¢‘ç¹æŠ½å–å¯èƒ½ä¼šå¯¼è‡´ Random.org é™åˆ¶ã€‚",
             DocumentUrl = "https://docs.auntstudio.com/randomly-nt/concepts/entropy-sources#zhen-sui-ji-shu-jie-kou-xu-yao-fang-wen-wang-luo"
         };
 
         #endregion
 
-        #region ±£ÁôÉèÖÃÏà¹ØÊôĞÔ
-        // ÕâÀïËùÓĞ×Ö¶Î³õÊ¼ÊôĞÔÖ»ÊÇ±¸ÍüÓÃµÄ¡£¡£Êµ¼ÊÉÏ³õÊ¼»¯ÔÚ¹¹Ôìº¯ÊıÀï
+        #region ä¿ç•™è®¾ç½®ç›¸å…³å±æ€§
+        // è¿™é‡Œæ‰€æœ‰å­—æ®µåˆå§‹å±æ€§åªæ˜¯å¤‡å¿˜ç”¨çš„ã€‚ã€‚å®é™…ä¸Šåˆå§‹åŒ–åœ¨æ„é€ å‡½æ•°é‡Œ
         private bool _saveRNumRange = true;
         public bool SaveRNumRange
         {
@@ -189,20 +189,20 @@ namespace Randomly_NT
             }
             _updateServiceInstance.NewVersionAvailable += OnUpdateAvailable;
 
-            // »ñÈ¡±¾µØÉèÖÃÈİÆ÷
+            // è·å–æœ¬åœ°è®¾ç½®å®¹å™¨
             LocalSettings = ApplicationData.Current.LocalSettings;
-            // ¶ÁÈ¡Ëæ»úĞÔÖ¸Êı
+            // è¯»å–éšæœºæ€§æŒ‡æ•°
             _randomizeIndex = LocalSettings.Values.ContainsKey("RandomizeIndex") ? (int)LocalSettings.Values["RandomizeIndex"] : 1;
-            // ¶ÁÈ¡±£ÁôÉèÖÃ
+            // è¯»å–ä¿ç•™è®¾ç½®
             _saveRNumRange = LocalSettings.Values.ContainsKey("SaveRNumRange") ? (bool)LocalSettings.Values["SaveRNumRange"] : true;
             _saveRNumDraw = LocalSettings.Values.ContainsKey("SaveRNumDraw") ? (bool)LocalSettings.Values["SaveRNumDraw"] : false;
             _saveRNameDataPath = LocalSettings.Values.ContainsKey("SaveRNameDataPath") ? (bool)LocalSettings.Values["SaveRNameDataPath"] : true;
             _saveRNameDraw = LocalSettings.Values.ContainsKey("SaveRNameDraw") ? (bool)LocalSettings.Values["SaveRNameDraw"] : false;
-            // »ñÈ¡³ÌĞò¼¯°æ±¾
+            // è·å–ç¨‹åºé›†ç‰ˆæœ¬
             if (Package.Current is not null)
             {
                 var version = Package.Current.Id.Version;
-                CurrentVersion = $"µ±Ç°°æ±¾: {version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
+                CurrentVersion = $"å½“å‰ç‰ˆæœ¬: {version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
                 Version = $"Package Version {version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
             }
             else
@@ -217,7 +217,7 @@ namespace Randomly_NT
                 }
                 else
                 {
-                    var assemblyVer = Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? "Î´Öª³ÌĞò¼¯°æ±¾";
+                    var assemblyVer = Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? "æœªçŸ¥ç¨‹åºé›†ç‰ˆæœ¬";
                     CurrentVersion = assemblyVer;
                     Version = $"Assembly Version {assemblyVer} (Unpackaged)";
                 }
@@ -227,17 +227,17 @@ namespace Randomly_NT
             Version += " Debug";
 #endif
 
-            // ÉèÖÃÊı¾İÉÏÏÂÎÄ
+            // è®¾ç½®æ•°æ®ä¸Šä¸‹æ–‡
             this.DataContext = this;
 
-            // ÅäÖÃËæ»úĞÔìØÔ´Ç°¶ËÁĞ±íÕ¹Ê¾
+            // é…ç½®éšæœºæ€§ç†µæºå‰ç«¯åˆ—è¡¨å±•ç¤º
             ConfigureRandomizationFactors();
         }
 
         public void OnUpdateAvailable(object sender, UpdateService.NewVersionAvailableEventArgs e)
         {
             NewVersionSE.Visibility = Visibility.Visible;
-            RemoteVersion = "×îĞÂ°æ±¾: " + e.NewVersionMeta.PackageVersion.ToString();
+            RemoteVersion = "æœ€æ–°ç‰ˆæœ¬: " + e.NewVersionMeta.PackageVersion.ToString();
             UpdateButtonContent(e.NewVersionMeta);
         }
 
@@ -247,32 +247,32 @@ namespace Randomly_NT
             {
                 case NewVersionMeta.UpdateStatus.None:
                     ApplyUpdateButton.IsEnabled = true;
-                    ApplyUpdateButton.Content = "ÏÂÔØ¸üĞÂ°ü";
+                    ApplyUpdateButton.Content = "ä¸‹è½½æ›´æ–°åŒ…";
                     break;
                 case NewVersionMeta.UpdateStatus.Downloading:
                     ApplyUpdateButton.IsEnabled = false;
-                    ApplyUpdateButton.Content = "ÏÂÔØÖĞ...";
+                    ApplyUpdateButton.Content = "ä¸‹è½½ä¸­...";
                     break;
                 case NewVersionMeta.UpdateStatus.Downloaded:
                     ApplyUpdateButton.IsEnabled = true;
-                    ApplyUpdateButton.Content = "°²×°¸üĞÂ (½«¹Ø±Õ³ÌĞò)";
+                    ApplyUpdateButton.Content = "å®‰è£…æ›´æ–° (å°†å…³é—­ç¨‹åº)";
                     break;
                 case NewVersionMeta.UpdateStatus.Updating:
                     ApplyUpdateButton.IsEnabled = false;
-                    ApplyUpdateButton.Content = "°²×°ÖĞ...";
+                    ApplyUpdateButton.Content = "å®‰è£…ä¸­...";
                     break;
                 case NewVersionMeta.UpdateStatus.Error:
                     ApplyUpdateButton.IsEnabled = true;
-                    ApplyUpdateButton.Content = "ÖØĞÂ³¢ÊÔÏÂÔØ";
+                    ApplyUpdateButton.Content = "é‡æ–°å°è¯•ä¸‹è½½";
                     break;
             }
         }
 
         private void OnPropertyChanged(string propertyName)
         {
-            // Í¨ÖªÇ°¶ËÊôĞÔ¸ü¸Ä
+            // é€šçŸ¥å‰ç«¯å±æ€§æ›´æ”¹
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            // ±£´æËæ»úĞÔÖ¸ÊıÉèÖÃ¸ü¸Ä
+            // ä¿å­˜éšæœºæ€§æŒ‡æ•°è®¾ç½®æ›´æ”¹
             if (propertyName == nameof(RandomizeIndex))
             {
                 LocalSettings.Values["RandomizeIndex"] = RandomizeIndex;
@@ -280,7 +280,7 @@ namespace Randomly_NT
         }
 
         /// <summary>
-        /// ÅäÖÃËæ»úĞÔìØÔ´Ç°¶ËÕ¹Ê¾ÁĞ±í
+        /// é…ç½®éšæœºæ€§ç†µæºå‰ç«¯å±•ç¤ºåˆ—è¡¨
         /// </summary>
         private void ConfigureRandomizationFactors()
         {
@@ -312,7 +312,7 @@ namespace Randomly_NT
                 {
                     DownloadingErrorSC.Visibility = Visibility.Collapsed;
                     ApplyUpdateButton.IsEnabled = false;
-                    ApplyUpdateButton.Content = "ÏÂÔØÖĞ...";
+                    ApplyUpdateButton.Content = "ä¸‹è½½ä¸­...";
                     DownloadProgressBar.Value = 0;
                     DownloadingSC.Visibility = Visibility.Visible;
                     _ = _updateServiceInstance.NewVersionMeta.Download();
@@ -322,11 +322,11 @@ namespace Randomly_NT
                         ErrorDetailsTB.Text = e.Exception.ToString();
                         DownloadingErrorSC.Visibility = Visibility.Visible;
                         ApplyUpdateButton.IsEnabled = true;
-                        ApplyUpdateButton.Content = "ÖØĞÂ³¢ÊÔÏÂÔØ";
+                        ApplyUpdateButton.Content = "é‡æ–°å°è¯•ä¸‹è½½";
                     };
                     while (_updateServiceInstance.NewVersionMeta.FileDownloader is null)
                     {
-                        // µÈ´ıÖ±µ½ÏÂÔØÆ÷³õÊ¼»¯Íê³É
+                        // ç­‰å¾…ç›´åˆ°ä¸‹è½½å™¨åˆå§‹åŒ–å®Œæˆ
                     }
 
                     _updateServiceInstance.NewVersionMeta.FileDownloader.ProgressChanged += (sender, e) =>
@@ -339,7 +339,7 @@ namespace Randomly_NT
                     _updateServiceInstance.NewVersionMeta.FileDownloader.DownloadCompleted += (sender, e) =>
                     {
                         Debug.WriteLine(e.FilePath);
-                        ApplyUpdateButton.Content = "°²×°¸üĞÂ (½«¹Ø±Õ³ÌĞò)";
+                        ApplyUpdateButton.Content = "å®‰è£…æ›´æ–° (å°†å…³é—­ç¨‹åº)";
                         ApplyUpdateButton.IsEnabled = true;
                         DownloadingSC.Visibility = Visibility.Collapsed;
                     };
@@ -348,7 +348,7 @@ namespace Randomly_NT
                 else if (_updateServiceInstance.NewVersionMeta.Status == NewVersionMeta.UpdateStatus.Downloaded)
                 {
                     ApplyUpdateButton.IsEnabled = false;
-                    ApplyUpdateButton.Content = "°²×°ÖĞ...";
+                    ApplyUpdateButton.Content = "å®‰è£…ä¸­...";
                     await _updateServiceInstance.NewVersionMeta.Update();
                 }
             }
@@ -356,7 +356,7 @@ namespace Randomly_NT
     }
 
     /// <summary>
-    /// Ëæ»úĞÔìØÔ´Ç°¶ËÕ¹Ê¾ÁĞ±íÏî
+    /// éšæœºæ€§ç†µæºå‰ç«¯å±•ç¤ºåˆ—è¡¨é¡¹
     /// </summary>
     public class RandomEntropyItem
     {
