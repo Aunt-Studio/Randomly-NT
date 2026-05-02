@@ -102,6 +102,7 @@ jobs:
             -CertStoreLocation "Cert:\CurrentUser\My" `
             -KeyExportPolicy Exportable `
             -FriendlyName "Randomly-NT CI Signing" `
+            -TextExtension @("2.5.29.19={text}") `
             -NotAfter (Get-Date).AddDays(365)
 
           if ($null -eq $cert) {
