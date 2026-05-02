@@ -91,7 +91,7 @@ jobs:
 
           $passwordPlain = [Guid]::NewGuid().ToString("N")
           $passwordSecure = ConvertTo-SecureString -String $passwordPlain -Force -AsPlainText
-          $subject = "CN=Randomly-NT GitHub Actions"
+          $subject = "CN=Aunt Studio"
 
           $cert = New-SelfSignedCertificate `
             -Type Custom `
@@ -102,7 +102,11 @@ jobs:
             -CertStoreLocation "Cert:\CurrentUser\My" `
             -KeyExportPolicy Exportable `
             -FriendlyName "Randomly-NT CI Signing" `
-            -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.3")
+            -TextExtension @(
+              "2.5.29.37={text}1.3.6.1.5.5.7.3.3",
+              "2.5.29.19={text}"
+            ) `
+            -NotAfter (Get-Date).AddDays(365)
 
           if ($null -eq $cert) {
             throw "未能创建临时签名证书。"
@@ -120,37 +124,68 @@ jobs:
           "certificate_path=$pfxPath" >> $env:GITHUB_OUTPUT
           "certificate_public_path=$cerPath" >> $env:GITHUB_OUTPUT
           "certificate_thumbprint=$($cert.Thumbprint)" >> $env:GITHUB_OUTPUT
+          "certificate_subject=$subject" >> $env:GITHUB_OUTPUT
 
       - name: Restore solution
         shell: pwsh
         run: dotnet restore "Randomly-NT.sln"
 
-      - name: Publish main project package
+      - name: Build main project MSIX package
         shell: pwsh
         run: |
-          dotnet publish "${{ env.APP_PROJECT }}" `
-            -c "${{ env.BUILD_CONFIGURATION }}" `
-            -p:Platform=${{ env.BUILD_PLATFORM }} `
-            -p:RuntimeIdentifier=${{ env.RUNTIME_IDENTIFIER }} `
-            -p:GenerateAppInstallerFile=false `
-            -p:UapAppxPackageBuildMode=SideloadOnly `
-            -p:AppxBundle=Never `
-            -p:PackageCertificateThumbprint= `
-            -p:PackageCertificateKeyFile="${{ steps.signing.outputs.certificate_path }}" `
-            -p:PackageCertificatePassword="${{ env.SIGNING_CERT_PASSWORD }}" `
-            -p:AppxPackageDir="${{ steps.metadata.outputs.appx_output_root }}\\"
+          dotnet msbuild "${{ env.APP_PROJECT }}" `
+            /restore `
+            /t:Publish `
+            /p:Configuration=${{ env.BUILD_CONFIGURATION }} `
+            /p:Platform=${{ env.BUILD_PLATFORM }} `
+            /p:RuntimeIdentifier=${{ env.RUNTIME_IDENTIFIER }} `
+            /p:PublishProfile= `
+            /p:GenerateAppInstallerFile=false `
+            /p:UapAppxPackageBuildMode=SideloadOnly `
+            /p:GenerateAppxPackageOnBuild=true `
+            /p:AppxBundle=Never `
+            /p:AppxPackageDir="${{ steps.metadata.outputs.appx_output_root }}\\" `
+            /p:PackageCertificateThumbprint=${{ steps.signing.outputs.certificate_thumbprint }} `
+            /p:PackageCertificateKeyFile= `
+            /p:PackageCertificatePassword=
 
       - name: Assemble release payloads
         id: assemble
         shell: pwsh
         run: |
           $appxOutputRoot = "${{ steps.metadata.outputs.appx_output_root }}"
-          $appPackageDir = Get-ChildItem -LiteralPath $appxOutputRoot -Directory |
+          $projectBinRoot = Join-Path $env:GITHUB_WORKSPACE "Randomly-NT\bin"
+          $appPackageSearchRoots = @()
+
+          if (Test-Path -LiteralPath $appxOutputRoot) {
+            $appPackageSearchRoots += $appxOutputRoot
+          }
+
+          if (Test-Path -LiteralPath $projectBinRoot) {
+            $defaultAppPackageRoots = Get-ChildItem -Path (Join-Path $projectBinRoot "*") -Directory -Recurse -ErrorAction SilentlyContinue |
+              Where-Object { $_.Name -eq "AppPackages" } |
+              Select-Object -ExpandProperty FullName
+
+            $appPackageSearchRoots += $defaultAppPackageRoots
+          }
+
+          $appPackageSearchRoots = $appPackageSearchRoots |
+            Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+            Select-Object -Unique
+
+          $appPackageCandidates = foreach ($searchRoot in $appPackageSearchRoots) {
+            if (Test-Path -LiteralPath $searchRoot) {
+              Get-ChildItem -LiteralPath $searchRoot -Directory -ErrorAction SilentlyContinue
+            }
+          }
+
+          $appPackageDir = $appPackageCandidates |
             Sort-Object LastWriteTimeUtc -Descending |
             Select-Object -First 1
 
           if ($null -eq $appPackageDir) {
-            throw "未找到主项目打包输出目录：$appxOutputRoot"
+            $searched = if ($appPackageSearchRoots.Count -gt 0) { $appPackageSearchRoots -join "; " } else { "<none>" }
+            throw "未找到主项目打包输出目录。已搜索: $searched"
           }
 
           $mainStageRoot = "${{ steps.metadata.outputs.main_stage_root }}"
