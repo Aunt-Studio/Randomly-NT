@@ -1,0 +1,274 @@
+name: Build Release Packages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Randomly-NT/**"
+      - "Installer/**"
+      - "InstallerCore/**"
+      - "Updater/**"
+      - "Randomly-NT.sln"
+      - "version.json"
+      - ".github/workflows/build-release.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-release:
+    runs-on: windows-latest
+    env:
+      BUILD_CONFIGURATION: Release
+      BUILD_PLATFORM: x64
+      RUNTIME_IDENTIFIER: win-x64
+      APP_PROJECT: Randomly-NT/Randomly-NT.csproj
+      INSTALLER_PROJECT: Installer/Installer.csproj
+      UPDATER_PROJECT: Updater/Updater.csproj
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Resolve release metadata
+        id: metadata
+        shell: pwsh
+        run: |
+          $versionJson = Get-Content -LiteralPath "version.json" -Raw | ConvertFrom-Json
+          $packageVersion = [string]$versionJson.packageVer
+          if ([string]::IsNullOrWhiteSpace($packageVersion)) {
+            throw "version.json 中缺少 packageVer。"
+          }
+
+          $artifactBaseName = "Randomly-NT_${packageVersion}_x64"
+          $mainZipName = "${artifactBaseName}.zip"
+          $updateZipName = "${artifactBaseName}.Update.zip"
+
+          $workspaceRoot = $env:GITHUB_WORKSPACE
+          $runnerTempRoot = $env:RUNNER_TEMP
+          $releaseRoot = Join-Path $workspaceRoot "artifacts"
+          $signingRoot = Join-Path $runnerTempRoot "randomly-nt-signing"
+          $appxOutputRoot = Join-Path $releaseRoot "appx"
+          $mainStageRoot = Join-Path $releaseRoot "main-package"
+          $updateStageRoot = Join-Path $releaseRoot "update-package"
+          $installerPublishDir = Join-Path $releaseRoot "installer-publish"
+          $updaterPublishDir = Join-Path $releaseRoot "updater-publish"
+          $mainZipPath = Join-Path $releaseRoot $mainZipName
+          $updateZipPath = Join-Path $releaseRoot $updateZipName
+
+          New-Item -ItemType Directory -Path $releaseRoot -Force | Out-Null
+
+          "package_version=$packageVersion" >> $env:GITHUB_OUTPUT
+          "artifact_base_name=$artifactBaseName" >> $env:GITHUB_OUTPUT
+          "main_zip_name=$mainZipName" >> $env:GITHUB_OUTPUT
+          "update_zip_name=$updateZipName" >> $env:GITHUB_OUTPUT
+          "release_root=$releaseRoot" >> $env:GITHUB_OUTPUT
+          "signing_root=$signingRoot" >> $env:GITHUB_OUTPUT
+          "appx_output_root=$appxOutputRoot" >> $env:GITHUB_OUTPUT
+          "main_stage_root=$mainStageRoot" >> $env:GITHUB_OUTPUT
+          "update_stage_root=$updateStageRoot" >> $env:GITHUB_OUTPUT
+          "installer_publish_dir=$installerPublishDir" >> $env:GITHUB_OUTPUT
+          "updater_publish_dir=$updaterPublishDir" >> $env:GITHUB_OUTPUT
+          "main_zip_path=$mainZipPath" >> $env:GITHUB_OUTPUT
+          "update_zip_path=$updateZipPath" >> $env:GITHUB_OUTPUT
+
+      - name: Create temporary signing certificate
+        id: signing
+        shell: pwsh
+        run: |
+          $certRoot = "${{ steps.metadata.outputs.signing_root }}"
+          if (Test-Path -LiteralPath $certRoot) {
+            Remove-Item -LiteralPath $certRoot -Recurse -Force
+          }
+          New-Item -ItemType Directory -Path $certRoot -Force | Out-Null
+
+          $passwordPlain = [Guid]::NewGuid().ToString("N")
+          $passwordSecure = ConvertTo-SecureString -String $passwordPlain -Force -AsPlainText
+          $subject = "CN=Randomly-NT GitHub Actions"
+
+          $cert = New-SelfSignedCertificate `
+            -Type Custom `
+            -Subject $subject `
+            -KeyAlgorithm RSA `
+            -KeyLength 2048 `
+            -HashAlgorithm SHA256 `
+            -CertStoreLocation "Cert:\CurrentUser\My" `
+            -KeyExportPolicy Exportable `
+            -FriendlyName "Randomly-NT CI Signing" `
+            -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.3")
+
+          if ($null -eq $cert) {
+            throw "未能创建临时签名证书。"
+          }
+
+          $pfxPath = Join-Path $certRoot "Randomly-NT-GitHubActions.pfx"
+          $cerPath = Join-Path $certRoot "Randomly-NT-GitHubActions.cer"
+
+          Export-PfxCertificate -Cert $cert -FilePath $pfxPath -Password $passwordSecure | Out-Null
+          Export-Certificate -Cert $cert -FilePath $cerPath | Out-Null
+
+          Write-Output "::add-mask::$passwordPlain"
+          Write-Output "SIGNING_CERT_PASSWORD=$passwordPlain" >> $env:GITHUB_ENV
+
+          "certificate_path=$pfxPath" >> $env:GITHUB_OUTPUT
+          "certificate_public_path=$cerPath" >> $env:GITHUB_OUTPUT
+          "certificate_thumbprint=$($cert.Thumbprint)" >> $env:GITHUB_OUTPUT
+
+      - name: Restore solution
+        shell: pwsh
+        run: dotnet restore "Randomly-NT.sln"
+
+      - name: Publish main project package
+        shell: pwsh
+        run: |
+          dotnet publish "${{ env.APP_PROJECT }}" `
+            -c "${{ env.BUILD_CONFIGURATION }}" `
+            -p:Platform=${{ env.BUILD_PLATFORM }} `
+            -p:RuntimeIdentifier=${{ env.RUNTIME_IDENTIFIER }} `
+            -p:GenerateAppInstallerFile=false `
+            -p:UapAppxPackageBuildMode=SideloadOnly `
+            -p:AppxBundle=Never `
+            -p:PackageCertificateThumbprint= `
+            -p:PackageCertificateKeyFile="${{ steps.signing.outputs.certificate_path }}" `
+            -p:PackageCertificatePassword="${{ env.SIGNING_CERT_PASSWORD }}" `
+            -p:AppxPackageDir="${{ steps.metadata.outputs.appx_output_root }}\\"
+
+      - name: Assemble release payloads
+        id: assemble
+        shell: pwsh
+        run: |
+          $appxOutputRoot = "${{ steps.metadata.outputs.appx_output_root }}"
+          $appPackageDir = Get-ChildItem -LiteralPath $appxOutputRoot -Directory |
+            Sort-Object LastWriteTimeUtc -Descending |
+            Select-Object -First 1
+
+          if ($null -eq $appPackageDir) {
+            throw "未找到主项目打包输出目录：$appxOutputRoot"
+          }
+
+          $mainStageRoot = "${{ steps.metadata.outputs.main_stage_root }}"
+          $updateStageRoot = "${{ steps.metadata.outputs.update_stage_root }}"
+          $installerPayloadDir = Join-Path $env:GITHUB_WORKSPACE "Installer\Payload"
+
+          foreach ($dir in @($mainStageRoot, $updateStageRoot)) {
+            if (Test-Path -LiteralPath $dir) {
+              Remove-Item -LiteralPath $dir -Recurse -Force
+            }
+            New-Item -ItemType Directory -Path $dir -Force | Out-Null
+          }
+
+          if (Test-Path -LiteralPath $installerPayloadDir) {
+            Remove-Item -LiteralPath $installerPayloadDir -Recurse -Force
+          }
+          New-Item -ItemType Directory -Path $installerPayloadDir -Force | Out-Null
+
+          Copy-Item -Path (Join-Path $appPackageDir.FullName "*") -Destination $mainStageRoot -Recurse -Force
+          Copy-Item -Path (Join-Path $appPackageDir.FullName "*") -Destination $updateStageRoot -Recurse -Force
+          Copy-Item -Path (Join-Path $appPackageDir.FullName "*") -Destination $installerPayloadDir -Recurse -Force
+
+          $generatedCert = Get-ChildItem -LiteralPath $installerPayloadDir -Filter "*.cer" -File | Select-Object -First 1
+          if ($null -eq $generatedCert) {
+            Copy-Item -LiteralPath "${{ steps.signing.outputs.certificate_public_path }}" -Destination (Join-Path $installerPayloadDir "${{ steps.metadata.outputs.artifact_base_name }}.cer") -Force
+          }
+
+          if (Test-Path -LiteralPath "${{ steps.metadata.outputs.main_zip_path }}") {
+            Remove-Item -LiteralPath "${{ steps.metadata.outputs.main_zip_path }}" -Force
+          }
+          Compress-Archive -Path (Join-Path $mainStageRoot "*") -DestinationPath "${{ steps.metadata.outputs.main_zip_path }}" -CompressionLevel Optimal
+
+          "app_package_dir=$($appPackageDir.FullName)" >> $env:GITHUB_OUTPUT
+
+      - name: Publish installer
+        shell: pwsh
+        run: |
+          dotnet publish "${{ env.INSTALLER_PROJECT }}" `
+            -c "${{ env.BUILD_CONFIGURATION }}" `
+            -r "${{ env.RUNTIME_IDENTIFIER }}" `
+            --self-contained true `
+            -p:DebugType=None `
+            -p:DebugSymbols=false `
+            -p:PublishDir="${{ steps.metadata.outputs.installer_publish_dir }}\\"
+
+      - name: Publish updater as framework-dependent single file
+        shell: pwsh
+        run: |
+          dotnet publish "${{ env.UPDATER_PROJECT }}" `
+            -c "${{ env.BUILD_CONFIGURATION }}" `
+            -r "${{ env.RUNTIME_IDENTIFIER }}" `
+            --self-contained false `
+            -p:PublishSingleFile=true `
+            -p:EnableCompressionInSingleFile=true `
+            -p:PublishTrimmed=false `
+            -p:DebugType=None `
+            -p:DebugSymbols=false `
+            -p:PublishDir="${{ steps.metadata.outputs.updater_publish_dir }}\\"
+
+      - name: Build update package
+        id: update
+        shell: pwsh
+        run: |
+          $updaterExe = Join-Path "${{ steps.metadata.outputs.updater_publish_dir }}" "Updater.exe"
+          if (-not (Test-Path -LiteralPath $updaterExe)) {
+            throw "未找到单文件发布的 Updater.exe：$updaterExe"
+          }
+
+          Copy-Item -LiteralPath $updaterExe -Destination (Join-Path "${{ steps.metadata.outputs.update_stage_root }}" "Updater.exe") -Force
+
+          if (Test-Path -LiteralPath "${{ steps.metadata.outputs.update_zip_path }}") {
+            Remove-Item -LiteralPath "${{ steps.metadata.outputs.update_zip_path }}" -Force
+          }
+
+          Compress-Archive -Path (Join-Path "${{ steps.metadata.outputs.update_stage_root }}" "*") `
+            -DestinationPath "${{ steps.metadata.outputs.update_zip_path }}" `
+            -CompressionLevel Optimal
+
+          $installerExe = Join-Path "${{ steps.metadata.outputs.installer_publish_dir }}" "Installer.exe"
+          if (-not (Test-Path -LiteralPath $installerExe)) {
+            throw "未找到单文件发布的 Installer.exe：$installerExe"
+          }
+
+          "installer_exe=$installerExe" >> $env:GITHUB_OUTPUT
+          "updater_exe=$updaterExe" >> $env:GITHUB_OUTPUT
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Installer.exe
+          path: ${{ steps.update.outputs.installer_exe }}
+          if-no-files-found: error
+
+      - name: Upload main package zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.metadata.outputs.main_zip_name }}
+          path: ${{ steps.metadata.outputs.main_zip_path }}
+          if-no-files-found: error
+
+      - name: Upload update package zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.metadata.outputs.update_zip_name }}
+          path: ${{ steps.metadata.outputs.update_zip_path }}
+          if-no-files-found: error
+
+      - name: Cleanup temporary signing material
+        if: always()
+        shell: pwsh
+        run: |
+          $thumbprint = "${{ steps.signing.outputs.certificate_thumbprint }}"
+          $certPath = "Cert:\CurrentUser\My\$thumbprint"
+          if (-not [string]::IsNullOrWhiteSpace($thumbprint) -and (Test-Path -LiteralPath $certPath)) {
+            Remove-Item -LiteralPath $certPath -Force
+          }
+
+          $signingRoot = "${{ steps.metadata.outputs.signing_root }}"
+          if (Test-Path -LiteralPath $signingRoot) {
+            Remove-Item -LiteralPath $signingRoot -Recurse -Force
+          }
