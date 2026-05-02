@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\InstallerCore\InstallerCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <BootstrapperPayload Include="Payload\**\*" Condition="Exists('Payload')" />
+    <EmbeddedResource Include="@(BootstrapperPayload)" LogicalName="Payload/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Randomly_NT.Installer</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <PublishTrimmed>false</PublishTrimmed>
+  </PropertyGroup>
+
+  <Target Name="WarnIfBootstrapperPayloadMissing" BeforeTargets="Publish">
+    <Warning Condition="'@(BootstrapperPayload)' == ''"
+             Text="Installer\\Payload 目录下没有可嵌入的安装载荷文件。发布出的 Bootstrapper 不会包含 MSIX、证书或脚本。" />
+  </Target>
+
+</Project>
