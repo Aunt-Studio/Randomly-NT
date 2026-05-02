@@ -94,7 +94,7 @@ jobs:
           $subject = "CN=Aunt Studio"
 
           $cert = New-SelfSignedCertificate `
-            -Type Custom `
+            -Type CodeSigningCert `
             -Subject $subject `
             -KeyAlgorithm RSA `
             -KeyLength 2048 `
@@ -102,10 +102,6 @@ jobs:
             -CertStoreLocation "Cert:\CurrentUser\My" `
             -KeyExportPolicy Exportable `
             -FriendlyName "Randomly-NT CI Signing" `
-            -TextExtension @(
-              "2.5.29.37={text}1.3.6.1.5.5.7.3.3",
-              "2.5.29.19={text}"
-            ) `
             -NotAfter (Get-Date).AddDays(365)
 
           if ($null -eq $cert) {
